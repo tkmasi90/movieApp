@@ -14,31 +14,31 @@ import com.google.gson.annotations.Expose;
 public class Movie {
 private boolean adult;
         @Expose
-        private String backdrop_path;
+        public String backdrop_path;
         @Expose
-        private List<Integer> genre_ids;
+        public List<Integer> genre_ids;
         @Expose
-        private int id;
+        public int id;
         @Expose
-        private String original_language;
+        public String original_language;
         @Expose
-        private String original_title;
+        public String original_title;
         @Expose
-        private String overview;
+        public String overview;
         @Expose
-        private double popularity;
+        public double popularity;
         @Expose
-        private String poster_path;
+        public String poster_path;
         @Expose
-        private String release_date;
+        public String release_date;
         @Expose
-        private String title;
+        public String title;
         @Expose
-        private boolean video;
+        public boolean video;
         @Expose
-        private double vote_average;
+        public double vote_average;
         @Expose
-        private int vote_count;
+        public int vote_count;
 
         public boolean isAdult() {
             return adult;

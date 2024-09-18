@@ -13,13 +13,13 @@ import java.util.List;
 
 public class PopularMoviesResponse {
     @Expose
-    private int page;
+    public int page;
     @Expose
-    private List<Movie> results;
+    public List<Movie> results;
     @Expose
-    private int total_pages;
+    public int total_pages;
     @Expose
-    private int total_results;
+    public int total_results;
 
     public int getPage() {
         return page;
