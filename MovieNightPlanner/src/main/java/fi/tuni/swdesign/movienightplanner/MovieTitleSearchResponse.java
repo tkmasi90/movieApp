@@ -4,14 +4,14 @@
  */
 package fi.tuni.swdesign.movienightplanner;
 
+import com.google.gson.annotations.Expose;
+import java.util.List;
+
 /**
  *
  * @author janii, Copilot
  */
-import com.google.gson.annotations.Expose;
-import java.util.List;
-
-public class MovieResponse {
+public class MovieTitleSearchResponse {
     @Expose
     private int page;
     @Expose
@@ -37,19 +37,19 @@ public class MovieResponse {
         this.results = results;
     }
 
-    public int getTotalPages() {
+    public int getTotal_pages() {
         return total_pages;
     }
 
-    public void setTotalPages(int total_pages) {
+    public void setTotal_pages(int total_pages) {
         this.total_pages = total_pages;
     }
 
-    public int getTotalResults() {
+    public int getTotal_results() {
         return total_results;
     }
 
-    public void setTotalResults(int total_results) {
+    public void setTotal_results(int total_results) {
         this.total_results = total_results;
     }
 
