@@ -11,7 +11,7 @@ package fi.tuni.swdesign.movienightplanner;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 
-public class MovieDetails {
+public class MovieDetailQueryResponse {
 
 
     @Expose
@@ -298,94 +298,5 @@ public class MovieDetails {
         }
     }
 
-    public static class ProductionCompany {
-        private int id;
-        private String logo_path;
-        private String name;
-        private String origin_country;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getLogoPath() {
-            return logo_path;
-        }
-
-        public void setLogoPath(String logo_path) {
-            this.logo_path = logo_path;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getOriginCountry() {
-            return origin_country;
-        }
-
-        public void setOriginCountry(String origin_country) {
-            this.origin_country = origin_country;
-        }
-    }
-
-    public static class ProductionCountry {
-        private String iso_3166_1;
-        private String name;
-
-        public String getIso3166_1() {
-            return iso_3166_1;
-        }
-
-        public void setIso3166_1(String iso_3166_1) {
-            this.iso_3166_1 = iso_3166_1;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    public static class SpokenLanguage {
-        private String english_name;
-        private String iso_639_1;
-        private String name;
-
-        public String getEnglishName() {
-            return english_name;
-        }
-
-        public void setEnglishName(String english_name) {
-            this.english_name = english_name;
-        }
-
-        public String getIso639_1() {
-            return iso_639_1;
-        }
-
-        public void setIso639_1(String iso_639_1) {
-            this.iso_639_1 = iso_639_1;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
 }
 
