@@ -59,14 +59,16 @@ public class MovieDataController {
             System.out.println(e);
         }
         
-        getStreamingProvidors();
+        // TODO:
+        // This function doesn't need be called each time.
+        // We can fetch this info only on first time and save to a local json
+        fetchStreamingProviders();
         
         return tempMovieList;
     }  
     
-    private void getStreamingProvidors() {
+    private void fetchStreamingProviders() {
         SimpleHttpResponse response1;
-        StreamingProvider tempStreamProv = null;
         
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             httpclient.start();
