@@ -22,10 +22,17 @@ public class PrimaryController {
             HBox tempHBox = new HBox();
             
             Label movieName = new Label();
-            
             movieName.setText(m.getTitle());
             
-            tempHBox.getChildren().add(movieName);
+            Label streamingServices = new Label();
+            String sTxt = "  - ";
+            for(var stream : m.getStreamingProviders()) {
+                sTxt += stream.getProviderName();
+                sTxt += " ";
+            }
+            streamingServices.setText(sTxt);
+            
+            tempHBox.getChildren().addAll(movieName, streamingServices);
             
             popularMoviesVBox.getChildren().add(tempHBox);
 

@@ -43,6 +43,10 @@ public class Movie {
         public int vote_count;
         
         private ArrayList<StreamingProvider> streamingProviders;
+        
+        public Movie() {
+            this.streamingProviders = new ArrayList<>();
+        }
 
         public boolean isAdult() {
             return adult;
@@ -156,11 +160,11 @@ public class Movie {
             this.vote_count = vote_count;
         }
         
-        public void addStreamingProvider(StreamingProvider sp) {
+        public void addStreamingProvider(StreamingProvider provider) {
             if (this.streamingProviders == null) {
                 this.streamingProviders = new ArrayList<>();
             }
-            this.streamingProviders.add(sp);
+            this.streamingProviders.add(provider);
         }
         
         public List<StreamingProvider> getStreamingProviders() {
