@@ -6,13 +6,15 @@ package fi.tuni.swdesign.movienightplanner;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
+import java.util.ArrayList;
 
 /**
  *
  * @author janii, Copilot
  */
 public class Movie {
-private boolean adult;
+        @Expose
+        public boolean adult;
         @Expose
         public String backdrop_path;
         @Expose
@@ -39,6 +41,8 @@ private boolean adult;
         public double vote_average;
         @Expose
         public int vote_count;
+        
+        private ArrayList<StreamingProvider> streamingProviders;
 
         public boolean isAdult() {
             return adult;
@@ -150,5 +154,16 @@ private boolean adult;
 
         public void setVoteCount(int vote_count) {
             this.vote_count = vote_count;
+        }
+        
+        public void addStreamingProvider(StreamingProvider sp) {
+            if (this.streamingProviders == null) {
+                this.streamingProviders = new ArrayList<>();
+            }
+            this.streamingProviders.add(sp);
+        }
+        
+        public List<StreamingProvider> getStreamingProviders() {
+            return this.streamingProviders;
         }
     }
