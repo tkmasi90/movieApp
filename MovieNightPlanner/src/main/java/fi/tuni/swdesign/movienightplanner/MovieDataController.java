@@ -132,9 +132,8 @@ public class MovieDataController {
                 }
             } else {
             System.out.println("No data found for county code FI.");
-        }
-            
-            
+            }
+                   
         } catch (Exception e) {
             System.out.println(e);
         }
