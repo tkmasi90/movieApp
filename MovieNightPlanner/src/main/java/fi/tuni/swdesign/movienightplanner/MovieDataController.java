@@ -37,36 +37,22 @@ public class MovieDataController {
         
         PopularMoviesResponse tempMovieList = null;
 
-        // https://hc.apache.org/httpcomponents-client-5.3.x/quickstart.html
-    
-        // Create a string of provider IDs formatted for the query (joined by %20OR%20)
-        SimpleHttpResponse response1;
         String providers = (PROVIDER_IDS.stream()
             .map(String::valueOf)
             .collect(Collectors.joining("%20OR%20")));
         
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            // Start the client
-            httpclient.start();
+            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", providers);
+            SimpleHttpResponse response = makeHttpRequest(url);
 
-            // Execute request
-            SimpleHttpRequest request1 = SimpleRequestBuilder
-                    .get(String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", providers))
-                    .build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ZDAyZjc4ODU0Njc3MTZiYTkyY2Y4YzNjNDY1MTY3OCIsIm5iZiI6MTcyNjczNDgwNS41MzM0MjksInN1YiI6IjY2ZWJlMDgxNjJjNGJiMThjOTc0OGE1NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.cs2Z9pMRYHWmTjnJbeEpLERWzVPHKBsbkJWmwG1Md2o");
-            request1.addHeader("accept", "application/json");
+            if (response != null) {
+                Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
 
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            // and wait until response is received
-            response1 = future.get();
-            System.out.println(request1.getRequestUri() + "->" + response1.getCode());
-
-            Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
-
-            tempMovieList = gson.fromJson(response1.getBodyText(), PopularMoviesResponse.class);
+                tempMovieList = gson.fromJson(response.getBodyText(), PopularMoviesResponse.class);
+            }
         } catch (Exception e){
 
             System.out.println(e);
@@ -88,23 +74,17 @@ public class MovieDataController {
     }  
     
     private void fetchStreamingProviders() {
-        SimpleHttpResponse response1;
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            httpclient.start();
-            SimpleHttpRequest request1 = SimpleRequestBuilder.get("https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI").build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request1.addHeader("accept", "application/json");
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            response1 = future.get();
-            System.out.println(request1.getRequestUri() + "->" + response1.getCode());
+            String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
+            SimpleHttpResponse response = makeHttpRequest(url);
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             Type streamingResponseType = new TypeToken<StreamingResponse>(){}.getType();
-            StreamingResponse response = gson.fromJson(response1.getBodyText(), streamingResponseType);
+            StreamingResponse streamResponse = gson.fromJson(response.getBodyText(), streamingResponseType);
             
             // Filter the providers to include only the ones in PROVIDER_IDS.
-            streamProviderMap = response.getResults()
+            streamProviderMap = streamResponse.getResults()
                     .stream()
                     .filter(p -> PROVIDER_IDS.contains(p.provider_id))
                     .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));       
@@ -121,22 +101,13 @@ public class MovieDataController {
     }
     
     private void fetchMovieStreamProviders(Movie movie) {
-        SimpleHttpResponse response1;
         
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            httpclient.start();
-
-            // Execute request
-            SimpleHttpRequest request1 = SimpleRequestBuilder.get(String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId())).build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request1.addHeader("accept", "application/json");
-
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            // and wait until response is received
-            response1 = future.get();
+            String url = String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId());
+            SimpleHttpResponse response = makeHttpRequest(url);
 
             Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(response1.getBodyText(), JsonObject.class);
+            JsonObject jsonObject = gson.fromJson(response.getBodyText(), JsonObject.class);
             JsonObject results = jsonObject.getAsJsonObject("results");
             
             // Check if there is data for the "FI" region.
@@ -167,5 +138,28 @@ public class MovieDataController {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+    
+    // Helper function to make HTTP requests
+    private SimpleHttpResponse makeHttpRequest(String url) {
+        SimpleHttpResponse response = null;
+        
+        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            // Start the client
+            httpclient.start();
+            
+            // Build the request
+            SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
+            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
+            request.addHeader("accept", "application/json");
+            
+            // Execute the request and get the response
+            Future<SimpleHttpResponse> future = httpclient.execute(request, null);
+            response = future.get();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return response;
     }
 }
