@@ -36,9 +36,9 @@ public class MovieDataController {
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
     
-    public PopularMoviesResponse getPopularMovies(){
+    public MoviesResponse getPopularMovies(){
         
-        PopularMoviesResponse tempMovieList = null;
+        MoviesResponse tempMovieList = null;
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", getProviders());
@@ -49,20 +49,11 @@ public class MovieDataController {
                 .setPrettyPrinting()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
-                tempMovieList = gson.fromJson(response.getBodyText(), PopularMoviesResponse.class);
+                tempMovieList = gson.fromJson(response.getBodyText(), MoviesResponse.class);
             }
         } catch (Exception e){
 
             System.out.println(e);
-        }
-        
-        // TODO:
-        // This function doesn't need be called each time.
-        // We can fetch this info only on first time and save to a local json
-        if(streamProviderMap == null)
-            fetchStreamingProviders();
-        else {
-            // TODO
         }
         
         // Add streaming provider information to the movies.
@@ -71,8 +62,8 @@ public class MovieDataController {
         return tempMovieList;
     }
 
-    public TopRatedMoviesResponse getTopRatedMovies() {
-        TopRatedMoviesResponse tempMovieList = null;
+    public MoviesResponse getTopRatedMovies() {
+        MoviesResponse tempMovieList = null;
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", getProviders());
             SimpleHttpResponse response = makeHttpRequest(url);
@@ -82,7 +73,7 @@ public class MovieDataController {
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-            tempMovieList = gson.fromJson(response.getBodyText(), TopRatedMoviesResponse.class);
+            tempMovieList = gson.fromJson(response.getBodyText(), MoviesResponse.class);
 
         } catch (Exception e){
 
@@ -95,7 +86,7 @@ public class MovieDataController {
         return tempMovieList;
     }
     
-    private void fetchStreamingProviders() {
+    public void fetchStreamingProviders() {
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
@@ -192,5 +183,9 @@ public class MovieDataController {
         } catch (UnsupportedEncodingException ex) {
         }
         return null;
+    }
+    
+    public Map<Integer, StreamingProvider> getStreamProviderMap() {
+        return streamProviderMap;
     }
 }
