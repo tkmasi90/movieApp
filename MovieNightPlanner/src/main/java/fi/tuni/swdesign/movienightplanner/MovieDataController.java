@@ -4,23 +4,26 @@
  */
 package fi.tuni.swdesign.movienightplanner;
 
-import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
+import java.io.UnsupportedEncodingException;
+
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
+import java.util.stream.Collectors;
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 /**
  *
  * @author janii
@@ -37,12 +40,8 @@ public class MovieDataController {
         
         PopularMoviesResponse tempMovieList = null;
 
-        String providers = (PROVIDER_IDS.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining("%20OR%20")));
-        
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", providers);
+            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", getProviders());
             SimpleHttpResponse response = makeHttpRequest(url);
 
             if (response != null) {
@@ -50,7 +49,6 @@ public class MovieDataController {
                 .setPrettyPrinting()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
-
                 tempMovieList = gson.fromJson(response.getBodyText(), PopularMoviesResponse.class);
             }
         } catch (Exception e){
@@ -71,7 +69,31 @@ public class MovieDataController {
         addStreamingProviders(tempMovieList.getResults());
         
         return tempMovieList;
-    }  
+    }
+
+    public TopRatedMoviesResponse getTopRatedMovies() {
+        TopRatedMoviesResponse tempMovieList = null;
+        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", getProviders());
+            SimpleHttpResponse response = makeHttpRequest(url);
+
+            Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+
+            tempMovieList = gson.fromJson(response.getBodyText(), TopRatedMoviesResponse.class);
+
+        } catch (Exception e){
+
+            System.out.println(e);
+        }
+                
+        // Add streaming provider information to the movies.
+        addStreamingProviders(tempMovieList.getResults());
+
+        return tempMovieList;
+    }
     
     private void fetchStreamingProviders() {
 
@@ -95,7 +117,7 @@ public class MovieDataController {
     }
     
     private void addStreamingProviders(List<Movie> movieList) {
-        for(var movie : movieList) {
+        for(Movie movie : movieList) {
             fetchMovieStreamProviders(movie);
         }
     }
@@ -160,5 +182,15 @@ public class MovieDataController {
         }
         
         return response;
+    }
+    
+    private String getProviders() {
+        try {
+            return URLEncoder.encode((PROVIDER_IDS.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("|"))), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return null;
     }
 }
