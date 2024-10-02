@@ -6,7 +6,11 @@ package fi.tuni.swdesign.movienightplanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -16,48 +20,37 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 import java.util.stream.Collectors;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
-
 /**
  *
  * @author janii
  */
 public class MovieDataController {
     
-    // List of streaming providers used in the app
+    // List of provider IDs that the app will support (e.g., Netflix, Amazon, Disney+, etc.)
     private final List<Integer> PROVIDER_IDS = List.of(337, 8, 119, 76, 323, 338, 2, 350, 2029, 1899);
-    private List<StreamingProvider> streamProviderList;
+    
+    // A map to store the provider details after fetching them from the API.
+    private Map<Integer, StreamingProvider> streamProviderMap;
     
     public PopularMoviesResponse getPopularMovies(){
         
         PopularMoviesResponse tempMovieList = null;
-        
-        // https://hc.apache.org/httpcomponents-client-5.3.x/quickstart.html
-    
-        SimpleHttpResponse response1;
-        
+
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            // Start the client
-            httpclient.start();
+            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", getProviders());
+            SimpleHttpResponse response = makeHttpRequest(url);
 
-            // Execute request
-            SimpleHttpRequest request1 = SimpleRequestBuilder.get("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI").build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request1.addHeader("accept", "application/json");
-
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            // and wait until response is received
-            response1 = future.get();
-            System.out.println(request1.getRequestUri() + "->" + response1.getCode());
-
-            Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
-
-            tempMovieList = gson.fromJson(response1.getBodyText(), PopularMoviesResponse.class);
-
+            if (response != null) {
+                Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+                tempMovieList = gson.fromJson(response.getBodyText(), PopularMoviesResponse.class);
+            }
         } catch (Exception e){
 
             System.out.println(e);
@@ -66,79 +59,138 @@ public class MovieDataController {
         // TODO:
         // This function doesn't need be called each time.
         // We can fetch this info only on first time and save to a local json
-        if(streamProviderList == null || streamProviderList.isEmpty())
+        if(streamProviderMap == null)
             fetchStreamingProviders();
         else {
             // TODO
         }
+        
+        // Add streaming provider information to the movies.
+        addStreamingProviders(tempMovieList.getResults());
+        
         return tempMovieList;
     }
 
     public TopRatedMoviesResponse getTopRatedMovies() {
         TopRatedMoviesResponse tempMovieList = null;
-
-        // https://hc.apache.org/httpcomponents-client-5.3.x/quickstart.html
-
-        SimpleHttpResponse response1;
-
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            // Start the client
-            httpclient.start();
-
-            // Execute request
-            SimpleHttpRequest request1 = SimpleRequestBuilder.get("https://api.themoviedb.org/3/movie/top_rated?include_adult=false&language=en-US&page=1watch_region=FI").build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request1.addHeader("accept", "application/json");
-
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            // and wait until response is received
-            response1 = future.get();
-            System.out.println(request1.getRequestUri() + "->" + response1.getCode());
+            String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", getProviders());
+            SimpleHttpResponse response = makeHttpRequest(url);
 
             Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-            tempMovieList = gson.fromJson(response1.getBodyText(), TopRatedMoviesResponse.class);
+            tempMovieList = gson.fromJson(response.getBodyText(), TopRatedMoviesResponse.class);
 
         } catch (Exception e){
 
             System.out.println(e);
         }
+                
+        // Add streaming provider information to the movies.
+        addStreamingProviders(tempMovieList.getResults());
 
         return tempMovieList;
     }
     
     private void fetchStreamingProviders() {
-        SimpleHttpResponse response1;
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            httpclient.start();
-            SimpleHttpRequest request1 = SimpleRequestBuilder.get("https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI").build();
-            request1.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request1.addHeader("accept", "application/json");
-            Future<SimpleHttpResponse> future = httpclient.execute(request1, null);
-            response1 = future.get();
-            System.out.println(request1.getRequestUri() + "->" + response1.getCode());
+            String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
+            SimpleHttpResponse response = makeHttpRequest(url);
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             Type streamingResponseType = new TypeToken<StreamingResponse>(){}.getType();
-            StreamingResponse response = gson.fromJson(response1.getBodyText(), streamingResponseType);
+            StreamingResponse streamResponse = gson.fromJson(response.getBodyText(), streamingResponseType);
             
-            // Filter providers to only have ones that are needed
-            streamProviderList = response.getResults()
+            // Filter the providers to include only the ones in PROVIDER_IDS.
+            streamProviderMap = streamResponse.getResults()
                     .stream()
                     .filter(p -> PROVIDER_IDS.contains(p.provider_id))
-                    .collect(Collectors.toList());
-
-            for (StreamingProvider provider : streamProviderList) {
-                    System.out.println(provider.provider_name + " " + provider.provider_id);
-            }
-        
+                    .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));       
         
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+    
+    private void addStreamingProviders(List<Movie> movieList) {
+        for(Movie movie : movieList) {
+            fetchMovieStreamProviders(movie);
+        }
+    }
+    
+    private void fetchMovieStreamProviders(Movie movie) {
+        
+        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            String url = String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId());
+            SimpleHttpResponse response = makeHttpRequest(url);
+
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(response.getBodyText(), JsonObject.class);
+            JsonObject results = jsonObject.getAsJsonObject("results");
+            
+            // Check if there is data for the "FI" region.
+            if (results.has("FI")) {
+                JsonObject fiData = results.getAsJsonObject("FI");
+
+
+                // Retrieve the flatrate array
+                if (fiData.has("flatrate")) {
+                    JsonArray flatrateArray = fiData.getAsJsonArray("flatrate");
+
+                    // Iterate through the providers and print their details
+                    for (JsonElement providerElement : flatrateArray) {
+                        JsonObject providerObj = providerElement.getAsJsonObject();                   
+                        int providerId = providerObj.get("provider_id").getAsInt();
+
+                        // Only add providers from the predefined PROVIDER_IDS list.
+                        if(PROVIDER_IDS.contains(providerId)) {                        
+                            movie.addStreamingProvider(streamProviderMap.get(providerId));
+                        }
+                    }
+                }
+            } else {
+            System.out.println("No data found for county code FI.");
+            }
+                   
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    // Helper function to make HTTP requests
+    private SimpleHttpResponse makeHttpRequest(String url) {
+        SimpleHttpResponse response = null;
+        
+        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            // Start the client
+            httpclient.start();
+            
+            // Build the request
+            SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
+            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
+            request.addHeader("accept", "application/json");
+            
+            // Execute the request and get the response
+            Future<SimpleHttpResponse> future = httpclient.execute(request, null);
+            response = future.get();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return response;
+    }
+    
+    private String getProviders() {
+        try {
+            return URLEncoder.encode((PROVIDER_IDS.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("|"))), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return null;
     }
 }

@@ -18,18 +18,26 @@ public class PrimaryController {
         
         PopularMoviesResponse popularMoviesResponse = mdc.getPopularMovies();
         TopRatedMoviesResponse topRatedMoviesResponse = mdc.getTopRatedMovies();
-        
+
         if (popularMoviesResponse != null) {
             List<Movie> tempMovieList = popularMoviesResponse.getResults();
             for (Movie m : tempMovieList) {
                 HBox tempHBox = new HBox();
                 Label movieName = new Label();
                 movieName.setText(m.getTitle());
-                tempHBox.getChildren().add(movieName);
+                Label streamingServices = new Label();
+                String sTxt = "  - ";
+                for(StreamingProvider stream : m.getStreamingProviders()) {
+                    sTxt += stream.getProviderName();
+                    sTxt += " ";
+                }
+                streamingServices.setText(sTxt);
+                tempHBox.getChildren().addAll(movieName, streamingServices);
                 popularMoviesVBox.getChildren().add(tempHBox);
             }
         } else {
             System.out.println("Failed to fetch popular movies.");
+
         }
 
         if (topRatedMoviesResponse != null) {
@@ -38,7 +46,14 @@ public class PrimaryController {
                 HBox tempHBox = new HBox();
                 Label movieName = new Label();
                 movieName.setText(m.getTitle());
-                tempHBox.getChildren().add(movieName);
+                Label streamingServices = new Label();
+                String sTxt = "  - ";
+                for(StreamingProvider stream : m.getStreamingProviders()) {
+                    sTxt += stream.getProviderName();
+                    sTxt += " ";
+                }
+                streamingServices.setText(sTxt);
+                tempHBox.getChildren().addAll(movieName, streamingServices);
                 topRatedMoviesVBox.getChildren().add(tempHBox);
             }
         } else {
