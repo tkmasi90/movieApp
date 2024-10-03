@@ -1,26 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="323.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.PrimaryController">
+<VBox fx:id="mainView" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.PrimaryController">
    <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <center>
-            <HBox alignment="CENTER" spacing="20.0">
-               <VBox fx:id="popularMoviesVBox" prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER" />
-               <VBox fx:id="topRatedMoviesVBox" prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER" />
-            </HBox>
-         </center>
-         <top>
-            <Button fx:id="primaryButton" onAction="#switchToSecondary" text="GET RECOMMENDATIONS" BorderPane.alignment="CENTER" />
-         </top>
-      </BorderPane>
+      <HBox maxHeight="390.0" prefWidth="800.0" style="-fx-background-color: transparent;">
+         <padding>
+            <Insets left="16.0" right="16.0" top="16.0" />
+         </padding>
+         <children>
+            <ImageView fx:id="mnpLogo" fitHeight="133.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../images/mnp_logo.jpeg" />
+               </image>
+            </ImageView>
+            <FlowPane fx:id="filterView" prefHeight="326.0" prefWidth="736.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets bottom="24.0" left="36.0" top="40.0" />
+               </HBox.margin>
+            </FlowPane>
+            <VBox fx:id="searchView" prefHeight="200.0" prefWidth="347.0">
+               <HBox.margin>
+                  <Insets bottom="24.0" left="36.0" top="40.0" />
+               </HBox.margin>
+            </VBox>
+            <ImageView fx:id="profilePic" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../images/4f2e9b89-9a71-4e0e-8450-05a57a56cab1.jpeg" />
+               </image>
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </ImageView>
+         </children>
+      </HBox>
+      <VBox maxHeight="634.0">
+         <children>
+            <ListView fx:id="popularMoviesLView" maxHeight="-Infinity" style="-fx-opacity: 0.8;">
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </VBox.margin>
+            </ListView>
+            <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
+               <VBox.margin>
+                  <Insets bottom="22.0" left="40.0" right="40.0" />
+               </VBox.margin>
+            </ListView>
+         </children>
+      </VBox>
    </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
 </VBox>
