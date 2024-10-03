@@ -11,7 +11,7 @@ package fi.tuni.swdesign.movienightplanner;
 import com.google.gson.annotations.Expose;
 import java.util.List;
 
-public class PopularMoviesResponse {
+public class MoviesResponse {
     @Expose
     public int page;
     @Expose
