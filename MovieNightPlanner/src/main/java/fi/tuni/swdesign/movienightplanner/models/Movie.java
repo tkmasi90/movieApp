@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fi.tuni.swdesign.movienightplanner;
+package fi.tuni.swdesign.movienightplanner.models;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

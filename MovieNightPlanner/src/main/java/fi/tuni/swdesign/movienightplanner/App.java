@@ -1,5 +1,6 @@
 package fi.tuni.swdesign.movienightplanner;
 
+import fi.tuni.swdesign.movienightplanner.utilities.FileDataController;
 import com.google.gson.JsonIOException;
 import java.io.FileNotFoundException;
 import javafx.application.Application;
