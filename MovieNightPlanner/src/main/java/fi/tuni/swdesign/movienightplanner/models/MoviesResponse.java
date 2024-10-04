@@ -2,24 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package fi.tuni.swdesign.movienightplanner;
-
-import com.google.gson.annotations.Expose;
-import java.util.List;
+package fi.tuni.swdesign.movienightplanner.models;
 
 /**
  *
  * @author janii, Copilot
  */
-public class MovieTitleSearchResponse {
+import com.google.gson.annotations.Expose;
+import java.util.List;
+
+public class MoviesResponse {
     @Expose
-    private int page;
+    public int page;
     @Expose
-    private List<Movie> results;
+    public List<Movie> results;
     @Expose
-    private int total_pages;
+    public int total_pages;
     @Expose
-    private int total_results;
+    public int total_results;
 
     public int getPage() {
         return page;
@@ -37,19 +37,19 @@ public class MovieTitleSearchResponse {
         this.results = results;
     }
 
-    public int getTotal_pages() {
+    public int getTotalPages() {
         return total_pages;
     }
 
-    public void setTotal_pages(int total_pages) {
+    public void setTotalPages(int total_pages) {
         this.total_pages = total_pages;
     }
 
-    public int getTotal_results() {
+    public int getTotalResults() {
         return total_results;
     }
 
-    public void setTotal_results(int total_results) {
+    public void setTotalResults(int total_results) {
         this.total_results = total_results;
     }
 

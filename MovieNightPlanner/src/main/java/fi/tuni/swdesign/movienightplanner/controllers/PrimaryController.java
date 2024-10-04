@@ -1,5 +1,8 @@
-package fi.tuni.swdesign.movienightplanner;
+package fi.tuni.swdesign.movienightplanner.controllers;
 
+import fi.tuni.swdesign.movienightplanner.App;
+import fi.tuni.swdesign.movienightplanner.models.Movie;
+import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,6 +78,7 @@ public class PrimaryController {
     }
     
     // Helper function to get the streaming services as a text string
+    // TEMPRORARY: not needed in the final product
     private String getStreamingServicesText(Movie movie) {
         StringBuilder sTxt = new StringBuilder("  - ");
         for (StreamingProvider stream : movie.getStreamingProviders()) {
@@ -119,11 +123,5 @@ public class PrimaryController {
                     System.out.println(loadingLabel.getText() + " failed.");
                 }
             });
-    }
-    
-
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
     }
 }

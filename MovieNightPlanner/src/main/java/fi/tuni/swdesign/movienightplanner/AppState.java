@@ -4,6 +4,7 @@
  */
 package fi.tuni.swdesign.movienightplanner;
 
+import fi.tuni.swdesign.movienightplanner.models.Movie;
 import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 
