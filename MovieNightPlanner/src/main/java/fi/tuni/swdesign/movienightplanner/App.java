@@ -27,8 +27,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         
         readAppStateFromFile();
-        
-        scene = new Scene(loadFXML("primary"));
+    
+        scene = new Scene(loadFXML("SearchView"));
         stage.setScene(scene);
         stage.setTitle("Movie Night Planner");
         URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
@@ -46,7 +46,7 @@ public class App extends Application {
         writeAppStateToFile();
     }
 
-    static void setRoot(String fxml) throws IOException {
+    public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
 
