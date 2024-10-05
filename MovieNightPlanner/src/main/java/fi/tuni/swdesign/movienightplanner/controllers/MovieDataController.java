@@ -14,7 +14,8 @@ import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.models.StreamingResponse;
-import fi.tuni.swdesign.movienightplanner.utilities.Tools;
+import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
@@ -35,7 +36,7 @@ import java.util.concurrent.Future;
  */
 public class MovieDataController {
     
-    private final Tools tools = new Tools(); 
+    private final HTTPTools tools = new HTTPTools(); 
     
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
@@ -43,23 +44,17 @@ public class MovieDataController {
     public MoviesResponse getPopularMovies(){
         
         MoviesResponse tempMovieList = null;
-
-        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+        
+        try {
+            
             String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", tools.getProviders());
-            SimpleHttpResponse response = tools.makeHttpRequest(url);
-
-            if (response != null) {
-                Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create();
-                tempMovieList = gson.fromJson(response.getBodyText(), MoviesResponse.class);
-            }
-        } catch (Exception e){
-
+            
+            tempMovieList = (MoviesResponse)tools.makeGenericHttpRequest(url, MoviesResponse.class);
+        
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
+
         // Add streaming provider information to the movies.
         addStreamingProviders(tempMovieList.getResults());
         
