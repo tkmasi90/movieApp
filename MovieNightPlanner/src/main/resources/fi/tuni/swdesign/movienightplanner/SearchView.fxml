@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="mainView" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.PrimaryController">
+<VBox fx:id="mainView" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
    <children>
       <HBox maxHeight="390.0" prefWidth="800.0" style="-fx-background-color: transparent;">
          <padding>

@@ -27,7 +27,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class PrimaryController {
+public class SearchViewController {
     
     @FXML ListView<Label> popularMoviesLView;
     @FXML ListView<Label> topRatedMoviesLview;
