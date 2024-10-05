@@ -43,9 +43,10 @@ public class SearchViewController {
         
         profilePic. addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
             try {
+                //App.setRoot("/fi/tuni/swdesign/movienightplanner/ProfileView");
                 App.setRoot("ProfileView");
             } catch (IOException ex) {
-                System.out.println(ex);
+                System.out.println(ex.getCause());
             }
         });
         
