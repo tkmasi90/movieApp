@@ -2,7 +2,9 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
+import fi.tuni.swdesign.movienightplanner.models.MovieLists;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
+import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +39,10 @@ public class SearchViewController {
 
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
+
+    private final HTTPTools tools = new HTTPTools(); 
+    private final MovieDataController mdc = new MovieDataController();
+    private final MovieLists ml = MovieLists.getInstance();
     
     @FXML
     public void initialize(){
@@ -70,8 +76,6 @@ public class SearchViewController {
         
         popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
         topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
-                
-        MovieDataController mdc = new MovieDataController();
         
         // TODO:
         // This function doesn't need be called each time.
@@ -79,17 +83,27 @@ public class SearchViewController {
         if(mdc.getStreamProviderMap() == null)
             mdc.fetchStreamingProviders();
 
-        
-        // Fetch Popular Movies Asynchronously
-        fetchMoviesAsync(mdc, "popular");
+        // Populate popular movies list view
+        if(ml.popularMovieListEmpty()) {
+            // Fetch Popular Movies Asynchronously
+            fetchMoviesAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
+        } else {
+            // Set Popular Movie List if already fetched
+            setMovieListView(ml.getPopularMovieList(), popularMoviesLView);
+        }
 
-        // Fetch Top-Rated Movies Asynchronously
-        fetchMoviesAsync(mdc, "top");
-       
+        
+        if(ml.topRatedMovieListEmpty()) {
+            // Fetch Top-Rated Movies Asynchronously
+            fetchMoviesAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
+        } else {
+            // Set Top-Rated Movie List if already fetched
+            setMovieListView(ml.getTopRatedMovieList(), topRatedMoviesLview);
+        }
     }
     
     // Helper function to get the streaming services as a text string
-    // TEMPRORARY: not needed in the final product
+    // TEMPORARY: not needed in the final product
     private String getStreamingServicesText(Movie movie) {
         StringBuilder sTxt = new StringBuilder("  - ");
         for (StreamingProvider stream : movie.getStreamingProviders()) {
@@ -111,28 +125,32 @@ public class SearchViewController {
         lView.setItems(labels);
     }
     
-    private void fetchMoviesAsync(MovieDataController mdc, String type) {
-        
-        ListView lView = ("popular".equals(type)) ? popularMoviesLView : topRatedMoviesLview;
-        Label loadingLabel = ("popular".equals(type)) ? popularMoviesLoadingLabel : topRatedMoviesLoadingLabel;
-        
+    private void fetchMoviesAsync(Label loadingLabel, ListView lView, String url) {
+
         CompletableFuture.supplyAsync(() -> {
-            if("popular".equals(type)) {
-                return mdc.getPopularMovies();
-            } else {
-                return mdc.getTopRatedMovies();
-            }
+            return mdc.searchMovies(url);
         })
             .thenAccept(moviesResponse -> {
+                Platform.runLater(() -> {
                 if (moviesResponse != null) {
                     List<Movie> tempMovieList = moviesResponse.getResults();
-                    // Update UI on the JavaFX Application Thread
-                    Platform.runLater(() -> {
-                        setMovieListView(tempMovieList, lView);
-                    });
+                    if (url.contains("popularity.desc")) {
+                        ml.setPopularMovieList(tempMovieList);
+                    } else if (url.contains("vote_average.desc")) {
+                        ml.setTopRatedMovieList(tempMovieList);
+                    }
+                    setMovieListView(tempMovieList, lView);
                 } else {
-                    System.out.println(loadingLabel.getText() + " failed.");
+                    loadingLabel.setText("Failed to load movies.");
                 }
             });
+            })
+            .exceptionally(ex -> {
+            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
+            return null;
+            });
     }
+    
+    private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", tools.getProviders());
+    private final String TOP_RATED_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", tools.getProviders());
 }
