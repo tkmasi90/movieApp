@@ -17,6 +17,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -32,12 +33,22 @@ public class SearchViewController {
     @FXML ListView<Label> popularMoviesLView;
     @FXML ListView<Label> topRatedMoviesLview;
     @FXML VBox mainView;
+    @FXML ImageView profilePic;
 
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
     
     @FXML
     public void initialize(){
+        
+        profilePic. addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                //App.setRoot("/fi/tuni/swdesign/movienightplanner/ProfileView");
+                App.setRoot("ProfileView");
+            } catch (IOException ex) {
+                System.out.println(ex.getCause());
+            }
+        });
         
         //TODO: Background settings
 //        mainView.setBackground(
