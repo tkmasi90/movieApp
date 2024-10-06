@@ -22,8 +22,9 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 /**
+ * A helper class to facilitate all HTTP-operations
  *
- * @author Make
+ * @author Make, janii
  */
 public class HTTPTools {
 
@@ -40,6 +41,8 @@ public class HTTPTools {
         public static final int MTV = 2029;
         public static final int MAX = 1899;
     }
+    
+    private GSONTools gsonTools = null;
     
     // Method to get provider IDs dynamically using reflection
     private List<Integer> getProviderIds() {
@@ -97,17 +100,17 @@ public class HTTPTools {
     * Handles HTTP requests and responses asynchronously.
     *
     * @param url  The URL string for the HTTP request.
-    * @param targetClass  The class of the object to parse the response into.
-    * @return Object      The parsed object from the HTTP response.
+    * @param targetClass  The class of the object to convert the response into.
+    * @return Object      The object created based on the HTTP response.
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * 
     * @author janii
     */
-    public Object makeGenericHttpRequest(String url, Class<?> targetClass) throws IOException, InterruptedException {
+    public Object makeGenericHttpRequest(String url, Class<?> targetClass) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
-        Gson gson = null;        
+               
         
         try (CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault()) {
 
@@ -121,18 +124,21 @@ public class HTTPTools {
             Future<SimpleHttpResponse> future = httpClient.execute(request, null);
             
             httpResponse = future.get();
-            
-            if (httpResponse != null) {
-                gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create();
-            }
+                
         } catch (Exception e) {
             System.out.println(e);
         }
         
-        return gson.fromJson(httpResponse.getBodyText(), targetClass);
+        // TODO: Error handling (All relevant HTTP error codes...)
+        if (httpResponse == null || httpResponse.getBodyText() == null) {
+            throw new IllegalStateException("The HTTP response or the response body is null");
+        }
+        
+        if (gsonTools == null){
+            gsonTools = new GSONTools();
+        }
+        
+        return gsonTools.convertJSONToObjects(httpResponse.getBodyText(), targetClass);
     }
     
 }
