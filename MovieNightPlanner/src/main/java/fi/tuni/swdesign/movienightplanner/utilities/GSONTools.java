@@ -11,7 +11,7 @@ import com.google.gson.JsonParseException;
 /**
  * A helper class to facilitate all JSON-GSON-POJO-related operations.
  * 
- * @author janii
+ * @author janii, Markus
  */
 public class GSONTools {
     Gson gson;

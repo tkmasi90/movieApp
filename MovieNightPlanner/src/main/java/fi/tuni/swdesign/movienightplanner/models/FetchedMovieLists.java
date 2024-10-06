@@ -11,20 +11,20 @@ import java.util.List;
  *
  * @author Make
  */
-public class MovieLists {
-    private static MovieLists instance;
+public class FetchedMovieLists {
+    private static FetchedMovieLists instance;
     
     private List<Movie> popularMovieList;
     private List<Movie> topRatedMovieList;
     
-    private MovieLists() {
+    private FetchedMovieLists() {
         popularMovieList = new ArrayList<>();
         topRatedMovieList = new ArrayList<>();
     }
     
-    public static synchronized MovieLists getInstance() {
+    public static synchronized FetchedMovieLists getInstance() {
         if (instance == null) {
-            instance = new MovieLists();
+            instance = new FetchedMovieLists();
         }
         return instance;
     }
