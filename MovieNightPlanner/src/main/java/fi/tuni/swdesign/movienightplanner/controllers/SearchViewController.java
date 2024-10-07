@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -33,23 +34,19 @@ public class SearchViewController {
     @FXML ListView<Label> popularMoviesLView;
     @FXML ListView<Label> topRatedMoviesLview;
     @FXML VBox mainView;
-    @FXML ImageView profilePic;
-
+    
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
     
+    private SceneController sceneController;
+    
+    public void setSceneController(SceneController sceneController) {
+        this.sceneController = sceneController;
+    }
+    
     @FXML
     public void initialize(){
-        
-        profilePic. addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                //App.setRoot("/fi/tuni/swdesign/movienightplanner/ProfileView");
-                App.setRoot("ProfileView");
-            } catch (IOException ex) {
-                System.out.println(ex.getCause());
-            }
-        });
-        
+                
         //TODO: Background settings
 //        mainView.setBackground(
 //            new Background(
@@ -86,6 +83,15 @@ public class SearchViewController {
         // Fetch Top-Rated Movies Asynchronously
         fetchMoviesAsync(mdc, "top");
        
+    }
+    
+    @FXML
+    public void handleProfileButtonClick(ActionEvent event) throws IOException {
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToProfile(event);
+        }
     }
     
     // Helper function to get the streaming services as a text string
