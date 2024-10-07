@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -35,8 +36,7 @@ public class SearchViewController {
     @FXML ListView<Label> popularMoviesLView;
     @FXML ListView<Label> topRatedMoviesLview;
     @FXML VBox mainView;
-    @FXML ImageView profilePic;
-
+    
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
 
@@ -44,18 +44,15 @@ public class SearchViewController {
     private final MovieDataController mdc = new MovieDataController();
     private final FetchedMovieLists ml = FetchedMovieLists.getInstance();
     
+    private SceneController sceneController;
+    
+    public void setSceneController(SceneController sceneController) {
+        this.sceneController = sceneController;
+    }
+    
     @FXML
     public void initialize(){
-        
-        profilePic. addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                //App.setRoot("/fi/tuni/swdesign/movienightplanner/ProfileView");
-                App.setRoot("ProfileView");
-            } catch (IOException ex) {
-                System.out.println(ex.getCause());
-            }
-        });
-        
+                
         //TODO: Background settings
 //        mainView.setBackground(
 //            new Background(
@@ -99,6 +96,15 @@ public class SearchViewController {
         } else {
             // Set Top-Rated Movie List if already fetched
             setMovieListView(ml.getTopRatedMovieList(), topRatedMoviesLview);
+        }
+    }
+    
+    @FXML
+    public void handleProfileButtonClick(ActionEvent event) throws IOException {
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToProfile(event);
         }
     }
     

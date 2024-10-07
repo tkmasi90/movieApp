@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
+<VBox alignment="CENTER" prefHeight="1020.0" prefWidth="1440.0" spacing="20.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
     <children>
         <Label text="DETAILED SEARCH VIEW" />
         <Button fx:id="secondaryButton" onAction="#navigateToSearchView" text="SEARCH" />
