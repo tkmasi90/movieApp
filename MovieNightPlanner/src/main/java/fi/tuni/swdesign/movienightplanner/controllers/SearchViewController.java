@@ -1,8 +1,6 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
-import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
-import fi.tuni.swdesign.movienightplanner.models.FetchedMovieLists;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
@@ -42,7 +40,6 @@ public class SearchViewController {
 
     private final HTTPTools tools = new HTTPTools(); 
     private final MovieDataController mdc = new MovieDataController();
-    private final FetchedMovieLists ml = FetchedMovieLists.getInstance();
     
     private SceneController sceneController;
     
@@ -81,22 +78,10 @@ public class SearchViewController {
             mdc.fetchStreamingProviders();
 
         // Populate Popular Movies List View
-        if(ml.popularMovieListEmpty()) {
-            // Fetch Popular Movies Asynchronously and set Popular Movie List
-            fetchMoviesAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
-        } else {
-            // Set Popular Movie List if already fetched
-            setMovieListView(ml.getPopularMovieList(), popularMoviesLView);
-        }
+        fetchMoviesAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
 
         // Populate Top Rated Movies List View
-        if(ml.topRatedMovieListEmpty()) {
-            // Fetch Top-Rated Movies Asynchronously and set Top Rated Movies List
-            fetchMoviesAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
-        } else {
-            // Set Top-Rated Movie List if already fetched
-            setMovieListView(ml.getTopRatedMovieList(), topRatedMoviesLview);
-        }
+        fetchMoviesAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
     }
     
     @FXML
@@ -140,11 +125,6 @@ public class SearchViewController {
                 Platform.runLater(() -> {
                 if (moviesResponse != null) {
                     List<Movie> tempMovieList = moviesResponse.getResults();
-                    if (url.contains("popularity.desc")) {
-                        ml.setPopularMovieList(tempMovieList);
-                    } else if (url.contains("vote_average.desc")) {
-                        ml.setTopRatedMovieList(tempMovieList);
-                    }
                     setMovieListView(tempMovieList, lView);
                 } else {
                     loadingLabel.setText("Failed to load movies.");
