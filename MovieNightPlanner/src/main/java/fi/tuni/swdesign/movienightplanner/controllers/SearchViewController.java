@@ -1,8 +1,8 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
-import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
+import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +37,9 @@ public class SearchViewController {
     
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
+
+    private final HTTPTools tools = new HTTPTools(); 
+    private final MovieDataController mdc = new MovieDataController();
     
     private SceneController sceneController;
     
@@ -55,7 +58,7 @@ public class SearchViewController {
 //                            new CornerRadii(500), 
 //                            new Insets(10))),
 //                    Collections.singletonList(new BackgroundImage(
-//                            new Image(this.getClass().getResource("/images/movie_reel.jpeg").toString(), 1440, 1020, false, false),
+//                            new Image(this.getClass().getResource("/images/movie_reel.jpeg").toString(), mainView.getPrefWidth(), mainView.getPrefHeight(), false, false),
 //                            BackgroundRepeat.NO_REPEAT,
 //                            BackgroundRepeat.NO_REPEAT,
 //                            BackgroundPosition.CENTER,
@@ -67,8 +70,6 @@ public class SearchViewController {
         
         popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
         topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
-                
-        MovieDataController mdc = new MovieDataController();
         
         // TODO:
         // This function doesn't need be called each time.
@@ -76,13 +77,11 @@ public class SearchViewController {
         if(mdc.getStreamProviderMap() == null)
             mdc.fetchStreamingProviders();
 
-        
-        // Fetch Popular Movies Asynchronously
-        fetchMoviesAsync(mdc, "popular");
+        // Populate Popular Movies List View
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
 
-        // Fetch Top-Rated Movies Asynchronously
-        fetchMoviesAsync(mdc, "top");
-       
+        // Populate Top Rated Movies List View
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
     }
     
     @FXML
@@ -95,7 +94,7 @@ public class SearchViewController {
     }
     
     // Helper function to get the streaming services as a text string
-    // TEMPRORARY: not needed in the final product
+    // TEMPORARY: not needed in the final product
     private String getStreamingServicesText(Movie movie) {
         StringBuilder sTxt = new StringBuilder("  - ");
         for (StreamingProvider stream : movie.getStreamingProviders()) {
@@ -117,28 +116,30 @@ public class SearchViewController {
         lView.setItems(labels);
     }
     
-    private void fetchMoviesAsync(MovieDataController mdc, String type) {
-        
-        ListView lView = ("popular".equals(type)) ? popularMoviesLView : topRatedMoviesLview;
-        Label loadingLabel = ("popular".equals(type)) ? popularMoviesLoadingLabel : topRatedMoviesLoadingLabel;
-        
+    private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {
+
+        // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
-            if("popular".equals(type)) {
-                return mdc.getPopularMovies();
-            } else {
-                return mdc.getTopRatedMovies();
-            }
+            return mdc.fetchMoviesResponse(url);
         })
+            // When fetch complete, update ListView
             .thenAccept(moviesResponse -> {
+                Platform.runLater(() -> {
                 if (moviesResponse != null) {
                     List<Movie> tempMovieList = moviesResponse.getResults();
-                    // Update UI on the JavaFX Application Thread
-                    Platform.runLater(() -> {
-                        setMovieListView(tempMovieList, lView);
-                    });
+                    setMovieListView(tempMovieList, lView);
                 } else {
-                    System.out.println(loadingLabel.getText() + " failed.");
+                    loadingLabel.setText("Failed to load movies.");
                 }
             });
+            })
+            // Give error message in case of exception
+            .exceptionally(ex -> {
+            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
+            return null;
+            });
     }
+    
+    private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", tools.getProviders());
+    private final String TOP_RATED_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", tools.getProviders());
 }

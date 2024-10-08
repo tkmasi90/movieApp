@@ -11,12 +11,18 @@ import com.google.gson.JsonParseException;
 /**
  * A helper class to facilitate all JSON-GSON-POJO-related operations.
  * 
- * @author janii
+ * @author janii, Markus
  */
 public class GSONTools {
+    Gson gson;
     
-    Gson gson = null; 
-
+    public GSONTools() {
+        this.gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();     
+    }
+    
     /**
     * Handles HTTP requests and responses asynchronously.
     *
@@ -28,13 +34,10 @@ public class GSONTools {
     * @author janii
     */
     public Object convertJSONToObjects(String JSONString, Class<?> targetClass) throws JsonParseException{
-                 if( gson == null){
-                     gson = new GsonBuilder()
-                        .setPrettyPrinting()
-                        .excludeFieldsWithoutExposeAnnotation()
-                        .create();            
-                 }       
-      
         return gson.fromJson(JSONString, targetClass);
+    }
+    
+    public Gson getGson() {
+        return gson;
     }
 }
