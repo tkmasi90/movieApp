@@ -4,12 +4,9 @@
  */
 package fi.tuni.swdesign.movienightplanner.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
@@ -17,20 +14,14 @@ import fi.tuni.swdesign.movienightplanner.models.StreamingResponse;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 import java.util.stream.Collectors;
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 /**
  *
  * @author janii
@@ -43,11 +34,12 @@ public class MovieDataController {
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
     
-    public MoviesResponse searchMovies(String url){
+    public MoviesResponse fetchMoviesResponse(String url){
         MoviesResponse tempMovieList = null;
         
         try {
-            tempMovieList = (MoviesResponse)httpTools.makeGenericHttpRequest(url, MoviesResponse.class);
+            SimpleHttpResponse httpResponse = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
+            tempMovieList = (MoviesResponse) gsonTools.convertJSONToObjects(httpResponse.getBodyText(), MoviesResponse.class);
         
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
@@ -62,11 +54,10 @@ public class MovieDataController {
     public void fetchStreamingProviders() {
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            
             String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
-            SimpleHttpResponse response = httpTools.makeHttpRequest(url);
-
-            Type streamingResponseType = new TypeToken<StreamingResponse>(){}.getType();
-            StreamingResponse streamResponse = gsonTools.getGson().fromJson(response.getBodyText(), streamingResponseType);
+            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
+            StreamingResponse streamResponse = (StreamingResponse) gsonTools.convertJSONToObjects(response.getBodyText(), StreamingResponse.class);
             
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
@@ -88,8 +79,9 @@ public class MovieDataController {
     private void fetchMovieStreamProviders(Movie movie) {
         
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            
             String url = String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId());
-            SimpleHttpResponse response = httpTools.makeHttpRequest(url);
+            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
 
             JsonObject jsonObject = gsonTools.getGson().fromJson(response.getBodyText(), JsonObject.class);
             JsonObject results = jsonObject.getAsJsonObject("results");

@@ -41,9 +41,6 @@ public class HTTPTools {
         public static final int MTV = 2029;
         public static final int MAX = 1899;
     }
-    
-    private GSONTools gsonTools = null;
-    
     // Method to get provider IDs dynamically using reflection
     private List<Integer> getProviderIds() {
         List<Integer> providerIds = new ArrayList<>();
@@ -62,29 +59,7 @@ public class HTTPTools {
     }
     
     public final List<Integer> PROVIDER_IDS = getProviderIds();
-    
-    // Helper function to make HTTP requests
-    public SimpleHttpResponse makeHttpRequest(String url) {
-        SimpleHttpResponse response = null;
-        
-        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            // Start the client
-            httpclient.start();
-            
-            // Build the request
-            SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
-            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request.addHeader("accept", "application/json");
-            
-            // Execute the request and get the response
-            Future<SimpleHttpResponse> future = httpclient.execute(request, null);
-            response = future.get();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        
-        return response;
-    }
+
     
     public String getProviders() {
         try {
@@ -100,14 +75,13 @@ public class HTTPTools {
     * Handles HTTP requests and responses asynchronously.
     *
     * @param url  The URL string for the HTTP request.
-    * @param targetClass  The class of the object to convert the response into.
-    * @return Object      The object created based on the HTTP response.
+    * @return SimpleHttpResponse
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * 
     * @author janii
     */
-    public Object makeGenericHttpRequest(String url, Class<?> targetClass) throws IOException, InterruptedException, IllegalStateException {
+    public Object makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
                
@@ -134,11 +108,7 @@ public class HTTPTools {
             throw new IllegalStateException("The HTTP response or the response body is null");
         }
         
-        if (gsonTools == null){
-            gsonTools = new GSONTools();
-        }
-        
-        return gsonTools.convertJSONToObjects(httpResponse.getBodyText(), targetClass);
+        return httpResponse;
     }
     
 }

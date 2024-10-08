@@ -58,7 +58,7 @@ public class SearchViewController {
 //                            new CornerRadii(500), 
 //                            new Insets(10))),
 //                    Collections.singletonList(new BackgroundImage(
-//                            new Image(this.getClass().getResource("/images/movie_reel.jpeg").toString(), 1440, 1020, false, false),
+//                            new Image(this.getClass().getResource("/images/movie_reel.jpeg").toString(), mainView.getPrefWidth(), mainView.getPrefHeight(), false, false),
 //                            BackgroundRepeat.NO_REPEAT,
 //                            BackgroundRepeat.NO_REPEAT,
 //                            BackgroundPosition.CENTER,
@@ -78,10 +78,10 @@ public class SearchViewController {
             mdc.fetchStreamingProviders();
 
         // Populate Popular Movies List View
-        fetchMoviesAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
 
         // Populate Top Rated Movies List View
-        fetchMoviesAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
     }
     
     @FXML
@@ -116,11 +116,13 @@ public class SearchViewController {
         lView.setItems(labels);
     }
     
-    private void fetchMoviesAsync(Label loadingLabel, ListView lView, String url) {
+    private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {
 
+        // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.searchMovies(url);
+            return mdc.fetchMoviesResponse(url);
         })
+            // When fetch complete, update ListView
             .thenAccept(moviesResponse -> {
                 Platform.runLater(() -> {
                 if (moviesResponse != null) {
@@ -131,6 +133,7 @@ public class SearchViewController {
                 }
             });
             })
+            // Give error message in case of exception
             .exceptionally(ex -> {
             Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
             return null;

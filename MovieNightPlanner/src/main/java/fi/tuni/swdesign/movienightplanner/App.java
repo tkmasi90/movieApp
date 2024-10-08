@@ -2,9 +2,6 @@ package fi.tuni.swdesign.movienightplanner;
 
 import fi.tuni.swdesign.movienightplanner.utilities.FileDataController;
 import com.google.gson.JsonIOException;
-import fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController;
-import fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController;
-import fi.tuni.swdesign.movienightplanner.controllers.RecipeViewController;
 import fi.tuni.swdesign.movienightplanner.controllers.SceneController;
 import fi.tuni.swdesign.movienightplanner.controllers.SearchViewController;
 import java.io.FileNotFoundException;
