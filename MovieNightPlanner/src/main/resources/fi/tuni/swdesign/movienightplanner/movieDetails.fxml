@@ -3,56 +3,76 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.effect.GaussianBlur?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="764.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="1020.0" maxWidth="1440.0" minHeight="1020.0" minWidth="1440.0" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
+      <SplitPane orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="616.0" prefWidth="1438.0">
                <children>
-                  <ImageView fx:id="backdropImage" fitHeight="321.0" fitWidth="762.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="posterImage" fitHeight="220.0" fitWidth="153.0" layoutX="86.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="firstProviderImage" fitHeight="62.0" fitWidth="87.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="secondProviderImage" fitHeight="62.0" fitWidth="87.0" layoutX="645.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button fx:id="homeButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Home" />
-                  <Button fx:id="profileButton" layoutX="688.0" layoutY="14.0" mnemonicParsing="false" text="Profile" />
-                  <Button fx:id="saveToListButton" layoutX="255.0" layoutY="126.0" mnemonicParsing="false" text="Save" />
-                  <Label fx:id="titleDetailsLabel" layoutX="255.0" layoutY="62.0" prefHeight="28.0" prefWidth="192.0" text="Movie Name (year)">
+                  <ImageView fx:id="backdropImage" fitHeight="519.0" fitWidth="1438.0" pickOnBounds="true" preserveRatio="true" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10265980" height="519.0" stroke="BLACK" strokeType="INSIDE" width="1438.0">
+                     <effect>
+                        <GaussianBlur radius="24.0" />
+                     </effect>
+                  </Rectangle>
+                  <ImageView fx:id="posterImage" fitHeight="237.0" fitWidth="173.0" layoutX="144.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="firstProviderImage" fitHeight="90.0" fitWidth="126.0" layoutX="1050.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="secondProviderImage" fitHeight="90.0" fitWidth="126.0" layoutX="1200.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button fx:id="homeButton" layoutX="31.0" layoutY="27.0" mnemonicParsing="false" text="Home" />
+                  <Button fx:id="profileButton" layoutX="1346.0" layoutY="27.0" mnemonicParsing="false" text="Profile" />
+                  <Button fx:id="saveToListButton" layoutX="381.0" layoutY="139.0" mnemonicParsing="false" text="Save" />
+                  <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="88.0" prefHeight="35.0" prefWidth="237.0" text="Movie Name (year)" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="19.0" />
+                        <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
-                  <Label fx:id="overviewLabel" layoutX="267.0" layoutY="181.0" prefWidth="450.0" text="A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground &quot;fight clubs&quot; forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion." textAlignment="CENTER" wrapText="true" />
-                  <Button fx:id="rateMovieButton" layoutX="434.0" layoutY="126.0" mnemonicParsing="false" text="Rate" />
-                  <Label fx:id="tmdbRatingLabel" layoutX="329.0" layoutY="130.0" prefHeight="18.0" prefWidth="80.0" text="TMDB Rating" />
-                  <Label fx:id="specsLabel" layoutX="100.0" layoutY="281.0" prefHeight="18.0" prefWidth="126.0" text="genre - length - k-?" />
-                  <Label layoutX="541.0" layoutY="67.0" text="Streaming at" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="320.0" prefWidth="828.0">
-               <children>
-                  <Label fx:id="writerLabel" layoutX="205.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " />
-                  <Label fx:id="directorLabel" layoutX="24.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " />
-                  <ImageView fx:id="star1Image" fitHeight="154.0" fitWidth="133.0" layoutX="24.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true" />
-                  <Rectangle fx:id="star1NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="51.0" layoutX="24.0" layoutY="239.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
-                  <ImageView fx:id="star2Image" fitHeight="154.0" fitWidth="133.0" layoutX="174.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true" />
-                  <Rectangle fx:id="star2NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="51.0" layoutX="174.0" layoutY="239.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
-                  <ImageView fx:id="star3Image" fitHeight="154.0" fitWidth="133.0" layoutX="329.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true" />
-                  <Rectangle fx:id="star3NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="51.0" layoutX="329.0" layoutY="239.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
-                  <ImageView fx:id="star4Image" fitHeight="154.0" fitWidth="133.0" layoutX="478.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true" />
-                  <Rectangle fx:id="star4NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="51.0" layoutX="478.0" layoutY="239.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
-                  <Label fx:id="star1NameLabel" layoutX="37.0" layoutY="246.0" prefHeight="38.0" prefWidth="107.0" text="Label" />
-                  <Label fx:id="star3NameLabel" layoutX="342.0" layoutY="246.0" prefHeight="38.0" prefWidth="107.0" text="Label" />
-                  <Label fx:id="star4NameLabel" layoutX="491.0" layoutY="246.0" prefHeight="38.0" prefWidth="107.0" text="Label" />
-                  <Label fx:id="star2NameLabel" layoutX="187.0" layoutY="246.0" prefHeight="38.0" prefWidth="107.0" text="Label" />
+                  <Label fx:id="overviewLabel" alignment="TOP_CENTER" layoutX="369.0" layoutY="212.0" prefHeight="261.0" prefWidth="631.0" text="A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground &quot;fight clubs&quot; forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
+                  <Button fx:id="rateMovieButton" layoutX="599.0" layoutY="139.0" mnemonicParsing="false" text="Rate" />
+                  <Label fx:id="tmdbRatingLabel" layoutX="470.0" layoutY="143.0" prefHeight="18.0" prefWidth="80.0" text="TMDB Rating" textFill="WHITE" />
+                  <Label fx:id="specsLabel" layoutX="154.0" layoutY="342.0" prefHeight="38.0" prefWidth="153.0" text="genre - length - k-?" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
+                  <Label layoutX="1050.0" layoutY="102.0" text="Streaming at" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="taglineLabel" layoutX="369.0" layoutY="181.0" text="Label" textFill="WHITE">
+                     <font>
+                        <Font name="System Italic" size="13.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="674.0" prefWidth="1440.0" style="-fx-background-color: #10265A;">
+         <children>
+            <Label fx:id="writerLabel" layoutX="329.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="directorLabel" layoutX="24.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="star1Image" fitHeight="206.0" fitWidth="162.0" layoutX="24.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
+            <Rectangle fx:id="star1NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="24.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+            <Label fx:id="star1NameLabel" layoutX="40.0" layoutY="369.0" prefHeight="38.0" prefWidth="126.0" text="Label" />
+         </children>
+      </AnchorPane>
    </children>
 </VBox>
