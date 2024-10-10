@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1020.0" maxWidth="1440.0" minHeight="1020.0" minWidth="1440.0" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="1020.0" maxWidth="1440.0" minHeight="1020.0" minWidth="1440.0" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
    <children>
       <SplitPane orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
         <items>
