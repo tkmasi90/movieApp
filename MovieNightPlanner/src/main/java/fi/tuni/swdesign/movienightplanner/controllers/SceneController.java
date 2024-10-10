@@ -61,4 +61,20 @@ public class SceneController {
         stage.setScene(profileScene);
         stage.show();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Scene getSearchScene() {
+        return searchScene;
+    }
+
+    public Scene getMovieDetailScene() {
+        return movieDetailScene;
+    }
+
+    public Scene getProfileScene() {
+        return profileScene;
+    }
 }
