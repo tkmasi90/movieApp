@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.models.Movie;
+import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apache.hc.client5.http.HttpResponseException;
 
 public class SearchViewController {
     
@@ -120,7 +122,15 @@ public class SearchViewController {
 
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.fetchMoviesResponse(url);
+            
+            MoviesResponse temp = null;
+            try {
+                temp = mdc.fetchMoviesResponse(url);
+            } catch (HttpResponseException ex) {
+                loadingLabel.setText(ex.getReasonPhrase());
+                return null;
+            }
+            return temp;
         })
             // When fetch complete, update ListView
             .thenAccept(moviesResponse -> {

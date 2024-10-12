@@ -22,6 +22,7 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
+import org.apache.hc.client5.http.HttpResponseException;
 /**
  *
  * @author janii
@@ -34,14 +35,18 @@ public class MovieDataController {
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
     
-    public MoviesResponse fetchMoviesResponse(String url){
+    public MoviesResponse fetchMoviesResponse(String url) throws HttpResponseException{
         MoviesResponse tempMovieList = null;
         
         try {
-            SimpleHttpResponse httpResponse = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
-            tempMovieList = (MoviesResponse) gsonTools.convertJSONToObjects(httpResponse.getBodyText(), MoviesResponse.class);
+            String httpResponseString = httpTools.makeGenericHttpRequest(url);
+            tempMovieList = (MoviesResponse) gsonTools.convertJSONToObjects(httpResponseString, MoviesResponse.class);
         
-        } catch (IOException | InterruptedException e) {
+        } catch (HttpResponseException ex){
+            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
+        }
+        
+        catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
 
@@ -56,8 +61,8 @@ public class MovieDataController {
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             
             String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
-            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
-            StreamingResponse streamResponse = (StreamingResponse) gsonTools.convertJSONToObjects(response.getBodyText(), StreamingResponse.class);
+            String httpResponseString = httpTools.makeGenericHttpRequest(url);
+            StreamingResponse streamResponse = (StreamingResponse) gsonTools.convertJSONToObjects(httpResponseString, StreamingResponse.class);
             
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
@@ -81,9 +86,9 @@ public class MovieDataController {
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             
             String url = String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId());
-            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
+            String httpResponseString = httpTools.makeGenericHttpRequest(url);
 
-            JsonObject jsonObject = gsonTools.getGson().fromJson(response.getBodyText(), JsonObject.class);
+            JsonObject jsonObject = gsonTools.getGson().fromJson(httpResponseString, JsonObject.class);
             JsonObject results = jsonObject.getAsJsonObject("results");
             
             // Check if there is data for the "FI" region.
