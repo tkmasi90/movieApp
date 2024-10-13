@@ -61,7 +61,7 @@ public class HTTPTools {
     public final List<Integer> PROVIDER_IDS = getProviderIds();
 
     
-    public String getProviders() {
+    public String getProvidersString() {
         try {
             return URLEncoder.encode((PROVIDER_IDS.stream()
                     .map(String::valueOf)
