@@ -4,8 +4,9 @@
  */
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
+import fi.tuni.swdesign.movienightplanner.models.SubtitleService;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
@@ -25,11 +26,19 @@ public class ShowDataController {
     
     private final GSONTools gsonTools = new GSONTools();
     
-    private final String url = "https://streaming-availability.p.rapidapi.com/shows/movie/597?series_granularity=show&output_language=en";
+    private final String urlPre = "https://streaming-availability.p.rapidapi.com/shows/movie/";
+    private final String urlPost = "?series_granularity=show&output_language=en";
 
-    public void fetchSubtitlesResponse(){
+    public void fetchSubtitlesResponse(int id){
         
         JsonObject tempJsonObject = null;
+        JsonObject jsonObject = null;
+        JsonArray jsonArray = null;
+        JsonArray jsonArray2 = null;
+        
+        SubtitleService[] tempServices = null;
+        
+        String url = urlPre + Integer.toString(id) + urlPost;
         
         try {
             String vastaus = makeTMOTNHttpRequest(url);
@@ -38,8 +47,25 @@ public class ShowDataController {
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
+        
+        jsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
+        
+        jsonArray = jsonObject.getAsJsonArray("fi");
+        
+        if(jsonArray != null){
+            tempServices = (SubtitleService[])gsonTools.convertJSONToObjects(jsonArray.toString(), SubtitleService[].class);
+            //jsonArray2 = jsonArray.getAsJsonArray();
+        
+        System.out.println("HEREEEEE " + tempServices[0].getSubtitles());
+        }
+        
+        for (SubtitleService s : tempServices){
+            System.out.println("IIIIIIIIIIIIIII " + s.getSubtitles().get(0).getLocale().getLanguage());
+        }
+        
+        
+        
 
-        System.out.println("HERE " + tempJsonObject);
     }
     
     // TODO: REFACTOR
