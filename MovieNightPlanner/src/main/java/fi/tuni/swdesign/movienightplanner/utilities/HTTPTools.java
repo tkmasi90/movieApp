@@ -80,14 +80,14 @@ public class HTTPTools {
     * @return SimpleHttpResponse
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
+    * @throws IllegalStateException  If the operation failed at the server.
     * 
     * @author janii
     */
     public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
-               
-        
+                      
         try (CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault()) {
 
             httpClient.start();
@@ -113,10 +113,10 @@ public class HTTPTools {
         if (httpResponse.getCode() != 200)
         {
             GSONTools gsonTools = new GSONTools();
-            
+                       
             ErrorModel newError = (ErrorModel)gsonTools.convertJSONToObjects(httpResponse.getBodyText(), ErrorModel.class);
             
-            throw new HttpResponseException(httpResponse.getCode(), newError.getMessage());
+            throw new HttpResponseException(httpResponse.getCode(), newError.getStatus_message());
         }
         
         return httpResponse.getBodyText();

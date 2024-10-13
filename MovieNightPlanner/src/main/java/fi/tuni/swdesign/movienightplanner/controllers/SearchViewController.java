@@ -45,6 +45,10 @@ public class SearchViewController {
     
     private SceneController sceneController;
     
+    // HTTP Error Handling
+    private int HTTPErrorCode;
+    private String HTTPErrorMessage;
+    
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
@@ -127,7 +131,10 @@ public class SearchViewController {
             try {
                 temp = mdc.fetchMoviesResponse(url);
             } catch (HttpResponseException ex) {
-                loadingLabel.setText(ex.getReasonPhrase());
+
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
                 return null;
             }
             return temp;
@@ -139,15 +146,17 @@ public class SearchViewController {
                     List<Movie> tempMovieList = moviesResponse.getResults();
                     setMovieListView(tempMovieList, lView);
                 } else {
-                    loadingLabel.setText("Failed to load movies.");
+                    //loadingLabel.setText("Failed to load movies.");
+                    
+                    loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
             });
-            })
-            // Give error message in case of exception
-            .exceptionally(ex -> {
-            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
-            return null;
             });
+//            // Give error message in case of exception
+//            .exceptionally(ex -> {
+//            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
+//            return null;
+//            });
     }
     
     private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", tools.getProviders());

@@ -12,52 +12,44 @@ import com.google.gson.annotations.Expose;
  */
 public class ErrorModel {
     @Expose
-    public int code;
+    public int status_code;
     @Expose
-    public int httpStatus;
+    public boolean success;
     @Expose
-    public String message;
+    public String status_message;
 
     // Constructor
-    public ErrorModel(int code, int httpStatus, String message) {
-        this.code = code;
-        this.httpStatus = httpStatus;
-        this.message = message;
+    public ErrorModel(int status_code, boolean success, String status_message) {
+        this.status_code = status_code;
+        this.success = success;
+        this.status_message = status_message;
     }
 
-    // Getters and Setters
-    public int getCode() {
-        return code;
+    public int getStatus_code() {
+        return status_code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setStatus_code(int status_code) {
+        this.status_code = status_code;
     }
 
-    public int getHttpStatus() {
-        return httpStatus;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setHttpStatus(int httpStatus) {
-        this.httpStatus = httpStatus;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getStatus_message() {
+        return status_message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setStatus_message(String status_message) {
+        this.status_message = status_message;
     }
 
-    @Override
-    public String toString() {
-        return "ErrorCode{" +
-                "code=" + code +
-                ", httpStatus=" + httpStatus +
-                ", message='" + message + '\'' +
-                '}';
-    }
+
 
 
 }
