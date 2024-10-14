@@ -4,17 +4,12 @@
  */
 package fi.tuni.swdesign.movienightplanner.utilities;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
+import fi.tuni.swdesign.movienightplanner.models.ErrorModel;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
+
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
@@ -36,14 +31,14 @@ public class HTTPTools {
     * @return SimpleHttpResponse
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
+    * @throws IllegalStateException  If the operation failed at the server.
     * 
     * @author janii
     */
-    public Object makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
+    public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
-               
-        
+                      
         try (CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault()) {
 
             httpClient.start();
@@ -66,7 +61,16 @@ public class HTTPTools {
             throw new IllegalStateException("The HTTP response or the response body is null");
         }
         
-        return httpResponse;
+        if (httpResponse.getCode() != 200)
+        {
+            GSONTools gsonTools = new GSONTools();
+                       
+            ErrorModel newError = (ErrorModel)gsonTools.convertJSONToObjects(httpResponse.getBodyText(), ErrorModel.class);
+            
+            throw new HttpResponseException(httpResponse.getCode(), newError.getStatus_message());
+        }
+        
+        return httpResponse.getBodyText();
     }
     
 }

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,16 +18,16 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<VBox fx:id="mainView" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
+<VBox fx:id="mainView" maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
    <children>
-      <HBox maxHeight="390.0" prefWidth="800.0" style="-fx-background-color: transparent;">
+      <HBox maxHeight="390.0" style="-fx-background-color: transparent;">
          <children>
             <ImageView fx:id="mnpLogo" fitHeight="133.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../images/mnp_logo.jpeg" />
                </image>
                <HBox.margin>
-                  <Insets left="16.0" top="16.0" />
+                  <Insets />
                </HBox.margin>
             </ImageView>
             <AnchorPane prefHeight="260.0" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20;">
@@ -195,7 +196,7 @@
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
-                                    <CheckComboBox fx:id="cbGenre" />
+                                    <CheckComboBox fx:id="cbGenre" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -204,7 +205,7 @@
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
-                                    <CheckComboBox fx:id="cbAudio" />
+                                    <CheckComboBox fx:id="cbAudio" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -213,10 +214,19 @@
                                        <font>
                                           <Font size="14.0" />
                                        </font></Label>
-                                    <CheckComboBox fx:id="cbSubtitle" />
+                                    <CheckComboBox fx:id="cbSubtitle" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #EEF1F4;" text="Show Results" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.5" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="-53.0" translateY="16.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <effect>
+                                    <DropShadow blurType="TWO_PASS_BOX" />
+                                 </effect>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin></Button>
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -226,7 +236,7 @@
                   </HBox>
                </children>
                <HBox.margin>
-                  <Insets left="36.0" top="16.0" />
+                  <Insets left="20.0" />
                </HBox.margin>
                <padding>
                   <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
@@ -256,17 +266,20 @@
                </HBox.margin>
             </Button>
          </children>
+         <VBox.margin>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+         </VBox.margin>
       </HBox>
-      <VBox maxHeight="1.7976931348623157E308">
+      <VBox spacing="5.0">
          <children>
-            <ListView fx:id="popularMoviesLView" maxHeight="-Infinity" style="-fx-opacity: 0.8;">
+            <ListView fx:id="popularMoviesLView" style="-fx-opacity: 0.8;">
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" />
+                  <Insets />
                </VBox.margin>
             </ListView>
             <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
                <VBox.margin>
-                  <Insets bottom="22.0" left="40.0" right="40.0" />
+                  <Insets />
                </VBox.margin>
             </ListView>
          </children>
@@ -274,7 +287,7 @@
             <Insets />
          </opaqueInsets>
          <VBox.margin>
-            <Insets top="40.0" />
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </VBox.margin>
       </VBox>
    </children>

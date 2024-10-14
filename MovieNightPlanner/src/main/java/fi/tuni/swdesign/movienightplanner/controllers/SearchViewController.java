@@ -1,23 +1,23 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.models.Genre;
+import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
+import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
-import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,11 +37,12 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
 import org.controlsfx.control.CheckComboBox;
+import org.apache.hc.client5.http.HttpResponseException;
 
 public class SearchViewController {
     
@@ -52,17 +53,18 @@ public class SearchViewController {
     @FXML CheckComboBox cbGenre;
     @FXML CheckComboBox cbAudio;
     @FXML CheckComboBox cbSubtitle;
-    
-    
-    
+   
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
 
-    private final HTTPTools httpTools = new HTTPTools(); 
     private final MovieDataController mdc = new MovieDataController();
     private final Constants con = new Constants();
     
     private SceneController sceneController;
+    
+    // HTTP Error Handling
+    private int HTTPErrorCode;
+    private String HTTPErrorMessage;
     
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
@@ -79,7 +81,7 @@ public class SearchViewController {
                             new CornerRadii(500), 
                             new Insets(10))),
                     Collections.singletonList(new BackgroundImage(
-                            new Image(this.getClass().getResource("/images/background.png").toString(), mainView.getPrefWidth(), mainView.getPrefHeight(), false, false),
+                            new Image(this.getClass().getResource("/images/background.png").toString(), mainView.getMaxWidth(), mainView.getMaxHeight(), false, false),
                             BackgroundRepeat.NO_REPEAT,
                             BackgroundRepeat.NO_REPEAT,
                             BackgroundPosition.CENTER,
@@ -95,8 +97,16 @@ public class SearchViewController {
         // TODO:
         // This function doesn't need be called each time.
         // We can fetch this data only on first time and save to a local json
-        if(mdc.getStreamProviderMap() == null)
-            mdc.fetchStreamingProviders();
+        if(mdc.getStreamProviderMap() == null) {
+            try {
+                mdc.fetchStreamingProviders();
+            }
+            catch (HttpResponseException ex) {
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
+            }
+        }
 
         // Populate Popular Movies List View
         populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
@@ -155,48 +165,81 @@ public class SearchViewController {
     }
     
     private void setStreamingProviderLogos() {
-        Set<Node> imageViews = streamers.lookupAll(".image-view");
-        String urlPrefix = "https://media.themoviedb.org/t/p/original";
-
-        // Loop through each ImageView
-        for (Node node : imageViews) {
-            int parentId = Integer.parseInt(node.getParent().getId());
+       
+        if(mdc.getStreamProviderMap() == null) {
+            System.err.println("Could not load providers");
+        }
+        
+        else{
+            Set<Node> imageViews = streamers.lookupAll(".image-view");
+            String urlPrefix = "https://media.themoviedb.org/t/p/original";
             
-            if (node instanceof ImageView) {
-                ImageView imageView = (ImageView) node;
-                String logoUrl = urlPrefix + mdc.getStreamProviderMap().get(parentId).getLogoPath();
-                
-                // Create a rectangle with the same width and height as the ImageView
-                Rectangle clip = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+            // Loop through each ImageView
+            for (Node node : imageViews) {
 
-                // Set the corner radius for rounded edges
-                clip.setArcWidth(20);
-                clip.setArcHeight(20);
+                int parentId = Integer.parseInt(node.getParent().getId());
 
-                // Apply the clip to the ImageView
-                imageView.setClip(clip);
-                
-                Image logoImage = new Image(logoUrl, true);
-                imageView.setImage(logoImage);
-                
-                imageView.setOnMouseClicked(event -> {
-                    CheckBox checkBox = (CheckBox) imageView.getParent().lookup(".check-box");
-                    if(checkBox.isSelected()) {
-                        checkBox.setSelected(false);
-                    }
-                    else {
-                        checkBox.setSelected(true);
-                    }
-                });
+                if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;  
+
+                    String logoUrl = urlPrefix + mdc.getStreamProviderMap()
+                            .get(parentId).getLogoPath();
+
+                    if (logoUrl == null) {
+                        Image errorLogo = new Image(this.getClass()
+                                .getResource("/images/errorLogo.png")
+                                .toString(), true);
+
+                        imageView.setImage(errorLogo);
+                        continue;
+                    }      
+
+                    // Create a rectangle with the same width and height as the ImageView
+                    Rectangle clip = new Rectangle(imageView.getFitWidth(),
+                            imageView.getFitHeight());
+
+                    // Set the corner radius for rounded edges
+                    clip.setArcWidth(20);
+                    clip.setArcHeight(20);
+
+                    // Apply the clip to the ImageView
+                    imageView.setClip(clip);
+
+                    Image logoImage = new Image(logoUrl, true);
+                    imageView.setImage(logoImage);
+
+                    imageView.setOnMouseClicked(event -> {
+                        CheckBox checkBox = (CheckBox) imageView.getParent()
+                                .lookup(".check-box");
+                        
+                        if(checkBox.isSelected()) {
+                            checkBox.setSelected(false);
+                        }
+                        else {
+                            checkBox.setSelected(true);
+                        }
+                    });
+                }
             }
         }
+       
     }
     
     private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {
-
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.fetchMoviesResponse(url);
+            MoviesResponse temp = null;
+            
+            try {
+                temp = mdc.fetchMoviesResponse(url);
+            } catch (HttpResponseException ex) {
+
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
+                return null;
+            }
+            return temp;
         })
             // When fetch complete, update ListView
             .thenAccept(moviesResponse -> {
@@ -205,42 +248,58 @@ public class SearchViewController {
                     List<Movie> tempMovieList = moviesResponse.getResults();
                     setMovieListView(tempMovieList, lView);
                 } else {
-                    loadingLabel.setText("Failed to load movies.");
+                    loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
             });
-            })
-            // Give error message in case of exception
-            .exceptionally(ex -> {
-            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
-            return null;
             });
     }
    
     private void populateComboBoxes() {
-        // Populate GenreList
+        // Fetch Genre-list from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.fetchGenres(GENRES_URL);
-        })
-                .thenAccept(genreResponse -> {
-                    Platform.runLater(() -> {
-                        if(genreResponse != null) {
-                            List<String> genreList = genreResponse.getGenres()
-                                    .stream()
-                                    .map(Genre::getName)
-                                    .collect(Collectors.toList()); 
+            GenresResponse temp = null;
+            
+            try {
+                temp = mdc.fetchGenres(GENRES_URL);
+            } catch (HttpResponseException ex) {
 
-                            cbGenre.getItems().addAll(genreList);
-                            cbGenre.getCheckModel().checkAll();
-                            
-                        } else {
-                            System.err.println("Failed to load genres");
-                        }
-                    });
-                });
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
+                return null;
+            }
+            return temp;
+        })
+        .thenAccept(genreResponse -> {
+            Platform.runLater(() -> {
+                if(genreResponse != null) {
+                    List<String> genreList = genreResponse.getGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .collect(Collectors.toList()); 
+
+                    cbGenre.getItems().addAll(genreList);
+                    cbGenre.getCheckModel().checkAll();
+
+                } else {
+                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
+                }
+            });
+        });
         
-        // Populate LanguageList
+        // Fetch Spoken Language-list from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.fetchSpokenLanguages(AUDIO_URL);
+            List<SpokenLanguage> temp = null;
+            
+            try {
+                temp = mdc.fetchSpokenLanguages(AUDIO_URL);
+            } catch (HttpResponseException ex) {
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
+                return null;
+            }
+            return temp;
         })
         .thenAccept(audioList  -> {
             Platform.runLater(() -> {
@@ -253,7 +312,7 @@ public class SearchViewController {
                     cbAudio.getItems().addAll(audioNames);
                     cbAudio.getCheckModel().checkAll();
                 } else {
-                    System.err.println("Failed to load languages");
+                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
             });
         });
