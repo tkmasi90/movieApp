@@ -64,7 +64,7 @@ public class ShowDataController {
     }
     
     
-    public boolean areSubtitlesAvaiableForMovieInService(String streamingServiceName, int movieId){
+    public boolean areSubtitlesAvailableForMovieInService(String streamingServiceName, int movieId){
         
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
