@@ -117,10 +117,7 @@ public class SearchViewController {
     }
     
     private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {
-
-        ShowDataController tempSDC = new ShowDataController();
-        tempSDC.fetchSubtitlesResponse();
-        
+       
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
             return mdc.fetchMoviesResponse(url);
