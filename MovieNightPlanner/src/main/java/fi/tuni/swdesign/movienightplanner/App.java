@@ -42,6 +42,11 @@ public class App extends Application {
         stage.setTitle("Movie Night Planner");
         URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
         stage.getIcons().add(new Image(logoUrl.toString()));
+        
+        stage.setMaxHeight(925.0);
+        stage.setMinHeight(925.0);
+        stage.setMaxWidth(1640.0);
+        stage.setMinWidth(1640.0);
         stage.show();
     }
 

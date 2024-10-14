@@ -12,9 +12,9 @@ import com.google.gson.annotations.Expose;
  */
 public class Genre {
         @Expose
-        private int id;
+        public int id;
         @Expose
-        private String name;
+        public String name;
 
         public int getId() {
             return id;

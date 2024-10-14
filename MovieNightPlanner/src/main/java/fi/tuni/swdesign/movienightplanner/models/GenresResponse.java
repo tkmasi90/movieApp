@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GenresResponse {
     @Expose
-    private List<Genre> genres;
+    public List<Genre> genres;
 
     public List<Genre> getGenres() {
         return genres;
@@ -23,5 +23,4 @@ public class GenresResponse {
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
-
 }

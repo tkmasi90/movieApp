@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
@@ -13,9 +14,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import org.controlsfx.control.SearchableComboBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 
-<VBox fx:id="mainView" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
+<VBox fx:id="mainView" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
    <children>
       <HBox maxHeight="390.0" prefWidth="800.0" style="-fx-background-color: transparent;">
          <children>
@@ -27,7 +29,7 @@
                   <Insets left="16.0" top="16.0" />
                </HBox.margin>
             </ImageView>
-            <AnchorPane prefHeight="260.0">
+            <AnchorPane prefHeight="260.0" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20;">
                <children>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
@@ -46,7 +48,7 @@
                            <children>
                               <HBox fx:id="streamer1" alignment="CENTER_LEFT" fillHeight="false">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -62,7 +64,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.rowIndex="1">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -75,7 +77,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="78.0" GridPane.rowIndex="2">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -88,7 +90,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="269.0" GridPane.columnIndex="1">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -101,7 +103,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="210.0" layoutY="14.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -114,7 +116,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -127,7 +129,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="125.0" layoutY="226.0" GridPane.columnIndex="2">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -140,7 +142,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="235.0" layoutY="14.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -153,7 +155,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -166,7 +168,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="3">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" />
+                                    <CheckBox mnemonicParsing="false" selected="true" />
                                     <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -182,29 +184,39 @@
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                            </padding>
                         </GridPane>
-                        <VBox prefWidth="300.0" spacing="40.0">
+                        <VBox prefWidth="300.0" spacing="25.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="Genre" />
-                                    <SearchableComboBox promptText="Any" />
+                                    <Label text="Genre" textFill="WHITE">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <CheckComboBox fx:id="cbGenre" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label text="Spoken language" />
-                                    <SearchableComboBox promptText="Any" />
+                                    <Label text="Spoken language" textFill="WHITE">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <CheckComboBox fx:id="cbAudio" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label text="Subtitle language" />
-                                    <SearchableComboBox promptText="Any" />
+                                    <Label text="Subtitle language" textFill="WHITE">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></Label>
+                                    <CheckComboBox fx:id="cbSubtitle" />
                                  </children>
                               </VBox>
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #EEF1F4;" text="Show Results" />
                            </children>
                            <padding>
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -216,18 +228,24 @@
                <HBox.margin>
                   <Insets left="36.0" top="16.0" />
                </HBox.margin>
+               <padding>
+                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+               </padding>
             </AnchorPane>
-            <VBox fx:id="searchView" prefHeight="200.0" prefWidth="360.0">
+            <VBox fx:id="searchView" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                <HBox.margin>
-                  <Insets bottom="24.0" left="36.0" top="16.0" />
+                  <Insets left="20.0" top="16.0" />
                </HBox.margin>
             </VBox>
             <Button fx:id="profileButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleProfileButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
                <graphic>
-                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../images/4f2e9b89-9a71-4e0e-8450-05a57a56cab1.jpeg" />
                      </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
                   </ImageView>
                </graphic>
                <opaqueInsets>
@@ -239,7 +257,7 @@
             </Button>
          </children>
       </HBox>
-      <VBox maxHeight="634.0">
+      <VBox maxHeight="1.7976931348623157E308">
          <children>
             <ListView fx:id="popularMoviesLView" maxHeight="-Infinity" style="-fx-opacity: 0.8;">
                <VBox.margin>
@@ -252,6 +270,12 @@
                </VBox.margin>
             </ListView>
          </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets top="40.0" />
+         </VBox.margin>
       </VBox>
    </children>
 </VBox>

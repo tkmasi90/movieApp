@@ -7,13 +7,19 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
+import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
+import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.models.StreamingResponse;
+import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -24,12 +30,13 @@ import java.util.List;
 import java.util.Map;
 /**
  *
- * @author janii
+ * @author janii, Make
  */
 public class MovieDataController {
     
     private final HTTPTools httpTools = new HTTPTools();
     private final GSONTools gsonTools = new GSONTools();
+    private final Constants con = new Constants();
     
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
@@ -62,7 +69,7 @@ public class MovieDataController {
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
                     .stream()
-                    .filter(p -> httpTools.PROVIDER_IDS.contains(p.provider_id))
+                    .filter(p -> con.PROVIDER_IDS.contains(p.provider_id))
                     .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));       
         
         } catch (Exception e) {
@@ -101,7 +108,7 @@ public class MovieDataController {
                         int providerId = providerObj.get("provider_id").getAsInt();
 
                         // Only add providers from the predefined PROVIDER_IDS list.
-                        if(httpTools.PROVIDER_IDS.contains(providerId)) {                        
+                        if(con.PROVIDER_IDS.contains(providerId)) {                        
                             movie.addStreamingProvider(streamProviderMap.get(providerId));
                         }
                     }
@@ -114,6 +121,53 @@ public class MovieDataController {
             System.out.println(e);
         }
     }
+    
+    public GenresResponse fetchGenres(String url) {
+
+        GenresResponse responseObject = null;
+
+        try {
+            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
+            String responseBody = response.getBodyText();
+
+            responseObject = (GenresResponse) gsonTools.convertJSONToObjects(responseBody, GenresResponse.class);
+
+        }
+        catch (JsonParseException | IOException | IllegalStateException | InterruptedException e) {
+            System.out.println(e);
+        }
+        return responseObject;
+    }
+
+    public List<SpokenLanguage> fetchSpokenLanguages(String url) {
+
+        List<SpokenLanguage> responseList = null;
+
+        try {
+            SimpleHttpResponse response = (SimpleHttpResponse) httpTools.makeGenericHttpRequest(url);
+            String responseBody = response.getBodyText();
+
+            // Parse the response as a List of SpokenLanguage
+            Type listType = new TypeToken<List<SpokenLanguage>>(){}.getType();
+            responseList = gsonTools.convertJSONToObjects(responseBody, listType);
+
+        }
+        catch (JsonParseException | IOException | IllegalStateException | InterruptedException e) {
+            System.out.println(e);
+        }
+        
+        if(responseList != null) {
+            var languagesUsed = con.getLanguages();
+            
+            responseList = responseList.stream()
+                .filter(lang -> languagesUsed.contains(lang.iso_639_1))
+                .collect(Collectors.toList());
+        }
+
+        
+        return responseList;
+    }
+
 
     public Map<Integer, StreamingProvider> getStreamProviderMap() {
         return streamProviderMap;
