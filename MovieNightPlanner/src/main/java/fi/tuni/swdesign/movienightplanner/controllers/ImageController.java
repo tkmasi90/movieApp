@@ -1,7 +1,10 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -20,22 +23,49 @@ public class ImageController {
      * @param scene The current scene where the ImageView is located.
      */
     public void loadImageIntoView(String imagePath, String fxId, Integer width, Scene scene) {
+
+      // Run later so that the scene is ready first time around
+      Platform.runLater(() -> {
         // Determine the size parameter for the URL: "w" + width or "original" if width is null
         String size = (width != null) ? "w" + width : "original";
         
         // Construct the full URL using the base URL, size, and image path
         String fullImageUrl = TMDB_IMAGE_BASE_URL + size + imagePath;
+
+        if(imagePath == null) 
+        {
+            // use unknown image from images
+            fullImageUrl = "/images/unknown.png";
+        }
         
-        // Fetch the ImageView using the fx:id
         ImageView imageView = (ImageView) scene.lookup("#" + fxId);
 
         // Load the image and set it in the ImageView
         if (imageView != null) {
             Image image = new Image(fullImageUrl);
             imageView.setImage(image);
+
+            // Calculate the viewport to crop the image if necessary
+            double imageWidth = image.getWidth();
+            double imageHeight = image.getHeight();
+            double viewportWidth = imageView.getFitWidth();
+            double viewportHeight = imageView.getFitHeight();
+
+            double scaleX = viewportWidth / imageWidth;
+            double scaleY = viewportHeight / imageHeight;
+            double scale = Math.max(scaleX, scaleY);
+
+            double newWidth = imageWidth * scale;
+            double newHeight = imageHeight * scale;
+
+            double x = (newWidth - viewportWidth) / 2 / scale;
+            double y = (newHeight - viewportHeight) / 2 / scale;
+
+            imageView.setViewport(new Rectangle2D(x, y, imageWidth - 2 * x, imageHeight - 2 * y));
         } else {
             System.out.println("ImageView with fx:id " + fxId + " not found.");
         }
+      });
     }
 
     /**
