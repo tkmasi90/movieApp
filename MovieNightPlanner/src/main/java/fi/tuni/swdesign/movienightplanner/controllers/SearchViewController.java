@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.models.Movie;
+import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apache.hc.client5.http.HttpResponseException;
 
 public class SearchViewController {
     
@@ -42,6 +44,10 @@ public class SearchViewController {
     private final MovieDataController mdc = new MovieDataController();
     
     private SceneController sceneController;
+    
+    // HTTP Error Handling
+    private int HTTPErrorCode;
+    private String HTTPErrorMessage;
     
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
@@ -120,7 +126,18 @@ public class SearchViewController {
 
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
-            return mdc.fetchMoviesResponse(url);
+            
+            MoviesResponse temp = null;
+            try {
+                temp = mdc.fetchMoviesResponse(url);
+            } catch (HttpResponseException ex) {
+
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
+                return null;
+            }
+            return temp;
         })
             // When fetch complete, update ListView
             .thenAccept(moviesResponse -> {
@@ -129,15 +146,17 @@ public class SearchViewController {
                     List<Movie> tempMovieList = moviesResponse.getResults();
                     setMovieListView(tempMovieList, lView);
                 } else {
-                    loadingLabel.setText("Failed to load movies.");
+                    //loadingLabel.setText("Failed to load movies.");
+                    
+                    loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
             });
-            })
-            // Give error message in case of exception
-            .exceptionally(ex -> {
-            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
-            return null;
             });
+//            // Give error message in case of exception
+//            .exceptionally(ex -> {
+//            Platform.runLater(() -> loadingLabel.setText("An error occurred: " + ex.getMessage()));
+//            return null;
+//            });
     }
     
     private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", tools.getProviders());
