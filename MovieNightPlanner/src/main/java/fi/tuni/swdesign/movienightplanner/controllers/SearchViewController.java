@@ -116,8 +116,7 @@ public class SearchViewController {
         lView.setItems(labels);
     }
     
-    private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {
-       
+    private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {       
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
             return mdc.fetchMoviesResponse(url);
