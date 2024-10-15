@@ -11,7 +11,9 @@ import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Future;
 import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
@@ -103,9 +105,9 @@ public class ShowDataController {
         return false;
     }
     
-    public List<String> getServicesWithSubtitles(int movieId){
+    public Set<String> getServicesWithSubtitles(int movieId){
         
-        List<String> serviceList = new ArrayList<>();
+        Set<String> serviceList = new HashSet<>();
         
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
