@@ -14,64 +14,105 @@
    <children>
       <SplitPane orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
         <items>
-          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="616.0" prefWidth="1438.0">
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="452.0" prefWidth="1438.0">
                <children>
-                  <ImageView fx:id="backdropImage" fitHeight="519.0" fitWidth="1438.0" pickOnBounds="true" preserveRatio="true" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10265980" height="519.0" stroke="BLACK" strokeType="INSIDE" width="1438.0">
+                  <ImageView fx:id="backdropImage" fitHeight="519.0" fitWidth="1438.0" pickOnBounds="true">
                      <effect>
-                        <GaussianBlur radius="24.0" />
+                        <GaussianBlur radius="18.0" />
                      </effect>
-                  </Rectangle>
-                  <ImageView fx:id="posterImage" fitHeight="237.0" fitWidth="173.0" layoutX="144.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="firstProviderImage" fitHeight="90.0" fitWidth="126.0" layoutX="1050.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="secondProviderImage" fitHeight="90.0" fitWidth="126.0" layoutX="1200.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button fx:id="homeButton" layoutX="31.0" layoutY="27.0" mnemonicParsing="false" text="Home" />
-                  <Button fx:id="profileButton" layoutX="1346.0" layoutY="27.0" mnemonicParsing="false" text="Profile" />
+                  </ImageView>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10265980" height="519.0" stroke="BLACK" strokeType="INSIDE" width="1438.0" />
+                  <ImageView fx:id="posterImage" fitHeight="276.0" fitWidth="200.0" layoutX="136.0" layoutY="61.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="firstProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="secondProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1130.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button fx:id="homeButton" layoutX="31.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToSearchView" text="Home" />
+                  <Button fx:id="profileButton" layoutX="1346.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToProfileView" text="Profile" />
                   <Button fx:id="saveToListButton" layoutX="381.0" layoutY="139.0" mnemonicParsing="false" text="Save" />
-                  <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="88.0" prefHeight="35.0" prefWidth="237.0" text="Movie Name (year)" textFill="WHITE">
+                  <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="61.0" prefHeight="35.0" prefWidth="616.0" text="Movie Name (year)" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
-                  <Label fx:id="overviewLabel" alignment="TOP_CENTER" layoutX="369.0" layoutY="212.0" prefHeight="261.0" prefWidth="631.0" text="A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground &quot;fight clubs&quot; forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="overviewLabel" alignment="TOP_CENTER" layoutX="353.0" layoutY="207.0" prefHeight="261.0" prefWidth="631.0" text="A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground &quot;fight clubs&quot; forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion." textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
-                        <Font size="16.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font></Label>
                   <Button fx:id="rateMovieButton" layoutX="599.0" layoutY="139.0" mnemonicParsing="false" text="Rate" />
-                  <Label fx:id="tmdbRatingLabel" layoutX="470.0" layoutY="143.0" prefHeight="18.0" prefWidth="80.0" text="TMDB Rating" textFill="WHITE" />
-                  <Label fx:id="specsLabel" layoutX="154.0" layoutY="342.0" prefHeight="38.0" prefWidth="153.0" text="genre - length - k-?" textFill="WHITE">
+                  <Label layoutX="471.0" layoutY="122.0" prefHeight="18.0" prefWidth="80.0" text="TMDB Rating" textFill="WHITE" />
+                  <Label fx:id="specsLabel" alignment="CENTER" layoutX="136.0" layoutY="344.0" prefHeight="38.0" prefWidth="200.0" text="genre - length" textAlignment="CENTER" textFill="WHITE">
                      <font>
-                        <Font size="16.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font></Label>
                   <Label layoutX="1050.0" layoutY="102.0" text="Streaming at" textFill="WHITE">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
                   <Label fx:id="taglineLabel" layoutX="369.0" layoutY="181.0" text="Label" textFill="WHITE">
                      <font>
-                        <Font name="System Italic" size="13.0" />
+                        <Font name="System Italic" size="14.0" />
                      </font>
                   </Label>
+                  <Label fx:id="tmdbRatingLabel" layoutX="485.0" layoutY="141.0" text="8.1" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="509.0" layoutY="144.0" text="/10" textFill="WHITE" />
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="674.0" prefWidth="1440.0" style="-fx-background-color: #10265A;">
          <children>
-            <Label fx:id="writerLabel" layoutX="329.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " textFill="WHITE">
+            <Label fx:id="writerPlaceholderLabel" layoutX="404.0" layoutY="24.0" prefHeight="35.0" prefWidth="99.0" text="Writer - " textFill="WHITE">
                <font>
-                  <Font size="24.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="directorLabel" layoutX="24.0" layoutY="24.0" prefHeight="26.0" prefWidth="162.0" text="Director  - " textFill="WHITE">
+            <Label fx:id="directorPlaceholderLabel" layoutX="24.0" layoutY="24.0" prefHeight="35.0" prefWidth="126.0" text="Director - " textFill="WHITE">
                <font>
-                  <Font size="24.0" />
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="directorLabel" layoutX="150.0" layoutY="31.0" prefHeight="25.0" prefWidth="241.0" text="Label" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="writerLabel" layoutX="508.0" layoutY="30.0" prefHeight="25.0" prefWidth="250.0" text="Label" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
                </font>
             </Label>
             <ImageView fx:id="star1Image" fitHeight="206.0" fitWidth="162.0" layoutX="24.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
-            <Rectangle fx:id="star1NameRec" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="24.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
-            <Label fx:id="star1NameLabel" layoutX="40.0" layoutY="369.0" prefHeight="38.0" prefWidth="126.0" text="Label" />
+            <Rectangle fx:id="star1Rectangle" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="24.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+            <Label fx:id="star1CharacterLabel" alignment="CENTER" layoutX="30.0" layoutY="372.0" prefHeight="18.0" prefWidth="154.0" text="Character name" textAlignment="CENTER" />
+            <Label fx:id="star1NameLabel" alignment="CENTER" layoutX="30.0" layoutY="389.0" prefHeight="18.0" prefWidth="152.0" text="Name" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <ImageView fx:id="star2Image" fitHeight="206.0" fitWidth="162.0" layoutX="218.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
+            <Rectangle fx:id="star2Rectangle" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="218.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+            <Label fx:id="star2CharacterLabel" alignment="CENTER" layoutX="224.0" layoutY="372.0" prefHeight="18.0" prefWidth="154.0" text="Character name" textAlignment="CENTER" />
+            <Label fx:id="star2NameLabel" alignment="CENTER" layoutX="224.0" layoutY="389.0" prefHeight="18.0" prefWidth="152.0" text="Name" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <ImageView fx:id="star3Image" fitHeight="206.0" fitWidth="162.0" layoutX="412.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
+            <Rectangle fx:id="star3Rectangle" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="412.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+            <Label fx:id="star3CharacterLabel" alignment="CENTER" layoutX="418.0" layoutY="372.0" prefHeight="18.0" prefWidth="154.0" text="Character name" textAlignment="CENTER" />
+            <Label fx:id="star3NameLabel" alignment="CENTER" layoutX="418.0" layoutY="389.0" prefHeight="18.0" prefWidth="152.0" text="Name" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+            <ImageView fx:id="star4Image" fitHeight="206.0" fitWidth="162.0" layoutX="606.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
+            <Rectangle fx:id="star4Rectangle" arcHeight="5.0" arcWidth="5.0" fill="#e0e9f2" height="67.0" layoutX="606.0" layoutY="354.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+            <Label fx:id="star4CharacterLabel" alignment="CENTER" layoutX="612.0" layoutY="372.0" prefHeight="18.0" prefWidth="154.0" text="Character name" textAlignment="CENTER" />
+            <Label fx:id="star4NameLabel" alignment="CENTER" layoutX="612.0" layoutY="389.0" prefHeight="18.0" prefWidth="152.0" text="Name" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
          </children>
       </AnchorPane>
    </children>

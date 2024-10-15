@@ -26,9 +26,11 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -141,17 +143,40 @@ public class SearchViewController {
         return sTxt.toString();
     }
     
-    // Add the movie label elements to ListView
-    private void setMovieListView(List<Movie> movies, ListView lView) {
-        ArrayList<Label> labelList = new ArrayList();
-        for (Movie m : movies) {
-            String movieName = m.getTitle();
-            String streamingServices = getStreamingServicesText(m);
-            Label labelToAdd = new Label(movieName + streamingServices);
-            labelList.add(labelToAdd);
+    private void handleMovieClick(MouseEvent event, Movie movie) {
+
+        // Logic to switch to the movie details view
+        try {
+            if (sceneController == null) {
+              return;
+            }
+            sceneController.switchToMovieDetail(event, movie);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        ObservableList<Label> labels = FXCollections.observableArrayList(labelList);
-        lView.setItems(labels);
+    }
+    
+    // Add the movie label elements to ListView
+    private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
+        ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
+        lView.setItems(movieList);
+    
+        lView.setCellFactory(lv -> new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+                if (empty || movie == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    String movieName = movie.getTitle();
+                    String streamingServices = getStreamingServicesText(movie);
+                    Label label = new Label(movieName + streamingServices);
+                    label.setOnMouseClicked(event -> handleMovieClick(event, movie));
+                    setGraphic(label);
+                }
+            }
+        });
     }
     
     private void setStreamingProviders() {
@@ -321,11 +346,11 @@ public class SearchViewController {
 //        cbSubtitle = getComboBoxContent("subtitle");
 
     }
-    
-    
+   
     private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", con.getProvidersString());
     private final String TOP_RATED_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", con.getProvidersString());
     private final String GENRES_URL = String.format("https://api.themoviedb.org/3/genre/movie/list");
     private final String AUDIO_URL = String.format("https://api.themoviedb.org/3/configuration/languages");
     // TODO: private final String SUBTITLE_URL
+
 }

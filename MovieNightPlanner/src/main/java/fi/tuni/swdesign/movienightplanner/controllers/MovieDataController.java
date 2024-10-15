@@ -10,7 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
+import fi.tuni.swdesign.movienightplanner.models.Credits;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
+import fi.tuni.swdesign.movienightplanner.models.MovieDetails;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
@@ -89,6 +91,28 @@ public class MovieDataController {
     private void addStreamingProviders(List<Movie> movieList) throws HttpResponseException {
         for(Movie movie : movieList) {
             fetchMovieStreamProviders(movie);
+        }
+    }
+
+    public void fetchMovieDetails(Movie movie) {
+        try {
+            String url = String.format("https://api.themoviedb.org/3/movie/%s?language=en-US", movie.getId());
+            String responseBody = httpTools.makeGenericHttpRequest(url);
+            MovieDetails movieDetails = (MovieDetails) gsonTools.convertJSONToObjects(responseBody, MovieDetails.class);
+            movie.setMovieDetails(movieDetails);
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void fetchMovieCredits(Movie movie) {
+        try {
+            String url = String.format("https://api.themoviedb.org/3/movie/%s/credits", movie.getId());
+            String responseBody = httpTools.makeGenericHttpRequest(url);
+            Credits credits = (Credits) gsonTools.convertJSONToObjects(responseBody, Credits.class);
+            movie.setCredits(credits);
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
         }
     }
     
