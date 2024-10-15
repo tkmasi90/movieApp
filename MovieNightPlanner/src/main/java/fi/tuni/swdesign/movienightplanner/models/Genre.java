@@ -11,10 +11,11 @@ import com.google.gson.annotations.Expose;
  * @author janii, Copilot
  */
 public class Genre {
-    @Expose
-    private int id;
-    @Expose
-    private String name;
+
+        @Expose
+        public int id;
+        @Expose
+        public String name;
 
     public int getId() {
         return id;

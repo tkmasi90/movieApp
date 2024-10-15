@@ -65,6 +65,7 @@ public class SceneController {
         }
 
         stage.setScene(profileScene);
+        stage.sizeToScene();
         stage.show();
     }
 

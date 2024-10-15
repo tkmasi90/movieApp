@@ -12,11 +12,11 @@ import com.google.gson.annotations.Expose;
 
 public class SpokenLanguage {
     @Expose
-    private String english_name;
+    public String english_name;
     @Expose
-    private String iso_639_1;
+    public String iso_639_1;
     @Expose
-    private String name;
+    public String name;
 
     // Getters and Setters
 

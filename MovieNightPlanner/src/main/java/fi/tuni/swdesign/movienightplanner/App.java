@@ -27,22 +27,25 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         
         readAppStateFromFile();
-        
+
         // Load the SearchView and set its SceneController
         FXMLLoader searchLoader = loadFXML("SearchView");
         Parent searchView = searchLoader.load();
-        SearchViewController searchViewController = searchLoader.getController();
 
         scene = new Scene(searchView);
         
-        SceneController sceneController = new SceneController(stage, scene);
-        searchViewController.setSceneController(sceneController); // Set SceneController
-        
         stage.setScene(scene);
+        stage.sizeToScene();
+        
         stage.setTitle("Movie Night Planner");
         URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
         stage.getIcons().add(new Image(logoUrl.toString()));
+
         stage.show();
+        
+        SearchViewController searchViewController = searchLoader.getController();
+        SceneController sceneController = new SceneController(stage, scene);
+        searchViewController.setSceneController(sceneController); // Set SceneController
     }
 
     /**

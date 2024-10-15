@@ -3,6 +3,7 @@ module fi.tuni.swdesign.movienightplanner {
     requires javafx.fxml;
     requires com.google.gson;
     requires org.apache.httpcomponents.client5.httpclient5;
+    requires org.controlsfx.controls;
     requires javafx.graphics;
     
     opens fi.tuni.swdesign.movienightplanner.controllers to javafx.fxml;
