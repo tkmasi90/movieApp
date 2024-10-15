@@ -43,6 +43,8 @@ public class Movie {
         public int vote_count;
         
         private ArrayList<StreamingProvider> streamingProviders;
+        private MovieDetails movieDetails;
+        private Credits credits;
         
         public Movie() {
             this.streamingProviders = new ArrayList<>();
@@ -145,7 +147,7 @@ public class Movie {
         }
 
         public double getVoteAverage() {
-            return vote_average;
+            return Math.floor(vote_average * 10) / 10.0;
         }
 
         public void setVoteAverage(double vote_average) {
@@ -169,5 +171,26 @@ public class Movie {
         
         public List<StreamingProvider> getStreamingProviders() {
             return this.streamingProviders;
+        }
+
+        public String getFormattedTitle() {
+            String year = (release_date != null && release_date.length() >= 4) ? release_date.substring(0, 4) : "Unknown";
+            return title + " (" + year + ")";
+        }
+
+        public MovieDetails getMovieDetails() {
+            return movieDetails;
+        }
+
+        public void setMovieDetails(MovieDetails movieDetails) {
+            this.movieDetails = movieDetails;
+        }
+
+        public Credits getCredits() {
+            return credits;
+        }
+
+        public void setCredits(Credits credits) {
+            this.credits = credits;
         }
     }
