@@ -4,17 +4,12 @@
  */
 package fi.tuni.swdesign.movienightplanner.utilities;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
+import fi.tuni.swdesign.movienightplanner.models.ErrorModel;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
+
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
@@ -28,48 +23,6 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
  */
 public class HTTPTools {
 
-    // List of providers that the app supports at the moment
-    private static final class PROVIDERS {
-        public static final int NETFLIX = 8;
-        public static final int DISNEY = 337;
-        public static final int AMAZON = 119;
-        public static final int VIAPLAY = 76;
-        public static final int AREENA = 323;
-        public static final int RUUTU = 338;
-        public static final int APPLE = 2;
-        public static final int SKY = 1773;
-        public static final int MTV = 2029;
-        public static final int MAX = 1899;
-    }
-    // Method to get provider IDs dynamically using reflection
-    private List<Integer> getProviderIds() {
-        List<Integer> providerIds = new ArrayList<>();
-        Field[] fields = PROVIDERS.class.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (field.getType() == int.class) {
-                try {
-                    providerIds.add(field.getInt(null)); // Get the value of the static field
-                } catch (IllegalAccessException e) {
-                    System.out.println("Unable to access field: " + field.getName());
-                }
-            }
-        }
-        return providerIds;
-    }
-    
-    public final List<Integer> PROVIDER_IDS = getProviderIds();
-
-    
-    public String getProviders() {
-        try {
-            return URLEncoder.encode((PROVIDER_IDS.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("|"))), "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-        }
-        return null;
-    }
     
     /**
     * Handles HTTP requests and responses asynchronously.
@@ -78,14 +31,14 @@ public class HTTPTools {
     * @return SimpleHttpResponse
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
+    * @throws IllegalStateException  If the operation failed at the server.
     * 
     * @author janii
     */
-    public Object makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
+    public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
-               
-        
+                      
         try (CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault()) {
 
             httpClient.start();
@@ -108,7 +61,16 @@ public class HTTPTools {
             throw new IllegalStateException("The HTTP response or the response body is null");
         }
         
-        return httpResponse;
+        if (httpResponse.getCode() != 200)
+        {
+            GSONTools gsonTools = new GSONTools();
+                       
+            ErrorModel newError = (ErrorModel)gsonTools.convertJSONToObjects(httpResponse.getBodyText(), ErrorModel.class);
+            
+            throw new HttpResponseException(httpResponse.getCode(), newError.getStatus_message());
+        }
+        
+        return httpResponse.getBodyText();
     }
     
 }

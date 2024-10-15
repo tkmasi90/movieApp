@@ -5,11 +5,14 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import java.io.IOException;
+
+import fi.tuni.swdesign.movienightplanner.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -35,15 +38,18 @@ public class SceneController {
     }
 
     @FXML
-    public void switchToMovieDetail(ActionEvent event) throws IOException {
+    public void switchToMovieDetail(MouseEvent event, Movie movie) throws IOException {
         if (movieDetailScene == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fi/tuni/swdesign/movienightplanner/MovieDetailsView.fxml"));
             Parent root = loader.load();
             MovieDetailsController movieDetailViewController = loader.getController();
             movieDetailViewController.setSceneController(this); // Set SceneController
             movieDetailScene = new Scene(root);
+            movieDetailScene.setUserData(movieDetailViewController);
         }
 
+        MovieDetailsController movieDetailViewController = (MovieDetailsController) movieDetailScene.getUserData();
+        movieDetailViewController.setMovie(movie);
         stage.setScene(movieDetailScene);
         stage.show();
     }
@@ -59,6 +65,7 @@ public class SceneController {
         }
 
         stage.setScene(profileScene);
+        stage.sizeToScene();
         stage.show();
     }
 

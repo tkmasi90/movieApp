@@ -11,8 +11,7 @@ package fi.tuni.swdesign.movienightplanner.models;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 
-public class MovieDetailQueryResponse {
-
+public class MovieDetails {
 
     @Expose
     private boolean adult;
@@ -277,24 +276,20 @@ public class MovieDetailQueryResponse {
         this.vote_count = vote_count;
     }
 
-    public static class Genre {
-        private int id;
-        private String name;
-
-        public int getId() {
-            return id;
+    public String getFormattedRuntime() {
+        int hours = runtime / 60;
+        int minutes = runtime % 60;
+        if (hours == 0) {
+            return String.format("%dmin", minutes);
         }
+        return String.format("%dh %dm", hours, minutes);
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
+    public String getFormattedSpecs() {
+        if (genres != null && genres.size() > 0) {
+            return String.format("%s · %s", getFormattedRuntime(), genres.get(0).getName());
+        } else {
+            return release_date;
         }
     }
 

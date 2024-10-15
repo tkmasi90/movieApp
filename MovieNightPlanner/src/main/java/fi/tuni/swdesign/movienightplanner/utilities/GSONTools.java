@@ -7,6 +7,7 @@ package fi.tuni.swdesign.movienightplanner.utilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import java.lang.reflect.Type;
 
 /**
  * A helper class to facilitate all JSON-GSON-POJO-related operations.
@@ -35,6 +36,11 @@ public class GSONTools {
     */
     public Object convertJSONToObjects(String JSONString, Class<?> targetClass) throws JsonParseException{
         return gson.fromJson(JSONString, targetClass);
+    }
+    
+    // For a list of objects (use Type for lists)
+    public <T> T convertJSONToObjects(String JSONString, Type type) throws JsonParseException {
+        return gson.fromJson(JSONString, type);
     }
     
     public Gson getGson() {
