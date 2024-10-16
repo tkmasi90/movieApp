@@ -133,6 +133,10 @@ public class MovieDetailsController {
     }
 
     private void setProviderImages(Movie movie) {
+        // clear the images first
+        firstProviderImage.setImage(null);
+        secondProviderImage.setImage(null);
+
         List<StreamingProvider> providers = movie.getStreamingProviders();
         int i = 0;
         for( StreamingProvider provider : providers ) {
