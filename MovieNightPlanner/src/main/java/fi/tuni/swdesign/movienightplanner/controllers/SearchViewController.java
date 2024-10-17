@@ -28,10 +28,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -47,27 +51,37 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import org.controlsfx.control.CheckComboBox;
 import org.apache.hc.client5.http.HttpResponseException;
+import org.controlsfx.control.GridCell;
+import org.controlsfx.control.GridView;
 
 public class SearchViewController {
     
+    @FXML TabPane movieViewSelect;
+    @FXML VBox popularRatedView;
+    @FXML Button filterButton;
+
+    @FXML GridView<Label> filteredView;
     @FXML ListView<Label> popularMoviesLView;
     @FXML ListView<Label> topRatedMoviesLview;
     @FXML VBox mainView;
     @FXML GridPane streamers;
     @FXML CheckComboBox cbGenre;
-    @FXML CheckComboBox cbAudio;
+    @FXML CheckComboBox cbAudio;    
     @FXML CheckComboBox cbSubtitle;
    
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
+    private final Label filteredMoviesLoadingLabel = new Label("Loading movies");
 
     private final MovieDataController mdc = new MovieDataController();
     private final Constants con = new Constants();
     private final ImageController ic = new ImageController();
+
+    List<CheckBox> selectedProviders = new ArrayList<>();
     
     private SceneController sceneController;
     
@@ -116,12 +130,16 @@ public class SearchViewController {
                 System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
             }
         }
+        
+        movieViewSelect.setFocusTraversable(false);
+        
+        setFilterOptions();
 
         // Populate Popular Movies List View
-        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, POPULAR_MOVIES_URL);
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, con.getPopularMoviesUrl());
 
         // Populate Top Rated Movies List View
-        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, TOP_RATED_MOVIES_URL);
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, con.getTopRatedMoviesUrl());
         
         // Set Streaming Provider IDs and logos for filtering.
         setStreamingProviders();
@@ -140,16 +158,47 @@ public class SearchViewController {
         }
     }
     
-    // Helper function to get the streaming services as a text string
-    // TEMPORARY: not needed in the final product
-    private String getStreamingServicesText(Movie movie) {
-        StringBuilder sTxt = new StringBuilder("  - ");
-        for (StreamingProvider stream : movie.getStreamingProviders()) {
-            sTxt.append(stream.getProviderName()).append(" ");
-        }
-        return sTxt.toString();
+    @FXML
+    private void handleFilterButtonClick(ActionEvent event) throws IOException {
+        
+        List<Integer> providers = getCheckedValues(selectedProviders);
+        System.out.println("Checked Values: " + providers);
+        
+        populateMovieListAsync(filteredMoviesLoadingLabel, filteredView, con.getFilteredUrl(providers));
+        
+        SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
+        selectionModel.selectLast();
     }
     
+    private List<Integer> getCheckedValues(List<CheckBox> checkBoxes) {
+        List<Integer> checkedValues = new ArrayList<>();
+        for (CheckBox checkBox : checkBoxes) {
+            if (checkBox.isSelected()) {
+                checkedValues.add(Integer.valueOf(checkBox.getParent().getId()));
+            }
+        }
+        return checkedValues;
+    }
+    
+    private void setFilterOptions() {
+        List<String> languages = con.getLanguages().stream()
+            .map(Pair::getValue) // Get the second element (country name)
+            .collect(Collectors.toList());
+        cbAudio.getItems().addAll(languages);
+        cbSubtitle.getItems().addAll(languages);
+        cbAudio.getCheckModel().checkAll();
+        cbSubtitle.getCheckModel().checkAll();
+        
+        filterButton.setOnAction(event -> {
+            try {
+                handleFilterButtonClick(event);
+            }
+            catch (IOException ex) {
+                System.err.println("Error with filter button");
+            }
+        });
+    }
+
     // Add the movie label elements to ListView
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
@@ -159,6 +208,57 @@ public class SearchViewController {
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
 
         lView.setCellFactory(lv -> new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+
+                if (empty || movie == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // Check if the movie is already cached
+                    if (movieLabelCache.containsKey(movie)) {
+                        // Use the cached label (StackPane)
+                        setGraphic(movieLabelCache.get(movie));
+                    } else {
+                        // Load the movie label and cache it
+                        FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
+                        try {
+                            StackPane movieLabel = loader.load();  // Load the FXML
+                            MovieLabelController mlController = loader.getController();  // Get the controller
+
+                            // Populate the movie label with data from the movie object
+                            mlController.addLogo(movie);
+                            
+                            mlController.addMovieImage(movie);
+
+                            // Cache the graphic for later use
+                            movieLabelCache.put(movie, movieLabel);
+
+                            // Set the graphic for the current cell
+                            setGraphic(movieLabel);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Handle clicks on the movie
+                    setOnMouseClicked(event -> handleMovieClick(event, movie));
+                }
+            }
+        });
+    }
+    
+    // Add the movie label elements to ListView
+    private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
+        ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
+        lView.setItems(movieList);
+        
+        // Create a map to cache the graphics for each movie
+        Map<Movie, StackPane> movieLabelCache = new HashMap<>();
+
+        lView.setCellFactory(lv -> new GridCell<Movie>() {
             @Override
             protected void updateItem(Movie movie, boolean empty) {
                 super.updateItem(movie, empty);
@@ -268,11 +368,12 @@ public class SearchViewController {
 
                     Image logoImage = new Image(logoUrl, true);
                     imageView.setImage(logoImage);
+                    
+                    CheckBox checkBox = (CheckBox) imageView.getParent()
+                                .lookup(".check-box");
+                    
 
                     imageView.setOnMouseClicked(event -> {
-                        CheckBox checkBox = (CheckBox) imageView.getParent()
-                                .lookup(".check-box");
-                        
                         if(checkBox.isSelected()) {
                             checkBox.setSelected(false);
                         }
@@ -280,13 +381,15 @@ public class SearchViewController {
                             checkBox.setSelected(true);
                         }
                     });
+                    
+                    selectedProviders.add(checkBox);
                 }
             }
         }
        
     }
-    
-    private void populateMovieListAsync(Label loadingLabel, ListView lView, String url) {       
+   
+    private void populateMovieListAsync(Label loadingLabel, Node lView, String url) {       
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
             MoviesResponse temp = null;
@@ -306,13 +409,26 @@ public class SearchViewController {
             .thenAccept(moviesResponse -> {
                 Platform.runLater(() -> {
                 if (moviesResponse != null) {
+                    
                     List<Movie> tempMovieList = moviesResponse.getResults();
-                    setMovieListView(tempMovieList, lView);
+                    
+                    if (lView instanceof ListView) {
+                        ListView<Movie> listView = (ListView<Movie>) lView;
+                        setMovieListView(tempMovieList, listView);
+
+                    } else if (lView instanceof GridView) {
+                        GridView<Movie> gridView = (GridView<Movie>) lView;
+                        setMovieGridView(tempMovieList, gridView);
+                    }
+                    
+                    
+                    
+                    
                 } else {
                     loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
             });
-            });
+        });
     }
    
     private void populateComboBoxes() {
@@ -321,7 +437,7 @@ public class SearchViewController {
             GenresResponse temp = null;
             
             try {
-                temp = mdc.fetchGenres(GENRES_URL);
+                temp = mdc.fetchGenres(con.getGenresUrl());
             } catch (HttpResponseException ex) {
 
                 this.HTTPErrorCode = ex.getStatusCode();              
@@ -348,45 +464,42 @@ public class SearchViewController {
             });
         });
         
-        // Fetch Spoken Language-list from TMDB
-        CompletableFuture.supplyAsync(() -> {
-            List<SpokenLanguage> temp = null;
-            
-            try {
-                temp = mdc.fetchSpokenLanguages(AUDIO_URL);
-            } catch (HttpResponseException ex) {
-                this.HTTPErrorCode = ex.getStatusCode();              
-                this.HTTPErrorMessage = ex.getReasonPhrase();
-                
-                return null;
-            }
-            return temp;
-        })
-        .thenAccept(audioList  -> {
-            Platform.runLater(() -> {
-                if (audioList != null) {
-                    List<String> audioNames = audioList.stream()
-                        .map(SpokenLanguage::getEnglishName)
-                        .sorted()
-                        .collect(Collectors.toList());
-
-                    cbAudio.getItems().addAll(audioNames);
-                    cbAudio.getCheckModel().checkAll();
-                } else {
-                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
-                }
-            });
-        });
+//        // Fetch Spoken Language-list from TMDB
+//        CompletableFuture.supplyAsync(() -> {
+//            List<SpokenLanguage> temp = null;
+//            
+//            try {
+//                temp = mdc.fetchSpokenLanguages(AUDIO_URL);
+//            } catch (HttpResponseException ex) {
+//                this.HTTPErrorCode = ex.getStatusCode();              
+//                this.HTTPErrorMessage = ex.getReasonPhrase();
+//                
+//                return null;
+//            }
+//            return temp;
+//        })
+//        .thenAccept(audioList  -> {
+//            Platform.runLater(() -> {
+//                if (audioList != null) {
+//                    List<String> audioNames = audioList.stream()
+//                        .map(SpokenLanguage::getEnglishName)
+//                        .sorted()
+//                        .collect(Collectors.toList());
+//
+//                    cbAudio.getItems().addAll(audioNames);
+//                    cbAudio.getCheckModel().checkAll();
+//                } else {
+//                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
+//                }
+//            });
+//        });
        
         
 //        cbSubtitle = getComboBoxContent("subtitle");
 
     }
    
-    private final String POPULAR_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s", con.getProvidersString());
-    private final String TOP_RATED_MOVIES_URL = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", con.getProvidersString());
-    private final String GENRES_URL = String.format("https://api.themoviedb.org/3/genre/movie/list");
-    private final String AUDIO_URL = String.format("https://api.themoviedb.org/3/configuration/languages");
+//    private final String AUDIO_URL = String.format("https://api.themoviedb.org/3/configuration/languages");
     // TODO: private final String SUBTITLE_URL
 
 }

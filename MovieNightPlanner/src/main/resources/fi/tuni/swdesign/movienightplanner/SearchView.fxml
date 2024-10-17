@@ -6,6 +6,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -17,20 +19,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
+<?import org.controlsfx.control.GridView?>
 
 <VBox fx:id="mainView" maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.SearchViewController">
    <children>
-      <HBox maxHeight="390.0" style="-fx-background-color: transparent;">
+      <HBox style="-fx-background-color: transparent;">
          <children>
-            <ImageView fx:id="mnpLogo" fitHeight="133.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../images/mnp_logo.jpeg" />
-               </image>
+            <VBox>
                <HBox.margin>
                   <Insets />
                </HBox.margin>
-            </ImageView>
-            <AnchorPane prefHeight="260.0" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20;">
+               <children>
+                  <ImageView fx:id="mnpLogo" fitHeight="133.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../images/mnp_logo.jpeg" />
+                     </image>
+                  </ImageView>
+               </children>
+            </VBox>
+            <AnchorPane style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20;">
                <children>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
@@ -50,7 +57,7 @@
                               <HBox fx:id="streamer1" alignment="CENTER_LEFT" fillHeight="false">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -66,7 +73,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.rowIndex="1">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -79,7 +86,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="78.0" GridPane.rowIndex="2">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -92,7 +99,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="269.0" GridPane.columnIndex="1">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -105,7 +112,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="210.0" layoutY="14.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -118,7 +125,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -131,7 +138,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="125.0" layoutY="226.0" GridPane.columnIndex="2">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -144,7 +151,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="235.0" layoutY="14.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -157,7 +164,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -170,7 +177,7 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="14.0" layoutY="14.0" GridPane.columnIndex="3">
                                  <children>
                                     <CheckBox mnemonicParsing="false" selected="true" />
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                                        <HBox.margin>
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </HBox.margin>
@@ -185,7 +192,7 @@
                               <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                            </padding>
                         </GridPane>
-                        <VBox prefWidth="300.0" spacing="25.0">
+                        <VBox prefWidth="300.0" spacing="16.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -217,7 +224,7 @@
                                     <CheckComboBox fx:id="cbSubtitle" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.5" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="-53.0" translateY="16.0">
+                              <Button fx:id="filterButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.5" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="-53.0" translateY="16.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -267,28 +274,44 @@
             </Button>
          </children>
          <VBox.margin>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+            <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />
          </VBox.margin>
       </HBox>
-      <VBox spacing="5.0">
-         <children>
-            <ListView fx:id="popularMoviesLView" style="-fx-opacity: 0.8;">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </ListView>
-            <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </ListView>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
+      <TabPane fx:id="movieViewSelect" stylesheets="@styles.css" tabMaxHeight="32.0" tabMaxWidth="Infinity" tabMinHeight="32.0" tabMinWidth="792.0">
+         <tabs>
+            <Tab closable="false" text="POPULAR AND TOP RATED MOVIES">
+               <content>
+                  <VBox fx:id="popularRatedView" spacing="8.0">
+                     <children>
+                        <ListView fx:id="popularMoviesLView" style="-fx-opacity: 0.8;">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ListView>
+                        <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </ListView>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab closable="false" text="RESULTS">
+               <content>
+                  <GridView fx:id="filteredView" cellHeight="260.0" cellWidth="420.0" />
+               </content>
+            </Tab>
+         </tabs>
          <VBox.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="20.0" left="20.0" right="20.0" />
          </VBox.margin>
-      </VBox>
+      </TabPane>
    </children>
 </VBox>
