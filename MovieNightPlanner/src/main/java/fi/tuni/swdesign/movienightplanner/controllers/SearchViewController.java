@@ -1,5 +1,6 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
@@ -11,7 +12,9 @@ import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -39,9 +43,11 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import org.controlsfx.control.CheckComboBox;
 import org.apache.hc.client5.http.HttpResponseException;
@@ -61,6 +67,7 @@ public class SearchViewController {
 
     private final MovieDataController mdc = new MovieDataController();
     private final Constants con = new Constants();
+    private final ImageController ic = new ImageController();
     
     private SceneController sceneController;
     
@@ -143,40 +150,69 @@ public class SearchViewController {
         return sTxt.toString();
     }
     
-    private void handleMovieClick(MouseEvent event, Movie movie) {
-
-        // Logic to switch to the movie details view
-        try {
-            if (sceneController == null) {
-              return;
-            }
-            sceneController.switchToMovieDetail(event, movie);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
     // Add the movie label elements to ListView
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
-    
+        
+        // Create a map to cache the graphics for each movie
+        Map<Movie, StackPane> movieLabelCache = new HashMap<>();
+
         lView.setCellFactory(lv -> new ListCell<Movie>() {
             @Override
             protected void updateItem(Movie movie, boolean empty) {
                 super.updateItem(movie, empty);
+
                 if (empty || movie == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String movieName = movie.getTitle();
-                    String streamingServices = getStreamingServicesText(movie);
-                    Label label = new Label(movieName + streamingServices);
-                    label.setOnMouseClicked(event -> handleMovieClick(event, movie));
-                    setGraphic(label);
+                    // Check if the movie is already cached
+                    if (movieLabelCache.containsKey(movie)) {
+                        // Use the cached label (StackPane)
+                        setGraphic(movieLabelCache.get(movie));
+                    } else {
+                        // Load the movie label and cache it
+                        FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
+                        try {
+                            StackPane movieLabel = loader.load();  // Load the FXML
+                            MovieLabelController mlController = loader.getController();  // Get the controller
+
+                            // Populate the movie label with data from the movie object
+                            mlController.addLogo(movie);
+                            
+                            mlController.addMovieImage(movie);
+
+                            // Cache the graphic for later use
+                            movieLabelCache.put(movie, movieLabel);
+
+                            // Set the graphic for the current cell
+                            setGraphic(movieLabel);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Handle clicks on the movie
+                    setOnMouseClicked(event -> handleMovieClick(event, movie));
                 }
             }
         });
+    }
+    
+    /**
+     * Handles the click event for a movie label.
+     */
+    private void handleMovieClick(MouseEvent event, Movie movie) {
+        // Logic to switch to the movie details view using SceneController
+        try {
+            if (sceneController != null) {
+                sceneController.switchToMovieDetail(event, movie);  // Pass the movie to the SceneController
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     private void setStreamingProviders() {

@@ -1,12 +1,15 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 public class ImageController {
@@ -77,5 +80,52 @@ public class ImageController {
     public void loadImageIntoView(String imagePath, String fxId, Scene scene) {
         // Call the main method with null for the width
         loadImageIntoView(imagePath, fxId, null, scene);
+    }
+    
+    public void loadLogosIntoMovieLabel(String imagePath, TilePane logoContainer) {
+        
+        ImageView logoImageView = new ImageView();
+        // Run on a separate thread for image loading
+        CompletableFuture.runAsync(() -> {
+            // Determine the size parameter for the URL
+            String size = "w45"; 
+            String fullImageUrl = TMDB_IMAGE_BASE_URL + size + imagePath;
+
+            // If imagePath is null, use the local fallback image
+            if (imagePath == null) {
+                fullImageUrl = this.getClass().getResource("/images/unknown.png").toString();
+            }
+
+            // Load the image asynchronously
+            Image image = new Image(fullImageUrl, true);  // 'true' to load in the background
+
+            // Once the image is loaded, update the UI on the JavaFX thread
+            Platform.runLater(() -> {
+                logoImageView.setImage(image);  // Set the image on the ImageView
+                logoContainer.getChildren().add(logoImageView);  // Add to the container
+            });
+        });
+    }
+    
+    public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView ) {
+        
+        // Run on a separate thread for image loading
+        CompletableFuture.runAsync(() -> {
+            // Determine the size parameter for the URL
+            String fullImageUrl = TMDB_IMAGE_BASE_URL + "original" + imagePath;
+
+            // If imagePath is null, use the local fallback image
+            if (imagePath == null) {
+                fullImageUrl = this.getClass().getResource("/images/unknown.png").toString();
+            }
+
+            // Load the image asynchronously
+            Image image = new Image(fullImageUrl, true);  // 'true' to load in the background
+
+            // Once the image is loaded, update the UI on the JavaFX thread
+            Platform.runLater(() -> {
+                imageView.setImage(image);  // Set the image on the ImageView
+            });
+        });
     }
 }
