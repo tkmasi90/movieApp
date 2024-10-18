@@ -4,9 +4,7 @@ import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
-import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
-import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 
 import java.io.IOException;
@@ -21,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -143,9 +142,7 @@ public class SearchViewController {
         
         // Set Streaming Provider IDs and logos for filtering.
         setStreamingProviders();
-        
-        // Populate combobox content for filtering
-        populateComboBoxes();
+
         
     }
     
@@ -181,6 +178,11 @@ public class SearchViewController {
     }
     
     private void setFilterOptions() {
+        
+        // Populate combobox content for filtering
+        populateGenreComboBox();
+        
+        // Populate Language and Subtitle comboboxes
         List<String> languages = con.getLanguages().stream()
             .map(Pair::getValue) // Get the second element (country name)
             .collect(Collectors.toList());
@@ -189,15 +191,67 @@ public class SearchViewController {
         cbAudio.getCheckModel().checkAll();
         cbSubtitle.getCheckModel().checkAll();
         
+        // Set Combobox logic
+        setComboBoxLogic(cbGenre);
+        setComboBoxLogic(cbAudio);
+//        setComboBoxLogic(cbSubtitle);
+        
+        // Set Filter button onAction logic
         filterButton.setOnAction(event -> {
             try {
                 handleFilterButtonClick(event);
+                System.out.println("Genres checked: " + cbGenre.getCheckModel().getCheckedItems());
+                System.out.println("Languages checked: " + cbAudio.getCheckModel().getCheckedItems());
             }
             catch (IOException ex) {
                 System.err.println("Error with filter button");
             }
         });
+        
     }
+    
+    private void setComboBoxLogic(CheckComboBox ccb) {
+        // Use an array to store the flag, making it mutable
+        final boolean[] internalChange = {false};
+
+        ccb.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
+            if (internalChange[0]) return; // Exit if an internal change is happening
+
+            while (change.next()) {
+                // Check if all items are initially checked and now an item is unchecked
+                if (change.wasRemoved() && ccb.getCheckModel().getCheckedItems().size() == ccb.getItems().size() - 1) {
+                    // Prevent further triggers during this process
+                    internalChange[0] = true;
+
+                    // Get the last unchecked item (the one that triggered the removal)
+                    String lastUncheckedItem = change.getRemoved().get(0);
+
+                    // Uncheck all items
+                    ccb.getCheckModel().clearChecks();
+
+                    // Check only the item that was previously unchecked
+                    ccb.getCheckModel().check(lastUncheckedItem);
+
+                    // Reset the flag
+                    internalChange[0] = false;
+                }
+
+                // Handle the case when only one item is checked, and it gets unchecked
+                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
+                    // Prevent further triggers during this process
+                    internalChange[0] = true;
+
+                    // Check all items back again
+                    ccb.getCheckModel().checkAll();
+
+                    // Reset the flag
+                    internalChange[0] = false;
+                }
+            }
+            
+        });
+    }
+
 
     // Add the movie label elements to ListView
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
@@ -420,10 +474,7 @@ public class SearchViewController {
                         GridView<Movie> gridView = (GridView<Movie>) lView;
                         setMovieGridView(tempMovieList, gridView);
                     }
-                    
-                    
-                    
-                    
+
                 } else {
                     loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
@@ -431,7 +482,7 @@ public class SearchViewController {
         });
     }
    
-    private void populateComboBoxes() {
+    private void populateGenreComboBox() {
         // Fetch Genre-list from TMDB
         CompletableFuture.supplyAsync(() -> {
             GenresResponse temp = null;

@@ -38,7 +38,7 @@ public final class Constants {
         languagePairs.add(new Pair<>("ja", "Japanese"));
         languagePairs.add(new Pair<>("ko", "Korean"));
 
-        return List.copyOf(languagePairs); // Return an unmodifiable list
+        return languagePairs; //
     };
 
     // List of providers that the app supports at the moment
@@ -109,6 +109,7 @@ public final class Constants {
         return GENRES_URL;
     }
     
+    // TODO: add genre and spoken language filter lists
     public String getFilteredUrl(List<Integer> list) {
         return String.format(MOVIE_BASE_URL, getProvidersString(list));
     }
