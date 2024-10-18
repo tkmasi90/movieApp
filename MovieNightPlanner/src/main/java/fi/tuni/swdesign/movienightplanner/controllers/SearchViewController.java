@@ -159,7 +159,7 @@ public class SearchViewController {
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
         
         List<Integer> providers = getCheckedValues(selectedProviders);
-        System.out.println("Checked Values: " + providers);
+//        System.out.println("Checked Values: " + providers);
         
         populateMovieListAsync(filteredMoviesLoadingLabel, filteredView, con.getFilteredUrl(providers));
         
@@ -194,14 +194,14 @@ public class SearchViewController {
         // Set Combobox logic
         setComboBoxLogic(cbGenre);
         setComboBoxLogic(cbAudio);
-//        setComboBoxLogic(cbSubtitle);
+        setComboBoxLogic(cbSubtitle);
         
         // Set Filter button onAction logic
         filterButton.setOnAction(event -> {
             try {
                 handleFilterButtonClick(event);
-                System.out.println("Genres checked: " + cbGenre.getCheckModel().getCheckedItems());
-                System.out.println("Languages checked: " + cbAudio.getCheckModel().getCheckedItems());
+//                System.out.println("Genres checked: " + cbGenre.getCheckModel().getCheckedItems());
+//                System.out.println("Languages checked: " + cbAudio.getCheckModel().getCheckedItems());
             }
             catch (IOException ex) {
                 System.err.println("Error with filter button");

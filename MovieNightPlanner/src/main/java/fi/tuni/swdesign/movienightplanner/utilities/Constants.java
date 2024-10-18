@@ -109,7 +109,7 @@ public final class Constants {
         return GENRES_URL;
     }
     
-    // TODO: add genre and spoken language filter lists
+    // TODO: add genre and spoken language filter list
     public String getFilteredUrl(List<Integer> list) {
         return String.format(MOVIE_BASE_URL, getProvidersString(list));
     }
