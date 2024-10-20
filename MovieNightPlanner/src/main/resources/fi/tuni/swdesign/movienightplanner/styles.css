@@ -1,0 +1,53 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Oct 17, 2024, 12:48:57 PM
+    Author     : Make
+*/
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+/*.tab-header-area {
+    -fx-padding: 0px 0px 0px 8px;
+}*/
+
+/* Style for each tab */
+.tab {
+    -fx-background-color: white;
+    -fx-font-size: 18;
+    -fx-focus-color: transparent;
+    -fx-text-base-color: black;
+}
+
+/* Hover effect for tabs */
+.tab:hover {
+    -fx-background-color: rgb(238,241,244); 
+}
+
+/* Style for the selected tab */
+.tab:selected {
+    -fx-background-color: rgb(32,86,117); 
+    -fx-font-weight: bold;
+    -fx-border-color: red;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-style: solid;
+    -fx-text-base-color: red;
+    -fx-padding: 2px 0 0 0;
+    -fx-background-insets: 2;
+
+}
+
+.tab-down-button {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+
+.tab-down-button .arrow {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+

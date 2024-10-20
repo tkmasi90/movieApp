@@ -10,17 +10,36 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
 
 /**
  *
  * @author Make
  */
-public class Constants {
-    private final List<String> LANGUAGES;
-
+public final class Constants {
+    private final List<Pair<String, String>> LANGUAGES;
+    
     public Constants() {
-        this.LANGUAGES = List.of("fi","en","no","sv","is","de","es","it","fr","ja","ko");
+        LANGUAGES = createLanguageList();
     }
+
+    private List<Pair<String, String>> createLanguageList() {
+        List<Pair<String, String>> languagePairs = new ArrayList<>();
+        
+        languagePairs.add(new Pair<>("fi", "Finnish"));
+        languagePairs.add(new Pair<>("en", "English"));
+        languagePairs.add(new Pair<>("sv", "Swedish"));
+        languagePairs.add(new Pair<>("no", "Norwegian"));
+        languagePairs.add(new Pair<>("is", "Icelandic"));
+        languagePairs.add(new Pair<>("dk", "Denmark"));
+        languagePairs.add(new Pair<>("es", "Spanish"));
+        languagePairs.add(new Pair<>("it", "Italian"));
+        languagePairs.add(new Pair<>("fr", "French"));
+        languagePairs.add(new Pair<>("ja", "Japanese"));
+        languagePairs.add(new Pair<>("ko", "Korean"));
+
+        return languagePairs; //
+    };
 
     // List of providers that the app supports at the moment
     private final class PROVIDERS {
@@ -62,9 +81,39 @@ public class Constants {
         return null;
     }
     
+        public String getProvidersString(List<Integer> list) {
+        try {
+            return URLEncoder.encode((list.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("|"))), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return null;
+    }
+    
     public final List<Integer> PROVIDER_IDS = getProviderIds();
     
-    public List<String> getLanguages() {
+    public List<Pair<String, String>> getLanguages() {
         return LANGUAGES;
     }
+    
+    public String getPopularMoviesUrl() {
+        return String.format(MOVIE_BASE_URL, getProvidersString());
+    }
+    
+    public String getTopRatedMoviesUrl() {
+        return String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", getProvidersString());
+    }
+    
+    public String getGenresUrl() {
+        return GENRES_URL;
+    }
+    
+    // TODO: add genre and spoken language filter list
+    public String getFilteredUrl(List<Integer> list) {
+        return String.format(MOVIE_BASE_URL, getProvidersString(list));
+    }
+    
+    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s";
+    private final String GENRES_URL = String.format("https://api.themoviedb.org/3/genre/movie/list");
 }
