@@ -17,11 +17,16 @@ import java.util.Set;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class MovieDetailsController {
     private SceneController sceneController;
@@ -83,6 +88,25 @@ public class MovieDetailsController {
     public void navigateToProfileView(ActionEvent event) {
         try {
             sceneController.switchToProfile(event);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleRateButtonAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fi/tuni/swdesign/movienightplanner/RateView.fxml"));
+            Parent root = loader.load();
+            RateViewController rateViewController = loader.getController();
+
+            Stage rateStage = new Stage();
+            rateStage.initModality(Modality.APPLICATION_MODAL);
+            rateStage.setTitle("Rate Movie");
+            rateStage.setScene(new Scene(root));
+            rateViewController.setStage(rateStage);
+
+            rateStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
