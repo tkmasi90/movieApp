@@ -8,9 +8,13 @@
 Movie Night Planner is a basic NetBeans application. A relatively recent version (e.g., 20+) can be used to build and run the application.
 
 Example Windows configuration:
+
 Product Version: Apache NetBeans IDE 20
+
 Java: 21.0.1; OpenJDK 64-Bit Server VM 21.0.1+12-LTS
+
 Runtime: OpenJDK Runtime Environment 21.0.1+12-LTS
+
 System: Windows 11 version 10.0 running on amd64; UTF-8; en_US (nb)
 
 1. Clone the repository and checkout the tag v0.5 with the message "MID-TERM DELIVERABLE" or the commit with the same message.
