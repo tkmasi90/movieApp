@@ -47,6 +47,7 @@ public class App extends Application {
         SearchViewController searchViewController = searchLoader.getController();
         SceneController sceneController = new SceneController(stage, scene);
         searchViewController.setSceneController(sceneController); // Set SceneController
+        sceneController.setAppState(this.appState);
     }
 
     /**
@@ -74,6 +75,9 @@ public class App extends Application {
         
         try{
             this.appState = fdc.readStateFromFile();
+            if(this.appState == null){
+                this.appState = new AppState();
+            }
         } 
         catch (FileNotFoundException e){}
         catch (Exception e){}
