@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.App;
+import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.models.Cast;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
@@ -17,17 +18,22 @@ import java.util.Set;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class MovieDetailsController {
     private SceneController sceneController;
     private ImageController imageController = new ImageController();
-
-
+    private AppState appState;
+    private Movie movie;
     
     private final HTTPTools tools = new HTTPTools(); 
     private final MovieDataController mdc = new MovieDataController();
@@ -70,10 +76,15 @@ public class MovieDetailsController {
         this.sceneController = sceneController;
     }
 
+    public void setAppState(AppState appState) {
+        this.appState = appState;
+    }
+
     @FXML
     private void navigateToSearchView(ActionEvent event) {
         try {
             sceneController.switchToSearch(event);
+            clearMovieDetails();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,12 +94,67 @@ public class MovieDetailsController {
     public void navigateToProfileView(ActionEvent event) {
         try {
             sceneController.switchToProfile(event);
+            clearMovieDetails();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @FXML
+    private void handleRateButtonAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fi/tuni/swdesign/movienightplanner/RateView.fxml"));
+            Parent root = loader.load();
+            RateViewController rateViewController = loader.getController();
+            Stage rateStage = new Stage();
+            rateStage.initModality(Modality.APPLICATION_MODAL);
+            rateStage.setTitle("Rate Movie");
+            rateStage.setScene(new Scene(root));
+            rateViewController.setStage(rateStage);
+            rateViewController.setAppState(appState); // Pass AppState
+            rateViewController.setMovieId(movie.getId()); // Pass Movie ID
+            rateStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearMovieDetails() {
+      // Clear labels
+      titleDetailsLabel.setText("");
+      overviewLabel.setText("");
+      tmdbRatingLabel.setText("");
+      taglineLabel.setText("");
+      specsLabel.setText("");
+      writerPlaceholderLabel.setText("");
+      writerLabel.setText("");
+      directorLabel.setText("");
+
+      // Clear images
+      posterImage.setImage(null);
+      backdropImage.setImage(null);
+      firstProviderImage.setImage(null);
+      secondProviderImage.setImage(null);
+
+      // Clear cast images and labels
+      star1Image.setImage(null);
+      star1CharacterLabel.setText("");
+      star1NameLabel.setText("");
+      star2Image.setImage(null);
+      star2CharacterLabel.setText("");
+      star2NameLabel.setText("");
+      star3Image.setImage(null);
+      star3CharacterLabel.setText("");
+      star3NameLabel.setText("");
+      star4Image.setImage(null);
+      star4CharacterLabel.setText("");
+      star4NameLabel.setText("");
+    }
+
     public void setMovie(Movie movie) {
+      this.movie = movie;
+
+
       // Images
       imageController.loadImageIntoView(movie.getPosterPath(), "posterImage", 300, sceneController.getMovieDetailScene());
       imageController.loadImageIntoView(movie.getBackdropPath(), "backdropImage", 300, sceneController.getMovieDetailScene());
@@ -154,24 +220,6 @@ public class MovieDetailsController {
     private void setCast(Movie movie) {
         List<Cast> cast = movie.getCredits().getCast();
         int castSize = cast.size();
-
-        // Hide all cast-related UI elements initially
-        star1Image.setVisible(false);
-        star1Rectangle.setVisible(false);
-        star1CharacterLabel.setVisible(false);
-        star1NameLabel.setVisible(false);
-        star2Image.setVisible(false);
-        star2Rectangle.setVisible(false);
-        star2CharacterLabel.setVisible(false);
-        star2NameLabel.setVisible(false);
-        star3Image.setVisible(false);
-        star3Rectangle.setVisible(false);
-        star3CharacterLabel.setVisible(false);
-        star3NameLabel.setVisible(false);
-        star4Image.setVisible(false);
-        star4Rectangle.setVisible(false);
-        star4CharacterLabel.setVisible(false);
-        star4NameLabel.setVisible(false);
 
         // Show and set data for available cast members
         for (int i = 0; i < castSize && i < 4; i++) {

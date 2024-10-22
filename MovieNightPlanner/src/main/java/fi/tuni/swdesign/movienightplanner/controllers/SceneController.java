@@ -6,6 +6,7 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 
 import java.io.IOException;
 
+import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,11 +25,16 @@ public class SceneController {
     private final Scene searchScene;
     private Scene movieDetailScene;
     private Scene profileScene;
+    private AppState appState;
     
     public SceneController(Stage stage, Scene scene) throws IOException {
         this.stage = stage;
         searchScene = scene;
 
+    }
+
+    public void setAppState(AppState appState) {
+        this.appState = appState;
     }
     
     @FXML
@@ -44,6 +50,7 @@ public class SceneController {
             Parent root = loader.load();
             MovieDetailsController movieDetailViewController = loader.getController();
             movieDetailViewController.setSceneController(this); // Set SceneController
+            movieDetailViewController.setAppState(this.appState); // Set AppState
             movieDetailScene = new Scene(root);
             movieDetailScene.setUserData(movieDetailViewController);
         }

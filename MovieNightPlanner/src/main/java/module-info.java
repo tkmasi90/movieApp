@@ -9,6 +9,7 @@ module fi.tuni.swdesign.movienightplanner {
     
     opens fi.tuni.swdesign.movienightplanner.controllers to javafx.fxml;
     opens fi.tuni.swdesign.movienightplanner.models to com.google.gson;
+    opens fi.tuni.swdesign.movienightplanner to com.google.gson;
 
     exports fi.tuni.swdesign.movienightplanner;
     exports fi.tuni.swdesign.movienightplanner.controllers;
