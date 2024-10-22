@@ -7,7 +7,7 @@
 ## Environment
 Movie Night Planner is a basic NetBeans application. A relatively recent version (e.g., 20+) can be used to build and run the application.
 
-Example Windows configuration:
+*Example Windows configuration:*
 
 Product Version: Apache NetBeans IDE 20
 
