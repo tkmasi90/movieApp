@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Helper class for application state-related features.
  * 
- * @author janii
+ * @author janii, kian
  */
 public class AppState {
     
