@@ -27,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
+
 import javafx.stage.Stage;
 
 public class MovieDetailsController {
@@ -34,8 +35,9 @@ public class MovieDetailsController {
     private ImageController imageController = new ImageController();
     private AppState appState;
     private Movie movie;
-    
-    private final HTTPTools tools = new HTTPTools(); 
+
+    private final HTTPTools tools = new HTTPTools();
+
     private final MovieDataController mdc = new MovieDataController();
 
     @FXML private Label titleDetailsLabel;
@@ -47,22 +49,18 @@ public class MovieDetailsController {
     @FXML private Label directorLabel;
     @FXML private Label writerPlaceholderLabel;
     @FXML private Label directorPlaceholderLabel;
-
     @FXML private ImageView posterImage;
     @FXML private ImageView backdropImage;
     @FXML private ImageView firstProviderImage;
     @FXML private ImageView secondProviderImage;
-
     @FXML private ImageView star1Image;
     @FXML private ImageView star2Image;
     @FXML private ImageView star3Image;
     @FXML private ImageView star4Image;
-
     @FXML private Rectangle star1Rectangle;
     @FXML private Rectangle star2Rectangle;
     @FXML private Rectangle star3Rectangle;
     @FXML private Rectangle star4Rectangle;
-
     @FXML private Label star1CharacterLabel;
     @FXML private Label star1NameLabel;
     @FXML private Label star2CharacterLabel;
@@ -72,14 +70,29 @@ public class MovieDetailsController {
     @FXML private Label star4CharacterLabel;
     @FXML private Label star4NameLabel;
 
+    /**
+     * Sets the SceneController for this controller.
+     *
+     * @param sceneController the SceneController to set
+     */
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
 
+    /**
+     * Sets the AppState for this controller.
+     *
+     * @param appState the AppState to set
+     */
     public void setAppState(AppState appState) {
         this.appState = appState;
     }
 
+    /**
+     * Navigates to the search view.
+     *
+     * @param event the ActionEvent that triggered this method
+     */
     @FXML
     private void navigateToSearchView(ActionEvent event) {
         try {
@@ -90,6 +103,11 @@ public class MovieDetailsController {
         }
     }
 
+    /**
+     * Navigates to the profile view.
+     *
+     * @param event the ActionEvent that triggered this method
+     */
     @FXML
     public void navigateToProfileView(ActionEvent event) {
         try {
@@ -100,6 +118,9 @@ public class MovieDetailsController {
         }
     }
 
+    /**
+     * Handles the action of the rate button.
+     */
     @FXML
     private void handleRateButtonAction() {
         try {
@@ -119,41 +140,13 @@ public class MovieDetailsController {
         }
     }
 
-    public void clearMovieDetails() {
-      // Clear labels
-      titleDetailsLabel.setText("");
-      overviewLabel.setText("");
-      tmdbRatingLabel.setText("");
-      taglineLabel.setText("");
-      specsLabel.setText("");
-      writerPlaceholderLabel.setText("");
-      writerLabel.setText("");
-      directorLabel.setText("");
-
-      // Clear images
-      posterImage.setImage(null);
-      backdropImage.setImage(null);
-      firstProviderImage.setImage(null);
-      secondProviderImage.setImage(null);
-
-      // Clear cast images and labels
-      star1Image.setImage(null);
-      star1CharacterLabel.setText("");
-      star1NameLabel.setText("");
-      star2Image.setImage(null);
-      star2CharacterLabel.setText("");
-      star2NameLabel.setText("");
-      star3Image.setImage(null);
-      star3CharacterLabel.setText("");
-      star3NameLabel.setText("");
-      star4Image.setImage(null);
-      star4CharacterLabel.setText("");
-      star4NameLabel.setText("");
-    }
-
+    /**
+     * Sets the movie details to be displayed.
+     *
+     * @param movie the Movie object containing the details to be displayed
+     */
     public void setMovie(Movie movie) {
       this.movie = movie;
-
 
       // Images
       imageController.loadImageIntoView(movie.getPosterPath(), "posterImage", 300, sceneController.getMovieDetailScene());
@@ -198,8 +191,52 @@ public class MovieDetailsController {
       });
     }
 
+    /**
+     * Clears the movie details from the view.
+     */
+    public void clearMovieDetails() {
+        // Clear labels
+        titleDetailsLabel.setText("");
+        overviewLabel.setText("");
+        tmdbRatingLabel.setText("");
+        taglineLabel.setText("");
+        specsLabel.setText("");
+        writerPlaceholderLabel.setText("");
+        writerLabel.setText("");
+        directorLabel.setText("");
+
+        // Clear images
+        posterImage.setImage(null);
+        backdropImage.setImage(null);
+        firstProviderImage.setImage(null);
+        secondProviderImage.setImage(null);
+
+        // Clear cast images and labels
+        star1Image.setImage(null);
+        star2Image.setImage(null);
+        star3Image.setImage(null);
+        star4Image.setImage(null);
+        star1CharacterLabel.setText("");
+        star1NameLabel.setText("");
+        star2CharacterLabel.setText("");
+        star2NameLabel.setText("");
+        star3CharacterLabel.setText("");
+        star3NameLabel.setText("");
+        star4CharacterLabel.setText("");
+        star4NameLabel.setText("");
+        star1Rectangle.setVisible(false);
+        star2Rectangle.setVisible(false);
+        star3Rectangle.setVisible(false);
+        star4Rectangle.setVisible(false);
+    }
+
+    /**
+     * Sets the provider images for the movie.
+     *
+     * @param movie the Movie object containing the provider details
+     */
     private void setProviderImages(Movie movie) {
-        // clear the images first
+        // Implementation for setting provider images        // clear the images first
         firstProviderImage.setImage(null);
         secondProviderImage.setImage(null);
 
@@ -215,8 +252,15 @@ public class MovieDetailsController {
             }
             i++;
         }
+
+
     }
 
+    /**
+     * Sets the cast details for the movie.
+     *
+     * @param movie the Movie object containing the cast details
+     */
     private void setCast(Movie movie) {
         List<Cast> cast = movie.getCredits().getCast();
         int castSize = cast.size();
@@ -264,5 +308,4 @@ public class MovieDetailsController {
             }
         }
     }
-
 }

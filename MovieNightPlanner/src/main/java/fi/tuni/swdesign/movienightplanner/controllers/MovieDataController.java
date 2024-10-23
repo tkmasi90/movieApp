@@ -94,6 +94,11 @@ public class MovieDataController {
         }
     }
 
+    /**
+     * Fetches the details for a single movie.
+     *
+     * @param movie the Movie object for which to fetch the details
+     */
     public void fetchMovieDetails(Movie movie) {
         try {
             String url = String.format("https://api.themoviedb.org/3/movie/%s?language=en-US", movie.getId());
@@ -105,6 +110,11 @@ public class MovieDataController {
         }
     }
 
+    /**
+     * Fetches the credits for a single movie.
+     *
+     * @param movie the Movie object for which to fetch the credits
+     */
     public void fetchMovieCredits(Movie movie) {
         try {
             String url = String.format("https://api.themoviedb.org/3/movie/%s/credits", movie.getId());
