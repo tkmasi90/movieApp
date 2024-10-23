@@ -17,7 +17,9 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 /**
- * A helper class to facilitate all HTTP-operations
+ * A helper class to facilitate all HTTP-operations.
+ * 
+ * Separate clients for different services.
  *
  * @author Make, janii
  */

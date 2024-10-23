@@ -16,6 +16,7 @@ import java.io.Writer;
 
 /**
  * Provides means to read state data from a file and store state data in a file.
+ * 
  * @author janii
  */
 public class FileDataController {
