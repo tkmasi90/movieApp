@@ -236,7 +236,7 @@ public class MovieDetailsController {
      * @param movie the Movie object containing the provider details
      */
     private void setProviderImages(Movie movie) {
-        // Implementation for setting provider images        // clear the images first
+        // clear the images first
         firstProviderImage.setImage(null);
         secondProviderImage.setImage(null);
 
