@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
 /**
  * Helper class for TMDB-related error handling.
  *
- * @author janii
+ * @author janii, Copilot
  */
 public class ErrorModel {
 

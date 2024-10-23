@@ -19,9 +19,9 @@ import javafx.scene.text.Text;
  * @author Make
  */
 public class MovieLabelController {
-    
+
     @FXML
-    private ImageView movieLabelImage;    
+    private ImageView movieLabelImage;
     @FXML
     private StackPane movieLabel;
     @FXML
@@ -30,27 +30,42 @@ public class MovieLabelController {
     private Text movieLabelYear;
     @FXML
     private TilePane movieLabelLogos;
-    
+
     ImageController imageController = new ImageController();
 
+    /**
+     * Adds the logos of streaming providers to the movie label.
+     *
+     * @param movie the movie object containing streaming provider information
+     */
     public void addLogo(Movie movie) {
-        movieLabelName.setText(movie.original_title);
+        movieLabelName.setText(movie.title);
         movieLabelYear.setText(movie.release_date.substring(0, 4));
-        
-        // Clear existing logos
-        movieLabelLogos.getChildren().clear(); 
-        
-        for(StreamingProvider prov : movie.getStreamingProviders()) {  
-            imageController.loadLogosIntoMovieLabel(prov.getLogoPath(), movieLabelLogos);
 
+        // Clear existing logos
+        movieLabelLogos.getChildren().clear();
+
+        for (StreamingProvider prov : movie.getStreamingProviders()) {
+            imageController.loadLogosIntoMovieLabel(prov.getLogoPath(), movieLabelLogos);
         }
     }
-    
+
+    /**
+     * Adds the movie image (backdrop) to the movie label.
+     *
+     * @param movie the movie object containing the backdrop path
+     */
     public void addMovieImage(Movie movie) {
         imageController.loadPosterIntoMovieLabel(movie.getBackdropPath(), movieLabelImage);
     }
-    
+
+    /**
+     * Gets the movie label stack pane.
+     *
+     * @return the movie label stack pane
+     */
     public StackPane getLabel() {
         return movieLabel;
     }
+
 }
