@@ -93,6 +93,13 @@ public class SearchViewController {
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
     
+    /**
+    * Sets the {@link SceneController} instance for this controller.
+    * This method is used to inject the {@code SceneController} into the current context, allowing 
+    * this controller to manage and switch scenes as needed.
+    * 
+    * @param sceneController the {@link SceneController} to be associated with this controller.
+    */
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
