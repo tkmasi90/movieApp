@@ -9,7 +9,7 @@ import org.controlsfx.control.Rating;
 /**
  * Controller for the rate view.
  *
- * @author kian
+ * @author kian, Copilot
  */
 public class RateViewController {
 

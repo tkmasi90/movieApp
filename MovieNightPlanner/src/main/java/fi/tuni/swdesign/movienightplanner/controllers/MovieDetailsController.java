@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 /**
  * Controller for the movie details view.
  *
- * @author kian
+ * @author kian, Copilot
  */
 public class MovieDetailsController {
     private SceneController sceneController;
