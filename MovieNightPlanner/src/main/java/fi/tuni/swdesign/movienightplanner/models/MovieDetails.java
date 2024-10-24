@@ -376,7 +376,10 @@ public class MovieDetails {
     public String getFormattedRuntime() {
         int hours = runtime / 60;
         int minutes = runtime % 60;
-        return String.format("%dh %02dm", hours, minutes);
+        if (hours == 0) {
+            return String.format("%dmin", minutes);
+        }
+        return String.format("%dh %dm", hours, minutes);
     }
 
     /**
