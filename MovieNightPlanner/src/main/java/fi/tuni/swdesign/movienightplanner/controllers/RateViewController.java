@@ -1,4 +1,3 @@
-// src/main/java/fi/tuni/swdesign/movienightplanner/controllers/RateViewController.java
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.AppState;
@@ -7,6 +6,11 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.controlsfx.control.Rating;
 
+/**
+ * Controller for the rate view.
+ *
+ * @author kian, Copilot
+ */
 public class RateViewController {
 
     @FXML private Rating rating;
@@ -17,14 +21,29 @@ public class RateViewController {
     private AppState appState;
     private int movieId;
 
+    /**
+     * Sets the stage for this controller.
+     *
+     * @param stage the Stage to set
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     * Sets the AppState for this controller.
+     *
+     * @param appState the AppState to set
+     */
     public void setAppState(AppState appState) {
         this.appState = appState;
     }
 
+    /**
+     * Sets the movie ID and loads the existing rating if available.
+     *
+     * @param movieId the ID of the movie to set
+     */
     public void setMovieId(int movieId) {
         this.movieId = movieId;
 
@@ -35,6 +54,9 @@ public class RateViewController {
         }
     }
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     private void initialize() {
         // Disable the rate button if the rating is 0
@@ -45,6 +67,9 @@ public class RateViewController {
         });
     }
 
+    /**
+     * Handles the action of the rate button.
+     */
     @FXML
     private void handleRateButtonAction() {
         int ratingValue = (int) rating.getRating();
@@ -53,6 +78,9 @@ public class RateViewController {
         stage.close();
     }
 
+    /**
+     * Handles the action of the cancel button.
+     */
     @FXML
     private void handleCancelButtonAction() {
         stage.close();

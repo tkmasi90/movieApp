@@ -12,6 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for the image-related features.
+ *
+ * @author kian, Make
+ */
 public class ImageController {
 
     // The base URL for TMDb images
@@ -20,6 +25,7 @@ public class ImageController {
     /**
      * This method takes the image path from TMDb API and sets the image in the specified ImageView.
      * If width is not provided, it loads the original size.
+     *
      * @param imagePath The image path provided by the TMDb API (e.g., "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg")
      * @param fxId The fx:id of the ImageView where the image should be loaded.
      * @param width The desired width for the image (if null, it will use the "original" size).
@@ -73,6 +79,7 @@ public class ImageController {
 
     /**
      * Overloaded method to load image without specifying width, defaults to original size.
+     *
      * @param imagePath The image path provided by the TMDb API.
      * @param fxId The fx:id of the ImageView where the image should be loaded.
      * @param scene The current scene where the ImageView is located.
@@ -120,7 +127,7 @@ public class ImageController {
         // Run on a separate thread for image loading
         CompletableFuture.runAsync(() -> {
             // Determine the size parameter for the URL
-            String fullImageUrl = TMDB_IMAGE_BASE_URL + "original" + imagePath;
+            String fullImageUrl = TMDB_IMAGE_BASE_URL + "w500" + imagePath;
 
             // If imagePath is null, use the local fallback image
             if (imagePath == null) {

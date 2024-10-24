@@ -1,26 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package fi.tuni.swdesign.movienightplanner.models;
 
-/**
- *
- * @author janii, Copilot
- */
-import java.util.List;
 import com.google.gson.annotations.Expose;
+import java.util.List;
 
+/**
+ * Represents the details of a movie.
+ *
+ * @author kian, Copilot
+ */
 public class MovieDetails {
-
-    @Expose
-    private boolean adult;
-    @Expose
-    private String backdrop_path;
-    @Expose
-    private Object belongs_to_collection;
-    @Expose
-    private int budget;
     @Expose
     private List<Genre> genres;
     @Expose
@@ -40,15 +28,7 @@ public class MovieDetails {
     @Expose
     private double popularity;
     @Expose
-    private String poster_path;
-    @Expose
-    private List<ProductionCompany> production_companies;
-    @Expose
-    private List<ProductionCountry> production_countries;
-    @Expose
     private String release_date;
-    @Expose
-    private int revenue;
     @Expose
     private int runtime;
     @Expose
@@ -67,79 +47,7 @@ public class MovieDetails {
     private int vote_count;
 
     /**
-     * Checks if the movie is for adults.
-     *
-     * @return true if the movie is for adults, false otherwise
-     */
-    public boolean isAdult() {
-        return adult;
-    }
-
-    /**
-     * Sets whether the movie is for adults.
-     *
-     * @param adult true if the movie is for adults, false otherwise
-     */
-    public void setAdult(boolean adult) {
-        this.adult = adult;
-    }
-
-    /**
-     * Gets the backdrop path of the movie.
-     *
-     * @return the backdrop path
-     */
-    public String getBackdropPath() {
-        return backdrop_path;
-    }
-
-    /**
-     * Sets the backdrop path of the movie.
-     *
-     * @param backdrop_path the backdrop path to set
-     */
-    public void setBackdropPath(String backdrop_path) {
-        this.backdrop_path = backdrop_path;
-    }
-
-    /**
-     * Gets the collection to which the movie belongs.
-     *
-     * @return the collection object
-     */
-    public Object getBelongsToCollection() {
-        return belongs_to_collection;
-    }
-
-    /**
-     * Sets the collection to which the movie belongs.
-     *
-     * @param belongs_to_collection the collection object to set
-     */
-    public void setBelongsToCollection(Object belongs_to_collection) {
-        this.belongs_to_collection = belongs_to_collection;
-    }
-
-    /**
-     * Gets the budget of the movie.
-     *
-     * @return the budget
-     */
-    public int getBudget() {
-        return budget;
-    }
-
-    /**
-     * Sets the budget of the movie.
-     *
-     * @param budget the budget to set
-     */
-    public void setBudget(int budget) {
-        this.budget = budget;
-    }
-
-    /**
-     * Gets the list of genres for the movie.
+     * Returns the list of genres of the movie.
      *
      * @return the list of genres
      */
@@ -301,63 +209,9 @@ public class MovieDetails {
     }
 
     /**
-     * Gets the poster path of the movie.
+     * Returns the release date of the movie.
      *
-     * @return the poster path
-     */
-    public String getPosterPath() {
-        return poster_path;
-    }
-
-    /**
-     * Sets the poster path of the movie.
-     *
-     * @param poster_path the poster path to set
-     */
-    public void setPosterPath(String poster_path) {
-        this.poster_path = poster_path;
-    }
-
-    /**
-     * Gets the list of production companies for the movie.
-     *
-     * @return the list of production companies
-     */
-    public List<ProductionCompany> getProductionCompanies() {
-        return production_companies;
-    }
-
-    /**
-     * Sets the list of production companies for the movie.
-     *
-     * @param production_companies the list of production companies to set
-     */
-    public void setProductionCompanies(List<ProductionCompany> production_companies) {
-        this.production_companies = production_companies;
-    }
-
-    /**
-     * Gets the list of production countries for the movie.
-     *
-     * @return the list of production countries
-     */
-    public List<ProductionCountry> getProductionCountries() {
-        return production_countries;
-    }
-
-    /**
-     * Sets the list of production countries for the movie.
-     *
-     * @param production_countries the list of production countries to set
-     */
-    public void setProductionCountries(List<ProductionCountry> production_countries) {
-        this.production_countries = production_countries;
-    }
-
-    /**
-     * Gets the release date of the movie.
-     *
-     * @return the release date
+     * @return the release date of the movie
      */
     public String getReleaseDate() {
         return release_date;
@@ -373,27 +227,9 @@ public class MovieDetails {
     }
 
     /**
-     * Gets the revenue of the movie.
+     * Returns the runtime of the movie in minutes.
      *
-     * @return the revenue
-     */
-    public int getRevenue() {
-        return revenue;
-    }
-
-    /**
-     * Sets the revenue of the movie.
-     *
-     * @param revenue the revenue to set
-     */
-    public void setRevenue(int revenue) {
-        this.revenue = revenue;
-    }
-
-    /**
-     * Gets the runtime of the movie.
-     *
-     * @return the runtime
+     * @return the runtime of the movie
      */
     public int getRuntime() {
         return runtime;

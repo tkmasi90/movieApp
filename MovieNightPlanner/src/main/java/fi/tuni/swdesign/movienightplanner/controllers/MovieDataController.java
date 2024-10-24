@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Controller that handles all movie data related application logic.
  *
- * @author janii, Make
+ * @author janii, Make, kian
  */
 public class MovieDataController {
 
