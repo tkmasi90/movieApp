@@ -32,72 +32,91 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Controller that handles all movie data related application logic.
  *
  * @author janii, Make
  */
 public class MovieDataController {
-    
+
     private final HTTPTools httpTools = new HTTPTools();
     private final GSONTools gsonTools = new GSONTools();
     private final Constants con = new Constants();
-    
+
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
-    
-    public MoviesResponse fetchMoviesResponse(String url) throws HttpResponseException{
+
+    /**
+     * Fetches the movies response from the given URL.
+     *
+     * @param url the URL to fetch the movies response from
+     * @return the MoviesResponse object containing the list of movies
+     * @throws HttpResponseException if there is an error in the HTTP response
+     */
+    public MoviesResponse fetchMoviesResponse(String url) throws HttpResponseException {
         MoviesResponse tempMovieList = null;
-        
+
         try {
             String httpResponseString = httpTools.makeGenericHttpRequest(url);
             tempMovieList = (MoviesResponse) gsonTools.convertJSONToObjects(httpResponseString, MoviesResponse.class);
-            
+
             // Add streaming provider information to the movies.
             addStreamingProviders(tempMovieList.getResults());
-        
-        } catch (HttpResponseException ex){
-            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
-        }
-        
-        catch (IOException | InterruptedException e) {
+
+        } catch (HttpResponseException ex) {
+            throw new HttpResponseException(ex.getStatusCode(), ex.getReasonPhrase());
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
+
         return tempMovieList;
     }
-    
+
+    /**
+     * Fetches the streaming providers and filters them based on predefined
+     * provider IDs.
+     *
+     * @throws HttpResponseException if there is an error in the HTTP response
+     */
     public void fetchStreamingProviders() throws HttpResponseException {
 
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            
+
             String url = "https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=FI";
             String httpResponseString = httpTools.makeGenericHttpRequest(url);
             StreamingResponse streamResponse = (StreamingResponse) gsonTools.convertJSONToObjects(httpResponseString, StreamingResponse.class);
-            
+
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
                     .stream()
                     .filter(p -> con.PROVIDER_IDS.contains(p.provider_id))
-                    .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));       
-        
-        } catch (HttpResponseException ex){
-            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
-        }
-        
-        catch (IOException | InterruptedException e) {
+                    .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));
+
+        } catch (HttpResponseException ex) {
+            throw new HttpResponseException(ex.getStatusCode(), ex.getReasonPhrase());
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
     }
-    
+
+    /**
+     * Adds streaming provider information to the list of movies.
+     *
+     * @param movieList the list of movies to add streaming provider information
+     * to
+     * @throws HttpResponseException if there is an error in fetching the
+     * streaming providers
+     */
     private void addStreamingProviders(List<Movie> movieList) throws HttpResponseException {
-        for(Movie movie : movieList) {
+        for (Movie movie : movieList) {
             fetchMovieStreamProviders(movie);
         }
     }
 
     /**
-     * Fetches the details for a single movie.
+     * Fetches detailed information for a given movie and sets it in the movie
+     * object.
      *
-     * @param movie the Movie object for which to fetch the details
+     * @param movie the movie object to fetch details for
      */
     public void fetchMovieDetails(Movie movie) {
         try {
@@ -111,9 +130,9 @@ public class MovieDataController {
     }
 
     /**
-     * Fetches the credits for a single movie.
+     * Fetches the credits for a given movie and sets them in the movie object.
      *
-     * @param movie the Movie object for which to fetch the credits
+     * @param movie the movie object to fetch credits for
      */
     public void fetchMovieCredits(Movie movie) {
         try {
@@ -125,21 +144,27 @@ public class MovieDataController {
             System.out.println(e);
         }
     }
-    
+
+    /**
+     * Fetches streaming provider information for a given movie and adds it to
+     * the movie object.
+     *
+     * @param movie the movie object to fetch streaming providers for
+     * @throws HttpResponseException if there is an error in the HTTP response
+     */
     private void fetchMovieStreamProviders(Movie movie) throws HttpResponseException {
-        
+
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            
+
             String url = String.format("https://api.themoviedb.org/3/movie/%s/watch/providers", movie.getId());
             String httpResponseString = httpTools.makeGenericHttpRequest(url);
 
             JsonObject jsonObject = gsonTools.getGson().fromJson(httpResponseString, JsonObject.class);
             JsonObject results = jsonObject.getAsJsonObject("results");
-            
+
             // Check if there is data for the "FI" region.
             if (results.has("FI")) {
                 JsonObject fiData = results.getAsJsonObject("FI");
-
 
                 // Retrieve the flatrate array
                 if (fiData.has("flatrate")) {
@@ -147,28 +172,33 @@ public class MovieDataController {
 
                     // Iterate through the providers and print their details
                     for (JsonElement providerElement : flatrateArray) {
-                        JsonObject providerObj = providerElement.getAsJsonObject();                   
+                        JsonObject providerObj = providerElement.getAsJsonObject();
                         int providerId = providerObj.get("provider_id").getAsInt();
 
                         // Only add providers from the predefined PROVIDER_IDS list.
-                        if(con.PROVIDER_IDS.contains(providerId)) {                        
+                        if (con.PROVIDER_IDS.contains(providerId)) {
                             movie.addStreamingProvider(streamProviderMap.get(providerId));
                         }
                     }
                 }
             } else {
-            System.out.println("No data found for county code FI.");
+                System.out.println("No data found for county code FI.");
             }
-                   
-        } catch (HttpResponseException ex){
-            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
-        }
-        
-        catch (IOException | InterruptedException e) {
+
+        } catch (HttpResponseException ex) {
+            throw new HttpResponseException(ex.getStatusCode(), ex.getReasonPhrase());
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
     }
-    
+
+    /**
+     * Fetches the genres from the given URL.
+     *
+     * @param url the URL to fetch the genres from
+     * @return the GenresResponse object containing the list of genres
+     * @throws HttpResponseException if there is an error in the HTTP response
+     */
     public GenresResponse fetchGenres(String url) throws HttpResponseException {
 
         GenresResponse responseObject = null;
@@ -178,17 +208,22 @@ public class MovieDataController {
 
             responseObject = (GenresResponse) gsonTools.convertJSONToObjects(responseBody, GenresResponse.class);
 
-        }
-        catch (HttpResponseException ex){
-            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
-        }
-        
-        catch (IOException | InterruptedException e) {
+        } catch (HttpResponseException ex) {
+            throw new HttpResponseException(ex.getStatusCode(), ex.getReasonPhrase());
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
         return responseObject;
     }
 
+    /**
+     * Fetches the list of spoken languages from the given URL and filters them
+     * based on predefined languages.
+     *
+     * @param url the URL to fetch the spoken languages from
+     * @return the list of filtered spoken languages
+     * @throws HttpResponseException if there is an error in the HTTP response
+     */
     public List<SpokenLanguage> fetchSpokenLanguages(String url) throws HttpResponseException {
 
         List<SpokenLanguage> responseList = null;
@@ -197,32 +232,32 @@ public class MovieDataController {
             String responseBody = httpTools.makeGenericHttpRequest(url);
 
             // Parse the response as a List of SpokenLanguage
-            Type listType = new TypeToken<List<SpokenLanguage>>(){}.getType();
+            Type listType = new TypeToken<List<SpokenLanguage>>() {
+            }.getType();
             responseList = gsonTools.convertJSONToObjects(responseBody, listType);
 
-        }
-        
-        catch (HttpResponseException ex){
-            throw new HttpResponseException(ex.getStatusCode(),ex.getReasonPhrase());
-        }
-        
-        catch (IOException | InterruptedException e) {
+        } catch (HttpResponseException ex) {
+            throw new HttpResponseException(ex.getStatusCode(), ex.getReasonPhrase());
+        } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
-        if(responseList != null) {
+
+        if (responseList != null) {
             var languagesUsed = con.getLanguages();
-            
+
             responseList = responseList.stream()
-                .filter(lang -> languagesUsed.contains(lang.iso_639_1))
-                .collect(Collectors.toList());
+                    .filter(lang -> languagesUsed.contains(lang.iso_639_1))
+                    .collect(Collectors.toList());
         }
 
-        
         return responseList;
     }
 
-
+    /**
+     * Gets the map of streaming providers.
+     *
+     * @return the map of streaming providers with their IDs as keys
+     */
     public Map<Integer, StreamingProvider> getStreamProviderMap() {
         return streamProviderMap;
     }

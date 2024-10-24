@@ -5,6 +5,7 @@
 package fi.tuni.swdesign.movienightplanner.models;
 
 /**
+ * Model for all APIs that return a single movie or multiple movies.
  *
  * @author janii, Copilot
  */

@@ -54,7 +54,7 @@ public class MovieDetails {
     }
 
     /**
-     * Sets the list of genres of the movie.
+     * Sets the list of genres for the movie.
      *
      * @param genres the list of genres to set
      */
@@ -63,7 +63,7 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the homepage URL of the movie.
+     * Gets the homepage URL of the movie.
      *
      * @return the homepage URL
      */
@@ -81,9 +81,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the ID of the movie.
+     * Gets the ID of the movie.
      *
-     * @return the ID of the movie
+     * @return the movie ID
      */
     public int getId() {
         return id;
@@ -92,16 +92,16 @@ public class MovieDetails {
     /**
      * Sets the ID of the movie.
      *
-     * @param id the ID to set
+     * @param id the movie ID to set
      */
     public void setId(int id) {
         this.id = id;
     }
 
     /**
-     * Returns the IMDb ID of the movie.
+     * Gets the IMDb ID of the movie.
      *
-     * @return the IMDb ID of the movie
+     * @return the IMDb ID
      */
     public String getImdbId() {
         return imdb_id;
@@ -117,7 +117,7 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the list of origin countries of the movie.
+     * Gets the list of origin countries for the movie.
      *
      * @return the list of origin countries
      */
@@ -126,7 +126,7 @@ public class MovieDetails {
     }
 
     /**
-     * Sets the list of origin countries of the movie.
+     * Sets the list of origin countries for the movie.
      *
      * @param origin_country the list of origin countries to set
      */
@@ -135,9 +135,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the original language of the movie.
+     * Gets the original language of the movie.
      *
-     * @return the original language of the movie
+     * @return the original language
      */
     public String getOriginalLanguage() {
         return original_language;
@@ -153,9 +153,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the original title of the movie.
+     * Gets the original title of the movie.
      *
-     * @return the original title of the movie
+     * @return the original title
      */
     public String getOriginalTitle() {
         return original_title;
@@ -171,9 +171,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the overview of the movie.
+     * Gets the overview of the movie.
      *
-     * @return the overview of the movie
+     * @return the overview
      */
     public String getOverview() {
         return overview;
@@ -189,9 +189,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the popularity of the movie.
+     * Gets the popularity of the movie.
      *
-     * @return the popularity of the movie
+     * @return the popularity
      */
     public double getPopularity() {
         return popularity;
@@ -234,7 +234,7 @@ public class MovieDetails {
     }
 
     /**
-     * Sets the runtime of the movie in minutes.
+     * Sets the runtime of the movie.
      *
      * @param runtime the runtime to set
      */
@@ -243,7 +243,7 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the list of spoken languages in the movie.
+     * Gets the list of spoken languages for the movie.
      *
      * @return the list of spoken languages
      */
@@ -252,7 +252,7 @@ public class MovieDetails {
     }
 
     /**
-     * Sets the list of spoken languages in the movie.
+     * Sets the list of spoken languages for the movie.
      *
      * @param spoken_languages the list of spoken languages to set
      */
@@ -261,9 +261,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the status of the movie.
+     * Gets the status of the movie.
      *
-     * @return the status of the movie
+     * @return the status
      */
     public String getStatus() {
         return status;
@@ -279,9 +279,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the tagline of the movie.
+     * Gets the tagline of the movie.
      *
-     * @return the tagline of the movie
+     * @return the tagline
      */
     public String getTagline() {
         return tagline;
@@ -297,9 +297,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the title of the movie.
+     * Gets the title of the movie.
      *
-     * @return the title of the movie
+     * @return the title
      */
     public String getTitle() {
         return title;
@@ -315,7 +315,7 @@ public class MovieDetails {
     }
 
     /**
-     * Returns whether the movie is a video.
+     * Checks if the movie is a video.
      *
      * @return true if the movie is a video, false otherwise
      */
@@ -333,27 +333,27 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the average vote of the movie.
+     * Gets the vote average of the movie.
      *
-     * @return the average vote of the movie
+     * @return the vote average
      */
     public double getVoteAverage() {
         return vote_average;
     }
 
     /**
-     * Sets the average vote of the movie.
+     * Sets the vote average of the movie.
      *
-     * @param vote_average the average vote to set
+     * @param vote_average the vote average to set
      */
     public void setVoteAverage(double vote_average) {
         this.vote_average = vote_average;
     }
 
     /**
-     * Returns the vote count of the movie.
+     * Gets the vote count of the movie.
      *
-     * @return the vote count of the movie
+     * @return the vote count
      */
     public int getVoteCount() {
         return vote_count;
@@ -369,9 +369,9 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the formatted runtime of the movie.
+     * Gets the formatted runtime of the movie.
      *
-     * @return the formatted runtime of the movie
+     * @return the formatted runtime as a string
      */
     public String getFormattedRuntime() {
         int hours = runtime / 60;
@@ -380,9 +380,10 @@ public class MovieDetails {
     }
 
     /**
-     * Returns the formatted specifications of the movie.
+     * Gets the formatted specifications of the movie, including runtime and
+     * genre.
      *
-     * @return the formatted specifications of the movie
+     * @return the formatted specifications as a string
      */
     public String getFormattedSpecs() {
         if (genres != null && genres.size() > 0) {
@@ -391,4 +392,5 @@ public class MovieDetails {
             return release_date;
         }
     }
+
 }

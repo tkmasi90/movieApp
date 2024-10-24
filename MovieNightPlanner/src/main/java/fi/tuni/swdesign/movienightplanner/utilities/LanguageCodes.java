@@ -8,12 +8,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Utility class for language code management with subtitles.
  *
  * @author janii, Copilot
  */
 public class LanguageCodes {
+
     private Map<String, String> languageMap;
 
+    /**
+     * Constructs a LanguageCodes instance and initializes the language map with
+     * predefined language codes.
+     */
     public LanguageCodes() {
         languageMap = new HashMap<>();
         languageMap.put("fi", "fin");
@@ -28,8 +34,14 @@ public class LanguageCodes {
         languageMap.put("ko", "kor");
     }
 
+    /**
+     * Gets the language code for the specified key.
+     *
+     * @param key the key for which to get the language code
+     * @return the language code corresponding to the key, or null if the key is
+     * not found
+     */
     public String getLanguageCode(String key) {
         return languageMap.get(key);
     }
 }
-
