@@ -5,8 +5,10 @@
 package fi.tuni.swdesign.movienightplanner.models;
 
 /**
- *
- * @author Make
+ * Represents a streaming provider, containing its name, ID, and logo path.
+ * This class is used to encapsulate the details of a streaming provider 
+ * and is primarily used in conjunction with streaming services data.
+ * @author Make, ChatGPT(Javadoc comments)
  */
 import com.google.gson.annotations.Expose;
 
@@ -21,30 +23,56 @@ public class StreamingProvider {
     @Expose
     public String logo_path;
 
-    // Constructor
-    public StreamingProvider() {}
-
-    // Getters and Setters
+    /**
+     * Gets the name of the streaming provider.
+     * 
+     * @return the provider name
+     */
     public String getProviderName() {
         return provider_name;
     }
-
+    
+    /**
+     * Sets the name of the streaming provider.
+     * 
+     * @param provider_name the name to set for the provider
+     */
     public void setProviderName(String provider_name) {
         this.provider_name = provider_name;
     }
 
+    /**
+     * Gets the unique ID of the streaming provider.
+     * 
+     * @return the provider ID
+     */
     public int getProviderId() {
         return provider_id;
     }
 
+    /**
+     * Sets the unique ID of the streaming provider.
+     * 
+     * @param provider_id the ID to set for the provider
+     */
     public void setProviderId(int provider_id) {
         this.provider_id = provider_id;
     }
 
+    /**
+     * Gets the path or URL of the streaming provider's logo.
+     * 
+     * @return the logo path or URL
+     */
     public String getLogoPath() {
         return logo_path;
     }
 
+    /**
+     * Sets the path or URL of the streaming provider's logo.
+     * 
+     * @param logo_path the path or URL to set for the logo
+     */
     public void setLogoPath(String logo_path) {
         this.logo_path = logo_path;
     }

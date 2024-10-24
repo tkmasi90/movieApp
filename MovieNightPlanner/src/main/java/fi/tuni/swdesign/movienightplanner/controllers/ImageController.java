@@ -82,8 +82,12 @@ public class ImageController {
         loadImageIntoView(imagePath, fxId, null, scene);
     }
     
+    /**
+     * This method takes the logo path from TMDb API and sets the logo in the specified logo container.
+     * @param imagePath The image path provided by the TMDb API (e.g., "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg")
+     * @param logoContainer The TilePane where the logo image will be added.
+     */
     public void loadLogosIntoMovieLabel(String imagePath, TilePane logoContainer) {
-        
         ImageView logoImageView = new ImageView();
         // Run on a separate thread for image loading
         CompletableFuture.runAsync(() -> {
@@ -97,18 +101,22 @@ public class ImageController {
             }
 
             // Load the image asynchronously
-            Image image = new Image(fullImageUrl, true);  // 'true' to load in the background
+            Image image = new Image(fullImageUrl, true);
 
             // Once the image is loaded, update the UI on the JavaFX thread
             Platform.runLater(() -> {
-                logoImageView.setImage(image);  // Set the image on the ImageView
-                logoContainer.getChildren().add(logoImageView);  // Add to the container
+                logoImageView.setImage(image);
+                logoContainer.getChildren().add(logoImageView);
             });
         });
     }
     
-    public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView ) {
-        
+    /**
+     * This method takes the image path from TMDb API and sets the image in the given ImageView.
+     * @param imagePath The image path provided by the TMDb API (e.g., "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg")
+     * @param imageView The ImageView where the poster image will be displayed.
+     */
+    public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView ) { 
         // Run on a separate thread for image loading
         CompletableFuture.runAsync(() -> {
             // Determine the size parameter for the URL
@@ -120,11 +128,11 @@ public class ImageController {
             }
 
             // Load the image asynchronously
-            Image image = new Image(fullImageUrl, true);  // 'true' to load in the background
+            Image image = new Image(fullImageUrl, true);
 
             // Once the image is loaded, update the UI on the JavaFX thread
             Platform.runLater(() -> {
-                imageView.setImage(image);  // Set the image on the ImageView
+                imageView.setImage(image);
             });
         });
     }
