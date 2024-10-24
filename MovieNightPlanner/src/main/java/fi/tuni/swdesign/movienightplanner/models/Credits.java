@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Represents the credits of a movie, including cast and crew.
+ *
+ * @author kian, Copilot
  */
 public class Credits {
     @Expose

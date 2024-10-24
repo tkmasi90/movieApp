@@ -30,6 +30,11 @@ import javafx.stage.Modality;
 
 import javafx.stage.Stage;
 
+/**
+ * Controller for the movie details view.
+ *
+ * @author kian
+ */
 public class MovieDetailsController {
     private SceneController sceneController;
     private ImageController imageController = new ImageController();

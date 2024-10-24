@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Represents the details of a movie.
+ *
+ * @author kian, Copilot
  */
 public class MovieDetails {
     @Expose

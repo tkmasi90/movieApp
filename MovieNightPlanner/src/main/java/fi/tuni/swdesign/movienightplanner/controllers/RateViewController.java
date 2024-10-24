@@ -6,6 +6,11 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.controlsfx.control.Rating;
 
+/**
+ * Controller for the rate view.
+ *
+ * @author kian
+ */
 public class RateViewController {
 
     @FXML private Rating rating;

@@ -12,6 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for the image-related features.
+ *
+ * @author kian, Make
+ */
 public class ImageController {
 
     // The base URL for TMDb images

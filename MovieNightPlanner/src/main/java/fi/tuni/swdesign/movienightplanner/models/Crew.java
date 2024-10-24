@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 
 /**
  * Represents a crew member in a movie.
+ *
+ * @author kian, Copilot
  */
 public class Crew {
     @Expose
