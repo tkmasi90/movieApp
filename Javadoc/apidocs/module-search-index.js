@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"fi.tuni.swdesign.movienightplanner"}];updateSearchResults();
