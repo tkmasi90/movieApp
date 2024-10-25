@@ -29,3 +29,7 @@ System: Windows 11 version 10.0 running on amd64; UTF-8; en_US (nb)
 ## Project management
 - GitLab issue board: https://course-gitlab.tuni.fi/compse110-fall2024/jmsk/-/boards
 - Merge requests: https://course-gitlab.tuni.fi/compse110-fall2024/jmsk/-/merge_requests
+
+## Documentation
+- PDF - In folder "Documentation"
+- Javadocs - In folder "Javadoc"
