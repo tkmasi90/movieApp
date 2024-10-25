@@ -9,7 +9,9 @@ import com.google.gson.JsonObject;
 import fi.tuni.swdesign.movienightplanner.models.SubtitleService;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
+import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,173 +25,236 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 /**
+ * Handles all subtitle-related functionalities.
  *
  * @author janii
  */
 public class ShowDataController {
-    
+
     private final GSONTools gsonTools = new GSONTools();
-    
+    private final HTTPTools httpTools = new HTTPTools();
+
     private final String urlPre = "https://streaming-availability.p.rapidapi.com/shows/movie/";
     private final String urlPost = "?series_granularity=show&output_language=en";
 
-    
-    // Checks if Finnish subtitles are available for a given movie from any
-    // service
-    public boolean areSubtitlesAvailableAtAll(int movieId){
-        
+    /**
+     * Checks if Finnish subtitles are available for a given movie from any
+     * service.
+     *
+     * @param movieId the ID of the movie to check for Finnish subtitles
+     * @return true if Finnish subtitles are available, false otherwise
+     */
+    public boolean areFinnishSubtitlesAvailableAtAll(int movieId) {
+
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
         JsonArray finnishJsonArray = null;
-        
-       
-        
+
         String url = urlPre + Integer.toString(movieId) + urlPost;
-        
+
         try {
-            String vastaus = makeTMOTNHttpRequest(url);
-            tempJsonObject = (JsonObject)gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
-        
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
+
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
-        
+
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
-        
-        if (finnishJsonArray != null){
+
+        if (finnishJsonArray != null) {
             return true;
         }
-        
+
         return false;
     }
-    
-    
-    public boolean areSubtitlesAvailableForMovieInService(String streamingServiceName, int movieId){
-        
+
+    /**
+     * Checks if Finnish subtitles are available for a given movie on a specific
+     * streaming service.
+     *
+     * @param streamingServiceName the name of the streaming service to check
+     * @param movieId the ID of the movie to check for Finnish subtitles
+     * @return true if Finnish subtitles are available on the specified
+     * streaming service, false otherwise
+     */
+    public boolean areFinnishSubtitlesAvailableForMovieInService(String streamingServiceName, int movieId) {
+
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
         JsonArray finnishJsonArray = null;
-        
+
         SubtitleService[] tempServices = null;
-        
+
         String url = urlPre + Integer.toString(movieId) + urlPost;
-        
+
         try {
-            String vastaus = makeTMOTNHttpRequest(url);
-            tempJsonObject = (JsonObject)gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
-        
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
+
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
-        
+
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
-        
-        if (finnishJsonArray != null){
-            tempServices = (SubtitleService[])gsonTools.convertJSONToObjects(finnishJsonArray.toString(), SubtitleService[].class);
+
+        if (finnishJsonArray != null) {
+            tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(finnishJsonArray.toString(), SubtitleService[].class);
         }
-        
-        if(tempServices != null){
-        for (SubtitleService s : tempServices){
-            for (SubtitleService.Subtitle st : s.subtitles){
-                if (st.getLocale().getLanguage().equals("fin") && s.getService().getId().equals(streamingServiceName)){
-                    return true;
+
+        if (tempServices != null) {
+            for (SubtitleService s : tempServices) {
+                for (SubtitleService.Subtitle st : s.subtitles) {
+                    if (st.getLocale().getLanguage().equals("fin") && s.getService().getId().equals(streamingServiceName)) {
+                        return true;
+                    }
                 }
             }
         }
-        }
-        
+
         return false;
     }
-    
-    public Set<String> getServicesWithSubtitles(int movieId){
-        
+
+    /**
+     * Fetches the list of streaming services that provide Finnish subtitles for
+     * a given movie.
+     *
+     * @param movieId the ID of the movie to check for Finnish subtitles
+     * @return a set of streaming service names that provide Finnish subtitles
+     */
+    public Set<String> getServicesWithFinnishSubtitles(int movieId) {
+
         Set<String> serviceList = new HashSet<>();
-        
+
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
         JsonArray finnishJsonArray = null;
-        
+
         SubtitleService[] tempServices = null;
-        
+
         String url = urlPre + Integer.toString(movieId) + urlPost;
-        
+
         try {
-            String vastaus = makeTMOTNHttpRequest(url);
-            tempJsonObject = (JsonObject)gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
-        
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-        
+
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
-        
+
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
-        
-        if (finnishJsonArray != null){
-            tempServices = (SubtitleService[])gsonTools.convertJSONToObjects(finnishJsonArray.toString(), SubtitleService[].class);
+
+        if (finnishJsonArray != null) {
+            tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(finnishJsonArray.toString(), SubtitleService[].class);
         }
-        
-        if(tempServices != null){
-        for (SubtitleService s : tempServices){
-            for (SubtitleService.Subtitle st : s.subtitles){
-                if (st.getLocale().getLanguage().equals("fin")){
-                    serviceList.add(s.getService().getName());
+
+        if (tempServices != null) {
+            for (SubtitleService s : tempServices) {
+                for (SubtitleService.Subtitle st : s.subtitles) {
+                    if (st.getLocale().getLanguage().equals("fin")) {
+                        serviceList.add(s.getService().getName());
+                    }
                 }
             }
-        }
         }
         return serviceList;
     }
-            
-    // TODO: REFACTOR TO HTTPTOOLS
-    private String makeTMOTNHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
-        
-        SimpleHttpResponse httpResponse = null;
-               
-        
-        try (CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault()) {
 
-            httpClient.start();
-            
-            SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
-            // TODO: Switch to API key and login. 
-            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
-            request.addHeader("accept", "application/json");
-            request.addHeader("Content-Type", "application/json");
-            request.addHeader("x-rapidapi-ua", "RapidAPI-Playground");
-            request.addHeader("x-rapidapi-key", "828f0857d0msh8bd2546014cdc05p18e636jsn76036c21d578");
-            request.addHeader("x-rapidapi-host", "streaming-availability.p.rapidapi.com");
-            
-            Future<SimpleHttpResponse> future = httpClient.execute(request, null);
-            
-            httpResponse = future.get();
-                
-        } catch (Exception e) {
-            System.out.println("EX: " + e);
+    /**
+     * Checks if Finnish area is supported for a given movie.
+     *
+     * @param movieId the ID of the movie to check for Finnish subtitle support
+     * @return true if Finnish subtitles are supported, false otherwise
+     */
+    public boolean isFinnishAreaSupported(int movieId) {
+
+        JsonObject tempJsonObject = null;
+        JsonObject streamingOptionsJsonObject = null;
+        JsonArray finnishJsonArray = null;
+
+        String url = urlPre + Integer.toString(movieId) + urlPost;
+
+        try {
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
         }
-        
-        // TODO: Error handling (All relevant HTTP error codes...)
-        if (httpResponse == null || httpResponse.getBodyText() == null) {
-            throw new IllegalStateException("The HTTP response or the response body is null");
+
+        streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
+
+        finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
+
+        if (finnishJsonArray == null) {
+            return false;
         }
-        
-        if (httpResponse.getCode() != 200)
-        {
-            
-            
-//            GSONTools gsonTools = new GSONTools();
-//            
-//            ErrorModel newError = (ErrorModel)gsonTools.convertJSONToObjects(httpResponse.getBodyText(), ErrorModel.class);
-//            
-//            throw new HttpResponseException(httpResponse.getCode(), newError.getMessage());
-        }
-        
-        return httpResponse.getBodyText();
-    
-        
+
+        return true;
     }
+
+    /**
+     * Checks for the availability of required subtitles for a given movie on a
+     * specific streaming service.
+     *
+     * @param movieId the ID of the movie to check for subtitles
+     * @param streamingServiceName the name of the streaming service to check
+     * @param languageList the list of languages to check for subtitles
+     * @return a list of languages for which subtitles are available on the
+     * specified streaming service
+     */
+    public List<String> checkRequiredSubtitlesForMovieInService(int movieId, String streamingServiceName, List<String> languageList) {
+
+        JsonObject tempJsonObject = null;
+        JsonObject streamingOptionsJsonObject = null;
+        JsonArray finnishJsonArray = null;
+
+        SubtitleService[] tempServices = null;
+
+        LanguageCodes languageCodes = new LanguageCodes();
+
+        List<String> subtitleList = new ArrayList<>();
+
+        String url = urlPre + Integer.toString(movieId) + urlPost;
+
+        try {
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
+        }
+
+        streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
+
+        finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
+
+        for (String language : languageList) {
+
+            if (finnishJsonArray != null) {
+                tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(finnishJsonArray.toString(), SubtitleService[].class);
+
+                if (tempServices != null) {
+                    for (SubtitleService s : tempServices) {
+                        for (SubtitleService.Subtitle st : s.subtitles) {
+                            if (st.getLocale().getLanguage().equals(languageCodes.getLanguageCode(language)) && s.getService().getId().equals(streamingServiceName)) {
+                                subtitleList.add(language);
+                            }
+                        }
+                    }
+                }
+            } else {
+                continue;
+            }
+        }
+
+        return subtitleList;
+    }
+
 }

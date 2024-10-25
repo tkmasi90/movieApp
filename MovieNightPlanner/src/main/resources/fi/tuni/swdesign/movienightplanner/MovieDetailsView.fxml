@@ -10,24 +10,23 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1020.0" maxWidth="1440.0" minHeight="1020.0" minWidth="1440.0" prefHeight="1020.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
+<VBox maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
    <children>
       <SplitPane orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
         <items>
           <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="452.0" prefWidth="1438.0">
                <children>
-                  <ImageView fx:id="backdropImage" fitHeight="519.0" fitWidth="1438.0" pickOnBounds="true">
+                  <ImageView fx:id="backdropImage" fitHeight="470.0" fitWidth="1640.0" pickOnBounds="true">
                      <effect>
                         <GaussianBlur radius="18.0" />
                      </effect>
                   </ImageView>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10265980" height="519.0" stroke="BLACK" strokeType="INSIDE" width="1438.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#10265980" height="472.0" stroke="BLACK" strokeType="INSIDE" width="1648.0" />
                   <ImageView fx:id="posterImage" fitHeight="276.0" fitWidth="200.0" layoutX="136.0" layoutY="61.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="firstProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="secondProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1130.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
                   <Button fx:id="homeButton" layoutX="31.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToSearchView" text="Home" />
-                  <Button fx:id="profileButton" layoutX="1346.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToProfileView" text="Profile" />
-                  <Button fx:id="saveToListButton" layoutX="381.0" layoutY="139.0" mnemonicParsing="false" text="Save" />
+                  <Button fx:id="profileButton" layoutX="1555.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToProfileView" text="Profile" />
                   <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="61.0" prefHeight="35.0" prefWidth="616.0" text="Movie Name (year)" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="24.0" />
@@ -36,13 +35,15 @@
                   <Label fx:id="overviewLabel" alignment="TOP_CENTER" layoutX="353.0" layoutY="207.0" prefHeight="261.0" prefWidth="631.0" text="A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground &quot;fight clubs&quot; forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion." textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="System Bold" size="18.0" />
-                     </font></Label>
-                  <Button fx:id="rateMovieButton" layoutX="599.0" layoutY="139.0" mnemonicParsing="false" text="Rate" />
+                     </font>
+                  </Label>
+                  <Button fx:id="rateMovieButton" layoutX="368.0" layoutY="139.0" mnemonicParsing="false" onAction="#handleRateButtonAction" prefHeight="26.0" prefWidth="70.0" text="Rate" />
                   <Label layoutX="471.0" layoutY="122.0" prefHeight="18.0" prefWidth="80.0" text="TMDB Rating" textFill="WHITE" />
                   <Label fx:id="specsLabel" alignment="CENTER" layoutX="136.0" layoutY="344.0" prefHeight="38.0" prefWidth="200.0" text="genre - length" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
-                     </font></Label>
+                     </font>
+                  </Label>
                   <Label layoutX="1050.0" layoutY="102.0" text="Streaming at" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="20.0" />

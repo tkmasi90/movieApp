@@ -16,6 +16,7 @@ import java.io.Writer;
 
 /**
  * Provides means to read state data from a file and store state data in a file.
+ * 
  * @author janii
  */
 public class FileDataController {
@@ -48,24 +49,24 @@ public class FileDataController {
      * @throws com.google.gson.JsonIOException
      * @throws java.io.IOException
      */
-    public boolean writeStateToFile(AppState appState) throws JsonIOException, 
-        IOException {
-        
+    public boolean writeStateToFile(AppState appState) throws JsonIOException, IOException {
         Gson gson = new GsonBuilder()
-        .setPrettyPrinting()
-        .excludeFieldsWithoutExposeAnnotation()
-        .create();
+            .setPrettyPrinting()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
         
         Writer appStateWriter = new FileWriter(STATE_FILENAME);
 
-        try{
+        try {
             gson.toJson(appState, appStateWriter);
             appStateWriter.flush();
-            appStateWriter.close(); 
-        }catch(JsonIOException | IOException e){
-            
+            appStateWriter.close();
+        } catch (JsonIOException | IOException e) {
+            System.err.println("Error writing AppState to file: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        
+
         return true;
     }
 }

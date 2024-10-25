@@ -57,6 +57,11 @@ import org.apache.hc.client5.http.HttpResponseException;
 import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
 
+/**
+ * Controller class for handling the search view of the application. It manages
+ * movie lists, filter options, and transitions between views such as profile and movie details.
+ * @author Make, ChatGPT(setComboBoxLogic, Javadoc comments)
+ */
 public class SearchViewController {
     
     @FXML TabPane movieViewSelect;
@@ -88,13 +93,24 @@ public class SearchViewController {
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
     
+    /**
+    * Sets the {@link SceneController} instance for this controller.
+    * This method is used to inject the {@code SceneController} into the current context, allowing 
+    * this controller to manage and switch scenes as needed.
+    * 
+    * @param sceneController the {@link SceneController} to be associated with this controller.
+    */
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
     
+    /**
+     * Initializes the search view components, sets backgrounds, populates movie lists,
+     * and configures filter options.
+     * This method is called automatically after the FXML components have been loaded.
+     */
     @FXML
-    public void initialize(){
-                
+    public void initialize(){       
         //TODO: Background settings
         mainView.setBackground(
             new Background(
@@ -109,10 +125,9 @@ public class SearchViewController {
                             BackgroundPosition.CENTER,
                             BackgroundSize.DEFAULT))));
         
-        // Add "Loading" placeholders to the ListViews initially
+        // Set placeholders and initialize movie lists
         popularMoviesLView.setPlaceholder(popularMoviesLoadingLabel);
         topRatedMoviesLview.setPlaceholder(topRatedMoviesLoadingLabel);
-        
         popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
         topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
 
@@ -132,20 +147,23 @@ public class SearchViewController {
         
         movieViewSelect.setFocusTraversable(false);
         
+        // Set filter options and populate movie lists
         setFilterOptions();
-
-        // Populate Popular Movies List View
         populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, con.getPopularMoviesUrl());
-
-        // Populate Top Rated Movies List View
         populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, con.getTopRatedMoviesUrl());
         
-        // Set Streaming Provider IDs and logos for filtering.
+        // Set streaming provider logos
         setStreamingProviders();
 
         
     }
     
+    /**
+     * Handles the action of switching to the profile view when the profile button is clicked.
+     * 
+     * @param event The action event triggered by clicking the profile button.
+     * @throws IOException if an error occurs while switching the scene.
+     */
     @FXML
     public void handleProfileButtonClick(ActionEvent event) throws IOException {
         if (sceneController == null) {
@@ -155,18 +173,28 @@ public class SearchViewController {
         }
     }
     
+    /**
+     * Handles the action of applying filters when the filter button is clicked.
+     * This filters the movies based on selected genres, audio, subtitles, and streaming providers.
+     *
+     * @param event The action event triggered by clicking the filter button.
+     * @throws IOException if an error occurs during filtering.
+     */
     @FXML
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
-        
         List<Integer> providers = getCheckedValues(selectedProviders);
-//        System.out.println("Checked Values: " + providers);
-        
         populateMovieListAsync(filteredMoviesLoadingLabel, filteredView, con.getFilteredUrl(providers));
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
         selectionModel.selectLast();
     }
     
+    /**
+     * Returns a list of streaming provider IDs that have been selected by the user.
+     *
+     * @param checkBoxes List of checkboxes representing streaming providers.
+     * @return A list of integers representing the IDs of selected providers.
+     */
     private List<Integer> getCheckedValues(List<CheckBox> checkBoxes) {
         List<Integer> checkedValues = new ArrayList<>();
         for (CheckBox checkBox : checkBoxes) {
@@ -177,8 +205,11 @@ public class SearchViewController {
         return checkedValues;
     }
     
+    /**
+     * Sets filter options for genres, audio, and subtitles. It populates combo boxes
+     * and applies logic for handling selections in the filtering options.
+     */
     private void setFilterOptions() {
-        
         // Populate combobox content for filtering
         populateGenreComboBox();
         
@@ -200,8 +231,6 @@ public class SearchViewController {
         filterButton.setOnAction(event -> {
             try {
                 handleFilterButtonClick(event);
-//                System.out.println("Genres checked: " + cbGenre.getCheckModel().getCheckedItems());
-//                System.out.println("Languages checked: " + cbAudio.getCheckModel().getCheckedItems());
             }
             catch (IOException ex) {
                 System.err.println("Error with filter button");
@@ -210,6 +239,12 @@ public class SearchViewController {
         
     }
     
+    /**
+     * Applies logic to a CheckComboBox such that when one item is unchecked, 
+     * all others are unchecked, and if none are checked, all items are selected.
+     *
+     * @param ccb The CheckComboBox to apply the logic to.
+     */
     private void setComboBoxLogic(CheckComboBox ccb) {
         // Use an array to store the flag, making it mutable
         final boolean[] internalChange = {false};
@@ -253,7 +288,13 @@ public class SearchViewController {
     }
 
 
-    // Add the movie label elements to ListView
+    /**
+    * Populates a ListView with movie data. Each movie is displayed using custom labels 
+    * that are loaded from an FXML file. These labels are cached for better performance.
+    * 
+    * @param movies the list of movies to display in the ListView
+    * @param lView  the ListView component that will display the movie labels
+    */
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
@@ -304,7 +345,13 @@ public class SearchViewController {
         });
     }
     
-    // Add the movie label elements to ListView
+    /**
+    * Populates a GridView with movie data. Each movie is displayed using custom labels 
+    * that are loaded from an FXML file. These labels are cached for better performance.
+    * 
+    * @param movies the list of movies to display in the GridView
+    * @param lView  the GridView component that will display the movie labels
+    */
     private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
@@ -356,7 +403,10 @@ public class SearchViewController {
     }
     
     /**
-     * Handles the click event for a movie label.
+     * Handles the event when a movie label is clicked. Switches the scene to the movie detail view.
+     *
+     * @param event The mouse event triggered by clicking a movie label.
+     * @param movie The movie object whose details should be shown.
      */
     private void handleMovieClick(MouseEvent event, Movie movie) {
         // Logic to switch to the movie details view using SceneController
@@ -369,6 +419,11 @@ public class SearchViewController {
         }
     }
     
+    /**
+    * Sets the streaming providers by iterating over the streaming provider nodes
+    * and assigning unique IDs from the provider list. After assigning the IDs, 
+    * the method invokes {@link #setStreamingProviderLogos()} to apply the provider logos.
+    */
     private void setStreamingProviders() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
@@ -379,6 +434,10 @@ public class SearchViewController {
         setStreamingProviderLogos();
     }
     
+    /**
+     * Sets the streaming provider logos in the search view by fetching and displaying them in the UI.
+     * If providers are not loaded, it will display an error logo.
+     */
     private void setStreamingProviderLogos() {
        
         if(mdc.getStreamProviderMap() == null) {
@@ -443,6 +502,13 @@ public class SearchViewController {
        
     }
    
+        /**
+     * Populates a ListView with a list of movies asynchronously by fetching movie data from the API.
+     * 
+     * @param loadingLabel The label to display while loading movies.
+     * @param lView The ListView or GridView to populate with movie data.
+     * @param url The URL to fetch movie data from.
+     */
     private void populateMovieListAsync(Label loadingLabel, Node lView, String url) {       
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
@@ -482,6 +548,9 @@ public class SearchViewController {
         });
     }
    
+    /**
+     * Populates the genre combo box asynchronously by fetching genre data from the API.
+     */
     private void populateGenreComboBox() {
         // Fetch Genre-list from TMDB
         CompletableFuture.supplyAsync(() -> {
@@ -514,43 +583,5 @@ public class SearchViewController {
                 }
             });
         });
-        
-//        // Fetch Spoken Language-list from TMDB
-//        CompletableFuture.supplyAsync(() -> {
-//            List<SpokenLanguage> temp = null;
-//            
-//            try {
-//                temp = mdc.fetchSpokenLanguages(AUDIO_URL);
-//            } catch (HttpResponseException ex) {
-//                this.HTTPErrorCode = ex.getStatusCode();              
-//                this.HTTPErrorMessage = ex.getReasonPhrase();
-//                
-//                return null;
-//            }
-//            return temp;
-//        })
-//        .thenAccept(audioList  -> {
-//            Platform.runLater(() -> {
-//                if (audioList != null) {
-//                    List<String> audioNames = audioList.stream()
-//                        .map(SpokenLanguage::getEnglishName)
-//                        .sorted()
-//                        .collect(Collectors.toList());
-//
-//                    cbAudio.getItems().addAll(audioNames);
-//                    cbAudio.getCheckModel().checkAll();
-//                } else {
-//                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
-//                }
-//            });
-//        });
-       
-        
-//        cbSubtitle = getComboBoxContent("subtitle");
-
     }
-   
-//    private final String AUDIO_URL = String.format("https://api.themoviedb.org/3/configuration/languages");
-    // TODO: private final String SUBTITLE_URL
-
 }
