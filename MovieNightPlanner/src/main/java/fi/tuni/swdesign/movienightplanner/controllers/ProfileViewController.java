@@ -18,6 +18,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Controller class for handling the profile view of the application. 
+ * This class is responsible for fetching and displaying the streaming providers.
+ * 
+ * @author Sviat, GH Copilot
+ */
 public class ProfileViewController {
     private SceneController sceneController;
     private final Constants con = new Constants();
@@ -32,6 +38,9 @@ public class ProfileViewController {
         this.sceneController = sceneController;
     }
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     public void initialize(){
         // TODO:
@@ -52,6 +61,12 @@ public class ProfileViewController {
         setStreamingProviders();
     }
 
+    /**
+     * Sets the streaming providers by iterating over the streaming provider nodes
+     * and assigning unique IDs from the provider list. After assigning the IDs, 
+     * the method invokes {@link #setStreamingProviderLogos()} to apply the provider logos.
+     * IT is required to fetch the providers before calling this method.
+     */
     private void setStreamingProviders() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
@@ -62,6 +77,10 @@ public class ProfileViewController {
         setStreamingProviderLogos();
     }
 
+    /**
+     * Sets the streaming provider logos in the search view by fetching and displaying them in the UI.
+     * If providers are not loaded, it will display an error logo.
+     */
     private void setStreamingProviderLogos() {
        
         if(mdc.getStreamProviderMap() == null) {
@@ -117,6 +136,11 @@ public class ProfileViewController {
        
     }
 
+    /**
+     * Navigates to the search view when the button is clicked.
+     * 
+     * @param event the ActionEvent object
+     */
     @FXML
     private void navigateToSearchView(ActionEvent event) {
         System.out.println("Button clicked, navigating to Search View...");
