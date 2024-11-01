@@ -181,6 +181,22 @@ public class MovieDataController {
                         }
                     }
                 }
+                
+                if(fiData.has("free")) {
+                    JsonArray flatrateArray = fiData.getAsJsonArray("free");
+
+                    // Iterate through the providers and print their details
+                    for (JsonElement providerElement : flatrateArray) {
+                        JsonObject providerObj = providerElement.getAsJsonObject();
+                        int providerId = providerObj.get("provider_id").getAsInt();
+
+                        // Check if provider is YLE areena
+                        if (providerId == 323) {
+                            movie.addStreamingProvider(streamProviderMap.get(providerId));
+                        }
+                    }
+                }
+                
             } else {
                 System.out.println("No data found for county code FI.");
             }

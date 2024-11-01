@@ -10,9 +10,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="movieLabel" maxHeight="260.0" maxWidth="420.0" minHeight="260.0" minWidth="420.0" prefHeight="260.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieLabelController">
+<StackPane fx:id="movieLabel" style="-fx-background-color: transparent" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieLabelController">
    <children>
-      <ImageView fx:id="movieLabelImage" fitHeight="260.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="movieLabelImage" pickOnBounds="true" preserveRatio="true">
          <viewport>
             <Rectangle2D />
          </viewport>
@@ -25,8 +25,14 @@
                      <font>
                         <Font size="24.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets left="4.0" />
+                     </VBox.margin>
                   </Text>
-                  <Text fx:id="movieLabelYear" strokeType="OUTSIDE" strokeWidth="0.0" text="2015" />
+                  <Text fx:id="movieLabelYear" strokeType="OUTSIDE" strokeWidth="0.0" text="2015">
+                     <VBox.margin>
+                        <Insets left="4.0" />
+                     </VBox.margin></Text>
                </children>
                <padding>
                   <Insets bottom="4.0" left="4.0" top="4.0" />

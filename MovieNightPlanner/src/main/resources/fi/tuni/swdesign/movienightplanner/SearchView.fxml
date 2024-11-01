@@ -285,14 +285,14 @@
          <tabs>
             <Tab closable="false" text="POPULAR AND TOP RATED MOVIES">
                <content>
-                  <VBox fx:id="popularRatedView" spacing="8.0">
+                  <VBox fx:id="popularRatedView" spacing="8.0" style="-fx-background-color: transparent;">
                      <children>
-                        <ListView fx:id="popularMoviesLView" style="-fx-opacity: 0.8;">
+                        <ListView fx:id="popularMoviesLView" style="-fx-background-color: RGB(32, 86, 117, 0.9)">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
                         </ListView>
-                        <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
+                        <ListView fx:id="topRatedMoviesLview" style="-fx-background-color: RGB(32, 86, 117, 0.9)">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -309,7 +309,7 @@
             </Tab>
             <Tab closable="false" text="RESULTS">
                <content>
-                  <GridView fx:id="filteredView" cellHeight="260.0" cellWidth="420.0" />
+                  <GridView fx:id="filteredView" style="-fx-background-color: RGB(32, 86, 117, 0.9)"/>
                </content>
             </Tab>
          </tabs>

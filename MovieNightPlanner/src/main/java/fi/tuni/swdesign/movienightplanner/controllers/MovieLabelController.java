@@ -55,8 +55,10 @@ public class MovieLabelController {
      *
      * @param movie the movie object containing the backdrop path
      */
-    public void addMovieImage(Movie movie) {
-        imageController.loadPosterIntoMovieLabel(movie.getBackdropPath(), movieLabelImage);
+    public void addMovieImage(Movie movie, Integer height) {
+        String moviePath = movie.getBackdropPath();
+        if(moviePath != null)
+            imageController.loadPosterIntoMovieLabel(movie.getBackdropPath(), movieLabelImage, height);
     }
 
     /**

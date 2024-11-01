@@ -298,7 +298,6 @@ public class SearchViewController {
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
-        
         // Create a map to cache the graphics for each movie
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
 
@@ -310,6 +309,7 @@ public class SearchViewController {
                 if (empty || movie == null) {
                     setText(null);
                     setGraphic(null);
+                    setStyle("");
                 } else {
                     // Check if the movie is already cached
                     if (movieLabelCache.containsKey(movie)) {
@@ -325,18 +325,22 @@ public class SearchViewController {
                             // Populate the movie label with data from the movie object
                             mlController.addLogo(movie);
                             
-                            mlController.addMovieImage(movie);
+                            mlController.addMovieImage(movie, 250);
 
                             // Cache the graphic for later use
                             movieLabelCache.put(movie, movieLabel);
-
                             // Set the graphic for the current cell
                             setGraphic(movieLabel);
-
+                            
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
+                    
+                    // Make the cell background transparent
+                    setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
+                    setPrefWidth(410);
+                    setPrefHeight(240);
 
                     // Handle clicks on the movie
                     setOnMouseClicked(event -> handleMovieClick(event, movie));
@@ -355,6 +359,9 @@ public class SearchViewController {
     private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
+        lView.setCellWidth(500);
+        lView.setCellHeight(320);
+        lView.setVerticalCellSpacing(-8);
         
         // Create a map to cache the graphics for each movie
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
@@ -382,7 +389,7 @@ public class SearchViewController {
                             // Populate the movie label with data from the movie object
                             mlController.addLogo(movie);
                             
-                            mlController.addMovieImage(movie);
+                            mlController.addMovieImage(movie, 280);
 
                             // Cache the graphic for later use
                             movieLabelCache.put(movie, movieLabel);
@@ -393,7 +400,9 @@ public class SearchViewController {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }                           
+                    // Make the cell background transparent
+                    setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
 
                     // Handle clicks on the movie
                     setOnMouseClicked(event -> handleMovieClick(event, movie));
@@ -499,7 +508,6 @@ public class SearchViewController {
                 }
             }
         }
-       
     }
    
         /**
