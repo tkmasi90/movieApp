@@ -11,16 +11,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-opacity: 0;
 }
 
-/*.tab-header-area {
-    -fx-padding: 0px 0px 0px 8px;
-}*/
+.tab-header-area {
+    -fx-padding: 0px 0px 0px 36px;
+}
 
 /* Style for each tab */
 .tab {
-    -fx-background-color: white;
+    -fx-background-color: rgba(32,86,117,0.9);
     -fx-font-size: 18;
     -fx-focus-color: transparent;
-    -fx-text-base-color: black;
+    -fx-text-base-color: gray;
+    -fx-font-weight: bold;
+    -fx-border-color: gray;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-style: solid;
 }
 
 /* Hover effect for tabs */
@@ -30,15 +34,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 /* Style for the selected tab */
 .tab:selected {
-    -fx-background-color: rgb(32,86,117); 
+    -fx-background-color: rgb(238,241,244); 
     -fx-font-weight: bold;
     -fx-border-color: red;
     -fx-border-width: 0 0 2px 0;
     -fx-border-style: solid;
     -fx-text-base-color: red;
-    -fx-padding: 2px 0 0 0;
-    -fx-background-insets: 2;
-
 }
 
 .tab-down-button {
@@ -50,4 +51,3 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-pref-width: 0;
     -fx-opacity: 0;
 }
-

@@ -325,7 +325,9 @@ public class SearchViewController {
                             // Populate the movie label with data from the movie object
                             mlController.addLogo(movie);
                             
-                            mlController.addMovieImage(movie, 250);
+                            mlController.setClipRectangleSize(458, 257);
+                            
+                            mlController.addMovieImage(movie, 257);
 
                             // Cache the graphic for later use
                             movieLabelCache.put(movie, movieLabel);
@@ -339,8 +341,8 @@ public class SearchViewController {
                     
                     // Make the cell background transparent
                     setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
-                    setPrefWidth(410);
-                    setPrefHeight(240);
+                    setPrefWidth(448);
+                    setPrefHeight(247);
 
                     // Handle clicks on the movie
                     setOnMouseClicked(event -> handleMovieClick(event, movie));
@@ -359,9 +361,10 @@ public class SearchViewController {
     private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
-        lView.setCellWidth(500);
+        lView.setCellWidth(490);
         lView.setCellHeight(320);
-        lView.setVerticalCellSpacing(-8);
+//        lView.setVerticalCellSpacing(-8);
+//        lView.setHorizontalCellSpacing(-6);
         
         // Create a map to cache the graphics for each movie
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
@@ -389,7 +392,9 @@ public class SearchViewController {
                             // Populate the movie label with data from the movie object
                             mlController.addLogo(movie);
                             
-                            mlController.addMovieImage(movie, 280);
+                            mlController.setClipRectangleSize(490, 320);
+                            
+                            mlController.addMovieImage(movie, 320);
 
                             // Cache the graphic for later use
                             movieLabelCache.put(movie, movieLabel);

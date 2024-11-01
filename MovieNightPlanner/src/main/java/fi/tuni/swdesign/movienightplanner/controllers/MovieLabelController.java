@@ -8,9 +8,11 @@ import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
@@ -30,6 +32,14 @@ public class MovieLabelController {
     private Text movieLabelYear;
     @FXML
     private TilePane movieLabelLogos;
+    
+    @FXML
+    private Rectangle clippingRectangle;
+    
+    public void setClipRectangleSize(double width, double height) {
+        clippingRectangle.setWidth(width);
+        clippingRectangle.setHeight(height);
+    }
 
     ImageController imageController = new ImageController();
 
