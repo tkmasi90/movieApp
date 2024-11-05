@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
+<?import org.controlsfx.control.CheckComboBox?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -184,20 +184,26 @@
                         <Label text="Genres" />
                         <Label text="You can select multiple genres" style="-fx-font-size: 12; -fx-text-fill: #757575;" />
                     </VBox>
-                    <ComboBox promptText="Select genre" />
+                    <CheckComboBox fx:id="cbGenre" title="Select genre" />
 
                     <VBox>
                         <Label text="Languages" />
                         <Label text="You can select multiple languages" style="-fx-font-size: 12; -fx-text-fill: #757575;" />
                     </VBox>
-                    <ComboBox promptText="Select language" />
 
-                    <HBox spacing="10">
-                        <Label text="Finnish" style="-fx-background-color: lightgray; -fx-padding: 5; -fx-border-radius: 3;" />
-                        <Label text="English" style="-fx-background-color: lightgray; -fx-padding: 5; -fx-border-radius: 3;" />
+                    <CheckComboBox fx:id="cbAudio" title="Audio language" />
+                    <HBox fx:id="audioList" spacing="10">
                     </HBox>
 
-                    <Label text="Minimum rating" />
+                    <CheckComboBox fx:id="cbSubtitle" title="Subtitles language" />
+                    <HBox fx:id="subtitleList" spacing="10">
+                    </HBox>
+
+                    <HBox>
+                        <Label text="Minimum rating" style="-fx-padding: 0 10 0 0;" />
+                        <Label text="0" style="-fx-font-weight: bold;" />
+                        <Label text=" ★" style="-fx-font-weight: bold;" />
+                    </HBox>
                     <Slider min="0" max="10" blockIncrement="1" />
 
                     <HBox alignment="CENTER" spacing="10">
