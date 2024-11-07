@@ -1,14 +1,21 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import fi.tuni.swdesign.movienightplanner.models.Genre;
+import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.apache.hc.client5.http.HttpResponseException;
+import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Pair;
 
 /**
  * Controller class for handling the profile view of the application. 
@@ -28,11 +36,16 @@ public class ProfileViewController {
     private SceneController sceneController;
     private final Constants con = new Constants();
     private final MovieDataController mdc = new MovieDataController();
-    private int HTTPErrorCode;
-    private String HTTPErrorMessage;
     List<CheckBox> selectedProviders = new ArrayList<>();
 
+    // HTTP Error Handling
+    private int HTTPErrorCode;
+    private String HTTPErrorMessage;
+
     @FXML GridPane streamers;
+    @FXML CheckComboBox<String> cbGenre;
+    @FXML CheckComboBox<String> cbAudio;    
+    @FXML CheckComboBox<String> cbSubtitle;
     
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
@@ -59,6 +72,7 @@ public class ProfileViewController {
 
         // Set Streaming Provider IDs and logos for filtering.
         setStreamingProviders();
+        setFilterOptions();
     }
 
     /**
@@ -133,7 +147,58 @@ public class ProfileViewController {
                 }
             }
         }
-       
+    }
+
+    /**
+     * Populates the genre combo box asynchronously by fetching genre data from the API.
+     */
+    private void populateGenreComboBox() {
+        // Fetch Genre-list from TMDB
+        CompletableFuture.supplyAsync(() -> {
+            GenresResponse temp = null;
+            
+            try {
+                temp = mdc.fetchGenres(con.getGenresUrl());
+            } catch (HttpResponseException ex) {
+
+                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                
+                return null;
+            }
+            return temp;
+        })
+        .thenAccept(genreResponse -> {
+            Platform.runLater(() -> {
+                if(genreResponse != null) {
+                    List<String> genreList = genreResponse.getGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .collect(Collectors.toList()); 
+
+                    cbGenre.getItems().addAll(genreList);
+
+                } else {
+                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
+                }
+            });
+        });
+    }
+
+    /**
+     * Sets filter options for genres, audio, and subtitles. It populates combo boxes
+     * and applies logic for handling selections in the filtering options.
+     */
+    private void setFilterOptions() {
+        // Populate combobox content for filtering
+        populateGenreComboBox();
+        
+        // Populate Language and Subtitle comboboxes
+        List<String> languages = con.getLanguages().stream()
+            .map(Pair::getValue) // Get the second element (country name)
+            .collect(Collectors.toList());
+        cbAudio.getItems().addAll(languages);
+        cbSubtitle.getItems().addAll(languages);
     }
 
     /**
