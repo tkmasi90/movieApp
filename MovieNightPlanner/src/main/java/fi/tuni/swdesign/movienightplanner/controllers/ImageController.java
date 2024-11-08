@@ -127,15 +127,17 @@ public class ImageController {
      * @param imagePath The image path provided by the TMDb API (e.g., "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg")
      * @param imageView The ImageView where the poster image will be displayed.
      */
-    public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView, Integer height ) { 
+    public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView, Integer height ) {
+        String fullImageUrl = TMDB_IMAGE_BASE_URL + "w500" + imagePath;
+        
+        // If imagePath is null, use the local fallback image
+        if (imagePath == null) {
+            fullImageUrl = this.getClass().getResource("/images/grayBackground.png").toString();
+        }
+            
+        Image image = new Image(fullImageUrl, true);
         // Run on a separate thread for image loading
         CompletableFuture.runAsync(() -> {
-            // Determine the size parameter for the URL
-            String fullImageUrl = TMDB_IMAGE_BASE_URL + "w500" + imagePath;
-            
-            // Load the image asynchronously
-            Image image = new Image(fullImageUrl, true);
-
             // Once the image is loaded, update the UI on the JavaFX thread
             Platform.runLater(() -> {
                 imageView.setImage(image);
