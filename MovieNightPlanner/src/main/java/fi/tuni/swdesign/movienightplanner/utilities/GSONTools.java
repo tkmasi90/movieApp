@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
  *
  * @author janii, Markus
  */
-public class GSONTools {
+public class GSONTools implements iGSONOperations{
 
     Gson gson;
 
@@ -37,6 +37,7 @@ public class GSONTools {
      * @throws JsonParseException if the JSON is not valid or cannot be
      * converted
      */
+    @Override
     public Object convertJSONToObjects(String JSONString, Class<?> targetClass) throws JsonParseException {
         return gson.fromJson(JSONString, targetClass);
     }
@@ -52,6 +53,7 @@ public class GSONTools {
      * @throws JsonParseException if the JSON is not valid or cannot be
      * converted
      */
+    @Override
     public <T> T convertJSONToObjects(String JSONString, Type type) throws JsonParseException {
         return gson.fromJson(JSONString, type);
     }

@@ -19,7 +19,7 @@ import java.io.Writer;
  * 
  * @author janii
  */
-public class FileDataController {
+public class FileDataController implements iFileOperations{
     
     private static final String STATE_FILENAME = "MovieNightPlannerState.json";
     
@@ -31,6 +31,7 @@ public class FileDataController {
     * @throws FileNotFoundException if the specified file is not found
     * @throws Exception if an error occurs while reading the file
     */
+    @Override
     public AppState readStateFromFile() throws FileNotFoundException, Exception {
         
         Gson gson = new GsonBuilder()
@@ -49,6 +50,7 @@ public class FileDataController {
      * @throws com.google.gson.JsonIOException
      * @throws java.io.IOException
      */
+    @Override
     public boolean writeStateToFile(AppState appState) throws JsonIOException, IOException {
         Gson gson = new GsonBuilder()
             .setPrettyPrinting()

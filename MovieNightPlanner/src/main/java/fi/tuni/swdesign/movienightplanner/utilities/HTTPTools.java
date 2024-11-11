@@ -23,7 +23,7 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
  *
  * @author Make, janii
  */
-public class HTTPTools {
+public class HTTPTools implements iHTTPOperations {
 
     
     /**
@@ -37,6 +37,7 @@ public class HTTPTools {
     * 
     * @author janii
     */
+    @Override
     public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
@@ -86,6 +87,7 @@ public class HTTPTools {
     * 
     * @author janii
     */
+    @Override
     public String makeTMOTNHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
         
         SimpleHttpResponse httpResponse = null;
