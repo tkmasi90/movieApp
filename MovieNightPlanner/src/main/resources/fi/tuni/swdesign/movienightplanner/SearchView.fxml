@@ -281,35 +281,69 @@
             <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />
          </VBox.margin>
       </HBox>
-      <TabPane fx:id="movieViewSelect" stylesheets="@styles.css" tabMaxHeight="32.0" tabMaxWidth="Infinity" tabMinHeight="32.0" tabMinWidth="792.0">
+      <TabPane fx:id="movieViewSelect" stylesheets="@styles.css" tabMaxHeight="32.0" tabMaxWidth="749.0" tabMinHeight="32.0" tabMinWidth="749.0">
          <tabs>
             <Tab closable="false" text="POPULAR AND TOP RATED MOVIES">
                <content>
-                  <VBox fx:id="popularRatedView" spacing="8.0">
+                  <VBox fx:id="popularRatedView" spacing="8.0" style="-fx-background-color: transparent;">
                      <children>
-                        <ListView fx:id="popularMoviesLView" style="-fx-opacity: 0.8;">
+                        <HBox style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
-                        </ListView>
-                        <ListView fx:id="topRatedMoviesLview" style="-fx-opacity: 0.8;">
+                           <children>
+                              <Label contentDisplay="TOP" graphicTextGap="0.0" lineSpacing="2.0" maxHeight="1.7976931348623157E308" maxWidth="20.0" style="-fx-background-color: transparent;" text="POPULAR" textFill="WHITE" wrapText="true">
+                                 <font>
+                                    <Font size="22.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets bottom="4.0" left="12.0" top="4.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="popularMoviesLView" prefHeight="281.5" prefWidth="1664.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets right="20.0" />
+                                 </padding></ListView>
+                           </children>
+                        </HBox>
+                        <HBox style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
-                        </ListView>
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" lineSpacing="2.0" maxHeight="1.7976931348623157E308" maxWidth="20.0" style="-fx-background-color: transparent;" text="TOP" textFill="WHITE" wrapText="true">
+                                 <font>
+                                    <Font size="22.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="4.0" left="12.0" top="4.0" />
+                                 </padding>
+                              </Label>
+                              <ListView fx:id="topRatedMoviesLview" prefHeight="281.5" prefWidth="1708.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets right="20.0" />
+                                 </padding></ListView>
+                           </children>
+                        </HBox>
                      </children>
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <padding>
-                        <Insets bottom="8.0" left="8.0" right="8.0" />
+                        <Insets left="8.0" right="8.0" />
                      </padding>
                   </VBox>
                </content>
             </Tab>
             <Tab closable="false" text="RESULTS">
                <content>
-                  <GridView fx:id="filteredView" cellHeight="260.0" cellWidth="420.0" />
+                  <GridView fx:id="filteredView" maxWidth="1584.0" minWidth="1584.0" prefWidth="1584.0" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20" translateX="8.0">
+                     <padding>
+                        <Insets bottom="8.0" top="8.0" />
+                     </padding></GridView>
                </content>
             </Tab>
          </tabs>
