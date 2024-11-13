@@ -104,10 +104,12 @@ public class SceneController {
             ProfileViewController profileViewController = loader.getController();
             profileViewController.setSceneController(this); // Set SceneController
             profileViewController.setAppState(this.appState); // Set AppState
-            profileViewController.initializeView(); // sets data in the view
             profileScene = new Scene(root);
-        }
+            profileScene.setUserData(profileViewController);
+          }
 
+        ProfileViewController profileViewController = (ProfileViewController) profileScene.getUserData();
+        profileViewController.initializeView(); // sets data in the view
         stage.setScene(profileScene);
         stage.sizeToScene();
         stage.show();

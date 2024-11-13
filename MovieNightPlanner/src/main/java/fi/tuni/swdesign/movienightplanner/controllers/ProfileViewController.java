@@ -15,6 +15,7 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -216,7 +217,9 @@ public class ProfileViewController {
      */
     private void populateWatchHistory() {
       watchHistoryListView.getItems().clear();
-      watchHistoryListView.getItems().addAll(appState.getWatchHistory());
+      List<String> watchHistory = appState.getWatchHistory();
+      Collections.reverse(watchHistory);
+      watchHistoryListView.getItems().addAll(watchHistory);
     }
 
     /**
