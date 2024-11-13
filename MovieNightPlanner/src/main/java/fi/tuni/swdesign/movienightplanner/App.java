@@ -25,7 +25,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        
         readAppStateFromFile();
 
         // Load the SearchView and set its SceneController
@@ -70,7 +69,6 @@ public class App extends Application {
     }
 
     private void readAppStateFromFile() {
-        
         FileDataController fdc = new FileDataController();
         
         try{
@@ -79,7 +77,9 @@ public class App extends Application {
                 this.appState = new AppState();
             }
         } 
-        catch (FileNotFoundException e){}
+        catch (FileNotFoundException e){
+            this.appState = new AppState();
+        }
         catch (Exception e){}
     }
     

@@ -103,6 +103,8 @@ public class SceneController {
             Parent root = loader.load();
             ProfileViewController profileViewController = loader.getController();
             profileViewController.setSceneController(this); // Set SceneController
+            profileViewController.setAppState(this.appState); // Set AppState
+            profileViewController.initializeView(); // sets data in the view
             profileScene = new Scene(root);
         }
 

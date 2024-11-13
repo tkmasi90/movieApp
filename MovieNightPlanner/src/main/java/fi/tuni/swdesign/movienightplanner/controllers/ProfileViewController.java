@@ -2,6 +2,7 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
+import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 
 import java.io.IOException;
@@ -14,12 +15,17 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -34,8 +40,10 @@ import javafx.util.Pair;
  */
 public class ProfileViewController {
     private SceneController sceneController;
+    private AppState appState;
     private final Constants con = new Constants();
     private final MovieDataController mdc = new MovieDataController();
+    private final ImageController ic = new ImageController();
     List<CheckBox> selectedProviders = new ArrayList<>();
 
     // HTTP Error Handling
@@ -47,6 +55,11 @@ public class ProfileViewController {
     @FXML CheckComboBox<String> cbAudio;    
     @FXML CheckComboBox<String> cbSubtitle;
     
+    @FXML private PieChart genresPieChart;
+    @FXML private PieChart centuryPieChart;
+
+    @FXML private ListView<String> watchHistoryListView;
+
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
@@ -54,9 +67,7 @@ public class ProfileViewController {
     /**
      * Initializes the controller.
      */
-    @FXML
-    public void initialize(){
-        // TODO:
+    public void initializeView(){
         // This function doesn't need be called each time.
         // We can fetch this data only on first time and save to a local json
         if(mdc.getStreamProviderMap() == null) {
@@ -73,6 +84,59 @@ public class ProfileViewController {
         // Set Streaming Provider IDs and logos for filtering.
         setStreamingProviders();
         setFilterOptions();
+
+        // Set genres pie chart
+        populateGenresPieChart();
+
+        // Set century pie chart
+        populateCenturyPieChart();
+
+        // Set watch history list view
+        populateWatchHistory();
+    }
+
+    /**
+     * Populates the genres pie chart in the profile view.
+     */
+    private void populateGenresPieChart() {
+        List<String> genres = appState.getRatedMovieGenres();
+        Map<String, Integer> genreCounts = new HashMap<>();
+
+        // Count the occurrences of each genre
+        for (String genre : genres) {
+            genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
+        }
+
+        // Create PieChart data
+        List<PieChart.Data> pieChartData = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : genreCounts.entrySet()) {
+            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+
+        // Set the data to the PieChart
+        genresPieChart.setData(FXCollections.observableArrayList(pieChartData));
+    }
+
+    /**
+     * Populates the century pie chart in the profile view.
+     */
+    private void populateCenturyPieChart() {
+        List<String> centuries = appState.getMoviesByCentury();
+        Map<String, Integer> centuryCounts = new HashMap<>();
+
+        // Count the occurrences of each century category
+        for (String century : centuries) {
+            centuryCounts.put(century, centuryCounts.getOrDefault(century, 0) + 1);
+        }
+
+        // Create PieChart data
+        List<PieChart.Data> pieChartData = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : centuryCounts.entrySet()) {
+            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+
+        // Set the data to the PieChart
+        centuryPieChart.setData(FXCollections.observableArrayList(pieChartData));
     }
 
     /**
@@ -99,9 +163,7 @@ public class ProfileViewController {
        
         if(mdc.getStreamProviderMap() == null) {
             System.err.println("Could not load providers");
-        }
-        
-        else{
+        } else {
             Set<Node> imageViews = streamers.lookupAll(".image-view");
             String urlPrefix = "https://media.themoviedb.org/t/p/original";
             
@@ -147,6 +209,14 @@ public class ProfileViewController {
                 }
             }
         }
+    }
+
+    /**
+     * Populates list view of watch history
+     */
+    private void populateWatchHistory() {
+      watchHistoryListView.getItems().clear();
+      watchHistoryListView.getItems().addAll(appState.getWatchHistory());
     }
 
     /**
@@ -214,5 +284,13 @@ public class ProfileViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * sets the appstate
+     */
+    public void setAppState(AppState appState) {
+        this.appState = appState;
     }
 }
