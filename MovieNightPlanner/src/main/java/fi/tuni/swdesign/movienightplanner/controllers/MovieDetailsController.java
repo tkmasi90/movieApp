@@ -62,10 +62,14 @@ public class MovieDetailsController {
     @FXML private ImageView star2Image;
     @FXML private ImageView star3Image;
     @FXML private ImageView star4Image;
+    @FXML private ImageView star5Image;
+    @FXML private ImageView star6Image;
     @FXML private Rectangle star1Rectangle;
     @FXML private Rectangle star2Rectangle;
     @FXML private Rectangle star3Rectangle;
     @FXML private Rectangle star4Rectangle;
+    @FXML private Rectangle star5Rectangle;
+    @FXML private Rectangle star6Rectangle;
     @FXML private Label star1CharacterLabel;
     @FXML private Label star1NameLabel;
     @FXML private Label star2CharacterLabel;
@@ -74,6 +78,10 @@ public class MovieDetailsController {
     @FXML private Label star3NameLabel;
     @FXML private Label star4CharacterLabel;
     @FXML private Label star4NameLabel;
+    @FXML private Label star5CharacterLabel;
+    @FXML private Label star5NameLabel;
+    @FXML private Label star6CharacterLabel;
+    @FXML private Label star6NameLabel;
 
     /**
      * Sets the SceneController for this controller.
@@ -138,7 +146,7 @@ public class MovieDetailsController {
             rateStage.setScene(new Scene(root));
             rateViewController.setStage(rateStage);
             rateViewController.setAppState(appState); // Pass AppState
-            rateViewController.setMovieId(movie.getId()); // Pass Movie ID
+            rateViewController.setMovie(movie); // Pass Movie
             rateStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -221,6 +229,8 @@ public class MovieDetailsController {
         star2Image.setImage(null);
         star3Image.setImage(null);
         star4Image.setImage(null);
+        star5Image.setImage(null);
+        star6Image.setImage(null);
         star1CharacterLabel.setText("");
         star1NameLabel.setText("");
         star2CharacterLabel.setText("");
@@ -229,10 +239,16 @@ public class MovieDetailsController {
         star3NameLabel.setText("");
         star4CharacterLabel.setText("");
         star4NameLabel.setText("");
+        star5CharacterLabel.setText("");
+        star5NameLabel.setText("");
+        star6CharacterLabel.setText("");
+        star6NameLabel.setText("");
         star1Rectangle.setVisible(false);
         star2Rectangle.setVisible(false);
         star3Rectangle.setVisible(false);
         star4Rectangle.setVisible(false);
+        star5Rectangle.setVisible(false);
+        star6Rectangle.setVisible(false);
     }
 
     /**
@@ -271,7 +287,7 @@ public class MovieDetailsController {
         int castSize = cast.size();
 
         // Show and set data for available cast members
-        for (int i = 0; i < castSize && i < 4; i++) {
+        for (int i = 0; i < castSize && i < 6; i++) {
             Cast actor = cast.get(i);
             switch (i) {
                 case 0:
@@ -309,6 +325,24 @@ public class MovieDetailsController {
                     star4Rectangle.setVisible(true);
                     star4CharacterLabel.setVisible(true);
                     star4NameLabel.setVisible(true);
+                    break;
+                case 4:
+                    imageController.loadImageIntoView(actor.getProfilePath(), "star5Image", 200, sceneController.getMovieDetailScene());
+                    star5CharacterLabel.setText(actor.getCharacter());
+                    star5NameLabel.setText(actor.getName());
+                    star5Image.setVisible(true);
+                    star5Rectangle.setVisible(true);
+                    star5CharacterLabel.setVisible(true);
+                    star5NameLabel.setVisible(true);
+                    break;
+                case 5:
+                    imageController.loadImageIntoView(actor.getProfilePath(), "star6Image", 200, sceneController.getMovieDetailScene());
+                    star6CharacterLabel.setText(actor.getCharacter());
+                    star6NameLabel.setText(actor.getName());
+                    star6Image.setVisible(true);
+                    star6Rectangle.setVisible(true);
+                    star6CharacterLabel.setVisible(true);
+                    star6NameLabel.setVisible(true);
                     break;
             }
         }

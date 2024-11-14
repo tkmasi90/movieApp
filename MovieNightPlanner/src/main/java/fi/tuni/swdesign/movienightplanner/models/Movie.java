@@ -45,6 +45,7 @@ public class Movie {
     public int vote_count;
 
     private ArrayList<StreamingProvider> streamingProviders;
+    
     private MovieDetails movieDetails;
     private Credits credits;
 

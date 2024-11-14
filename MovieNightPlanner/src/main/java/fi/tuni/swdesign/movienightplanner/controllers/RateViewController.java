@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.AppState;
+import fi.tuni.swdesign.movienightplanner.models.Movie;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -19,7 +20,7 @@ public class RateViewController {
 
     private Stage stage;
     private AppState appState;
-    private int movieId;
+    private Movie movie;
 
     /**
      * Sets the stage for this controller.
@@ -44,11 +45,11 @@ public class RateViewController {
      *
      * @param movieId the ID of the movie to set
      */
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
 
         // Load the existing rating if available
-        int existingRating = appState.getMovieRating(movieId);
+        int existingRating = appState.getMovieRating(movie);
         if (existingRating != -1) {
             rating.setRating(existingRating);
         }
@@ -74,7 +75,7 @@ public class RateViewController {
     private void handleRateButtonAction() {
         int ratingValue = (int) rating.getRating();
         // Save the rating to AppState
-        appState.saveMovieRating(movieId, ratingValue);
+        appState.saveMovieRating(movie, ratingValue);
         stage.close();
     }
 
