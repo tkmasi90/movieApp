@@ -11,25 +11,17 @@ import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Future;
-import org.apache.hc.client5.http.HttpResponseException;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 
 /**
  * Handles all subtitle-related functionalities.
  *
  * @author janii
  */
-public class ShowDataController {
+public class SubtitleDataController {
 
     private final GSONTools gsonTools = new GSONTools();
     private final HTTPTools httpTools = new HTTPTools();
@@ -217,8 +209,6 @@ public class ShowDataController {
 
         SubtitleService[] tempServices = null;
 
-        LanguageCodes languageCodes = new LanguageCodes();
-
         List<String> subtitleList = new ArrayList<>();
 
         String url = urlPre + Integer.toString(movieId) + urlPost;
@@ -232,7 +222,6 @@ public class ShowDataController {
         }
 
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
-
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
 
         for (String language : languageList) {
@@ -243,7 +232,7 @@ public class ShowDataController {
                 if (tempServices != null) {
                     for (SubtitleService s : tempServices) {
                         for (SubtitleService.Subtitle st : s.subtitles) {
-                            if (st.getLocale().getLanguage().equals(languageCodes.getLanguageCode(language)) && s.getService().getId().equals(streamingServiceName)) {
+                            if (st.getLocale().getLanguage().equals(LanguageCodes.getIsoCodeFromCc(language)) && s.getService().getId().equals(streamingServiceName)) {
                                 subtitleList.add(language);
                             }
                         }
@@ -256,5 +245,29 @@ public class ShowDataController {
 
         return subtitleList;
     }
+    
 
+    public boolean areSubtitlesAvailable(int movieId, String language) {
+
+        JsonObject tempJsonObject = null;
+        JsonObject streamingOptionsJsonObject = null;
+
+        String url = urlPre + Integer.toString(movieId) + urlPost;
+
+        try {
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
+        }
+
+        streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
+
+        JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
+        
+        System.out.println(jsonArray);
+
+        return jsonArray != null;
+    };
 }

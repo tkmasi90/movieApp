@@ -20,6 +20,7 @@ import fi.tuni.swdesign.movienightplanner.models.StreamingResponse;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
+import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
@@ -259,7 +260,7 @@ public class MovieDataController {
         }
 
         if (responseList != null) {
-            var languagesUsed = con.getLanguages();
+            var languagesUsed = LanguageCodes.getAllCountryCodes();
 
             responseList = responseList.stream()
                     .filter(lang -> languagesUsed.contains(lang.iso_639_1))

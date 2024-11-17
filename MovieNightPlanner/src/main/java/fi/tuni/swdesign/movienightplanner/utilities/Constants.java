@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.util.Pair;
 
 /**
  * The {@code Constants} class provides a set of constant values, configurations, and utility methods
@@ -23,39 +22,6 @@ import javafx.util.Pair;
  * @author Make, ChatGPT(Javadoc comments)
  */
 public final class Constants {
-    /** A list of supported languages with their respective language codes and names */
-    private final List<Pair<String, String>> LANGUAGES;
-    
-    /**
-     * Initializes a new instance of the {@code Constants} class, 
-     * setting up the supported languages list by calling {@code createLanguageList()}.
-     */
-    public Constants() {
-        LANGUAGES = createLanguageList();
-    }
-
-    /**
-     * Creates a list of language pairs containing language codes and their corresponding names.
-     * 
-     * @return a list of pairs where each pair represents a language code and its name
-     */
-    private List<Pair<String, String>> createLanguageList() {
-        List<Pair<String, String>> languagePairs = new ArrayList<>();
-        
-        languagePairs.add(new Pair<>("fi", "Finnish"));
-        languagePairs.add(new Pair<>("en", "English"));
-        languagePairs.add(new Pair<>("sv", "Swedish"));
-        languagePairs.add(new Pair<>("no", "Norwegian"));
-        languagePairs.add(new Pair<>("is", "Icelandic"));
-        languagePairs.add(new Pair<>("dk", "Denmark"));
-        languagePairs.add(new Pair<>("es", "Spanish"));
-        languagePairs.add(new Pair<>("it", "Italian"));
-        languagePairs.add(new Pair<>("fr", "French"));
-        languagePairs.add(new Pair<>("ja", "Japanese"));
-        languagePairs.add(new Pair<>("ko", "Korean"));
-
-        return languagePairs; //
-    };
 
     /**
      * Represents a collection of provider IDs for streaming services supported by the application.
@@ -116,7 +82,7 @@ public final class Constants {
      * @param list the list of provider IDs to encode
      * @return a URL-encoded string representing the provider IDs, or {@code null} if encoding fails
      */
-    public String getProvidersString(List<Integer> list) {
+    public String getFiltersInt(List<Integer> list) {
         try {
             return URLEncoder.encode((list.stream()
                     .map(String::valueOf)
@@ -126,17 +92,24 @@ public final class Constants {
         return null;
     }
     
+        /**
+     * Encodes a given list of genres and languages into a URL-friendly string, where strings are concatenated and separated by the '|' character.
+     * 
+     * @param list the list of genres or languages to encode
+     * @return a URL-encoded string representing the genres or languages, or {@code null} if encoding fails
+     */
+    public String getFiltersString(List<String> list) {
+                try {
+            return URLEncoder.encode((list.stream()
+                    .collect(Collectors.joining("|"))), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return null;
+    }
+    
     /** A list of provider IDs initialized from the {@code PROVIDERS} class */
     public final List<Integer> PROVIDER_IDS = getProviderIds();
     
-    /**
-     * Retrieves the list of supported languages.
-     * 
-     * @return a list of pairs where each pair represents a language code and its name
-     */
-    public List<Pair<String, String>> getLanguages() {
-        return LANGUAGES;
-    }
     
     /**
      * Generates the URL for retrieving popular movies from TMDb, 
@@ -174,13 +147,17 @@ public final class Constants {
      * @param list the list of provider IDs to include in the URL
      * @return a formatted URL string for filtered movies
      */
-    public String getFilteredUrl(List<Integer> list) {
-        return String.format(MOVIE_BASE_URL, getProvidersString(list));
+    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList) {
+        System.out.println(String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList)));
+        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList));
     }
     
     /** The base URL for discovering movies from TMDb */
-    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    
+    /** The base URL for discovering movies from TMDb using filters */
+    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
     
     /** The URL for fetching available movie genres from TMDb */
-    private final String GENRES_URL = String.format("https://api.themoviedb.org/3/genre/movie/list");
+    private final String GENRES_URL = "https://api.themoviedb.org/3/genre/movie/list";
 }

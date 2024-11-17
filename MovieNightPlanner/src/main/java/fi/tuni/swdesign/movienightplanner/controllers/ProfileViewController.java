@@ -4,6 +4,7 @@ import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.utilities.Constants;
+import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 
 import java.io.IOException;
 import java.util.Set;
@@ -267,9 +268,7 @@ public class ProfileViewController {
         populateGenreComboBox();
         
         // Populate Language and Subtitle comboboxes
-        List<String> languages = con.getLanguages().stream()
-            .map(Pair::getValue) // Get the second element (country name)
-            .collect(Collectors.toList());
+        List<String> languages = LanguageCodes.getAllLanguageNames();
         cbAudio.getItems().addAll(languages);
         cbSubtitle.getItems().addAll(languages);
     }
