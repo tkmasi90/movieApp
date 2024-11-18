@@ -32,6 +32,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
@@ -64,6 +65,8 @@ public class ProfileViewController {
     @FXML private PieChart centuryPieChart;
 
     @FXML private ListView<String> watchHistoryListView;
+
+    @FXML private VBox chartContainer;
 
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
@@ -115,6 +118,9 @@ public class ProfileViewController {
      * Populates the genres pie chart in the profile view.
      */
     private void populateGenresPieChart() {
+        // Clear existing data
+        genresPieChart.getData().clear();
+
         List<String> genres = appState.getRatedMovieGenres();
         Map<String, Integer> genreCounts = new HashMap<>();
 
@@ -137,6 +143,9 @@ public class ProfileViewController {
      * Populates the century pie chart in the profile view.
      */
     private void populateCenturyPieChart() {
+        // Clear existing data
+        centuryPieChart.getData().clear();
+
         List<String> centuries = appState.getMoviesByCentury();
         Map<String, Integer> centuryCounts = new HashMap<>();
 
@@ -310,5 +319,9 @@ public class ProfileViewController {
      */
     public void setAppState(AppState appState) {
         this.appState = appState;
+    }
+
+    public VBox getChartContainer() {
+        return chartContainer;
     }
 }
