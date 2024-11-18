@@ -216,7 +216,7 @@
 
                     <HBox>
                         <Label prefHeight="26.0" prefWidth="115.0" style="-fx-padding: 0 10 0 0;" text="Minimum rating" />
-                  <Spinner fx:id="minRatingSpinner" prefHeight="26.0" prefWidth="54.0" />
+                  <Spinner fx:id="minRatingSpinner" prefHeight="26.0" prefWidth="64.0" />
                     </HBox>
                     <HBox spacing="10">
                         <Label style="-fx-background-color: lightgray; -fx-padding: 5; -fx-border-radius: 3;" text="Finnish" />
