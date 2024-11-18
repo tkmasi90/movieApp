@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * 
  * @author Make, ChatGPT(Javadoc comments)
  */
-public final class Constants {
+public final class TMDbUtility {
 
     /**
      * Represents a collection of provider IDs for streaming services supported by the application.
@@ -140,6 +140,10 @@ public final class Constants {
         return GENRES_URL;
     }
     
+    public String getImagesBaseUrl() {
+        return TMDB_IMAGE_BASE_URL;
+    }
+    
     
     /**
      * Generates a filtered URL for discovering movies from TMDb based on a specific list of providers.
@@ -160,4 +164,7 @@ public final class Constants {
     
     /** The URL for fetching available movie genres from TMDb */
     private final String GENRES_URL = "https://api.themoviedb.org/3/genre/movie/list";
+    
+    /** The Url for fetching images from TMDb */
+    private final String TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 }

@@ -3,7 +3,7 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
-import fi.tuni.swdesign.movienightplanner.utilities.Constants;
+import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
@@ -83,7 +83,7 @@ public class SearchViewController {
 
     private final MovieDataController mdc = new MovieDataController();
     private final SubtitleDataController sdc = new SubtitleDataController();
-    private final Constants con = new Constants();
+    private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final ImageController ic = new ImageController();
 
     List<CheckBox> selectedProviders = new ArrayList<>();
@@ -150,8 +150,8 @@ public class SearchViewController {
         
         // Set filter options and populate movie lists
         setFilterOptions();
-        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, con.getPopularMoviesUrl());
-        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, con.getTopRatedMoviesUrl());
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl());
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl());
         cbSubtitle.getItems().add(0, "All");
         cbSubtitle.getSelectionModel().selectFirst();
         
@@ -188,7 +188,6 @@ public class SearchViewController {
         List<Integer> providers = getCheckedValues(selectedProviders);
         List<Integer> genres = new ArrayList();
         List<String> audio = new ArrayList();
-        List<String> subtitle = new ArrayList();
         
         List<String> genresChecked = (List<String>) cbGenre.getCheckModel().getCheckedItems();
         List<String> audioChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
@@ -210,19 +209,9 @@ public class SearchViewController {
             }
         }
         
-        if(subChecked.size() == lngLength) {
-            subtitle.addAll(LanguageCodes.getAllIsoCodes());
-        }
-        else {
-            for(String sub : subChecked) {
-                subtitle.add(LanguageCodes.getIsoCodeFromName(sub));
-            }
-        }
-        
-        populateMovieListAsync(
-                filteredMoviesLoadingLabel,
+        populateMovieListAsync(filteredMoviesLoadingLabel,
                 filteredView,
-                con.getFilteredUrl(genres, audio, providers)
+                tmdbUtil.getFilteredUrl(genres, audio, providers)
         );
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
@@ -477,7 +466,7 @@ public class SearchViewController {
     private void setStreamingProviders() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
-            spHbox.setId(Integer.toString(con.PROVIDER_IDS.get(index)));
+            spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
             index++;
         }
         
@@ -581,6 +570,7 @@ public class SearchViewController {
                     
                     List<Movie> movieList = moviesResponse.getResults();
                     
+                    // If subtitle language is selected, filter by that too
                     if(cbSubtitle.getSelectionModel().getSelectedIndex() != 0) {
                         String subtitle = LanguageCodes.getCountryCodeFromName(
                             (String) cbSubtitle.getSelectionModel().getSelectedItem());
@@ -588,12 +578,12 @@ public class SearchViewController {
                         while (iterator.hasNext()) {
                             Movie movie = iterator.next();
                             if (!sdc.areSubtitlesAvailable(movie.getId(), subtitle)) {
-                                iterator.remove();  // Remove the movie safely using iterator's remove method
+                                // Remove movie from list selected language subtitles are not available
+                                iterator.remove();
                             }
                         }
                     }
-                    
-                    
+                                        
                     if (lView instanceof ListView) {
                         ListView<Movie> listView = (ListView<Movie>) lView;
                         setMovieListView(movieList, listView);

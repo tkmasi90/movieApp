@@ -246,7 +246,13 @@ public class SubtitleDataController {
         return subtitleList;
     }
     
-
+    /**
+     * Checks if subtitles are available for a given movie in a specific language.
+     *
+     * @param movieId the ID of the movie to check for subtitles
+     * @param language the language code (e.g., "en" for English, "fi" for Finnish) to check for subtitles
+     * @return {@code true} if subtitles in the specified language are available for the movie, {@code false} otherwise
+     */
     public boolean areSubtitlesAvailable(int movieId, String language) {
 
         JsonObject tempJsonObject = null;

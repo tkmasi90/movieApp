@@ -3,7 +3,7 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.AppState;
-import fi.tuni.swdesign.movienightplanner.utilities.Constants;
+import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 
 import java.io.IOException;
@@ -32,7 +32,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 /**
  * Controller class for handling the profile view of the application. 
@@ -43,7 +42,7 @@ import javafx.util.Pair;
 public class ProfileViewController {
     private SceneController sceneController;
     private AppState appState;
-    private final Constants con = new Constants();
+    private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final MovieDataController mdc = new MovieDataController();
     private final ImageController ic = new ImageController();
     List<CheckBox> selectedProviders = new ArrayList<>();
@@ -150,7 +149,7 @@ public class ProfileViewController {
     private void setStreamingProviders() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
-            spHbox.setId(Integer.toString(con.PROVIDER_IDS.get(index)));
+            spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
             index++;
         }
         
@@ -232,7 +231,7 @@ public class ProfileViewController {
             GenresResponse temp = null;
             
             try {
-                temp = mdc.fetchGenres(con.getGenresUrl());
+                temp = mdc.fetchGenres(tmdbUtil.getGenresUrl());
             } catch (HttpResponseException ex) {
 
                 this.HTTPErrorCode = ex.getStatusCode();              
