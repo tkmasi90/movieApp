@@ -14,13 +14,13 @@ import java.util.List;
 
 public class MoviesResponse {
     @Expose
-    public int page;
+    private int page;
     @Expose
-    public List<Movie> results;
+    private List<Movie> results;
     @Expose
-    public int total_pages;
+    private int total_pages;
     @Expose
-    public int total_results;
+    private int total_results;
 
     /**
      * Returns the page number of the response.
