@@ -72,7 +72,7 @@ public class App extends Application {
         FileDataController fdc = new FileDataController();
         
         try{
-            this.appState = fdc.readStateFromFile();
+            this.appState = fdc.readStateFromFile("MovieNightPlannerState.json");
             if(this.appState == null){
                 this.appState = new AppState();
             }
@@ -92,7 +92,7 @@ public class App extends Application {
     private void writeAppStateToFile() {
        FileDataController fdc = new FileDataController();
         try {
-            fdc.writeStateToFile(this.appState);
+            fdc.writeStateToFile(this.appState,"MovieNightPlannerState.json");
         } catch(JsonIOException | IOException e){
             System.out.println(e);
         } 

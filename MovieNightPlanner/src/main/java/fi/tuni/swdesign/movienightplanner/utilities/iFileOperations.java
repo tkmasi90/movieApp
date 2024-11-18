@@ -23,7 +23,7 @@ public interface iFileOperations {
     * @throws FileNotFoundException if the specified file is not found
     * @throws Exception if an error occurs while reading the file
     */
-    public AppState readStateFromFile() throws FileNotFoundException, Exception;
+    public AppState readStateFromFile(String filename) throws FileNotFoundException, Exception;
     
     /**
     * Writes state data to a file.
@@ -33,6 +33,6 @@ public interface iFileOperations {
     * @throws com.google.gson.JsonIOException
     * @throws java.io.IOException
     */
-    public boolean writeStateToFile(AppState appState) throws JsonIOException, IOException;
+    public boolean writeStateToFile(AppState appState, String filename) throws JsonIOException, IOException;
      
 }

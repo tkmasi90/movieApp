@@ -27,37 +27,56 @@ public class FileDataController implements iFileOperations{
     /**
     * Reads app state data from a JSON file.
     * 
+    * @param filename JSON file name
     * @return the AppState object deserialized from the file
     * @throws FileNotFoundException if the specified file is not found
     * @throws Exception if an error occurs while reading the file
     */
     @Override
-    public AppState readStateFromFile() throws FileNotFoundException, Exception {
+    public AppState readStateFromFile(String filename) throws FileNotFoundException, Exception {
         
         Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .excludeFieldsWithoutExposeAnnotation()
         .create();
         
-        return gson.fromJson(new FileReader(STATE_FILENAME), AppState.class);
+         // Just for unit tests
+        if (filename.equals("testfile.json")){
+            return gson.fromJson(new FileReader("testfile.json"), AppState.class);
+        }
+        
+       //return gson.fromJson(new FileReader(STATE_FILENAME), AppState.class);
+        return gson.fromJson(new FileReader(filename), AppState.class);
+        
     }
     
      /**
      * Writes state data to a file.
      * 
      * @param appState the AppState object to be serialized into a file
+     * @param filename JSON file name
      * @return true if the write operation is successful
      * @throws com.google.gson.JsonIOException
      * @throws java.io.IOException
      */
     @Override
-    public boolean writeStateToFile(AppState appState) throws JsonIOException, IOException {
+    public boolean writeStateToFile(AppState appState, String filename) throws JsonIOException, IOException {
+        
+        Writer appStateWriter = null;
+                
         Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
         
-        Writer appStateWriter = new FileWriter(STATE_FILENAME);
+        if (filename.equals("testfile.json")){
+            appStateWriter = new FileWriter("testfile.json");
+            
+        }
+        else {
+            appStateWriter = new FileWriter(STATE_FILENAME);
+        }
+        
 
         try {
             gson.toJson(appState, appStateWriter);

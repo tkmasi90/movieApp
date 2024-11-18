@@ -1,0 +1,16 @@
+{
+  "searchHistory": [
+    {
+      "adult": false,
+      "id": 0,
+      "popularity": 0.0,
+      "title": "Testielokuva",
+      "video": false,
+      "vote_average": 0.0,
+      "vote_count": 0
+    }
+  ],
+  "movieRatings": {},
+  "movies": {},
+  "watchHistory": []
+}
