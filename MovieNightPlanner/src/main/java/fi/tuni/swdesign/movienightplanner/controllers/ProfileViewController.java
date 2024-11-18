@@ -27,6 +27,8 @@ import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -45,17 +47,19 @@ public class ProfileViewController {
     private final Constants con = new Constants();
     private final MovieDataController mdc = new MovieDataController();
     private final ImageController ic = new ImageController();
-    List<CheckBox> selectedProviders = new ArrayList<>();
+    private List<CheckBox> selectedProviders = new ArrayList<>();
 
     // HTTP Error Handling
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
 
-    @FXML GridPane streamers;
-    @FXML CheckComboBox<String> cbGenre;
-    @FXML CheckComboBox<String> cbAudio;    
-    @FXML CheckComboBox<String> cbSubtitle;
-    
+    @FXML private GridPane streamers;
+    @FXML private CheckComboBox<String> cbGenre;
+    @FXML private CheckComboBox<String> cbAudio;    
+    @FXML private CheckComboBox<String> cbSubtitle;
+
+    @FXML private Spinner<Integer> minRatingSpinner;
+
     @FXML private PieChart genresPieChart;
     @FXML private PieChart centuryPieChart;
 
@@ -94,6 +98,17 @@ public class ProfileViewController {
 
         // Set watch history list view
         populateWatchHistory();
+
+        // Set spinner for minimum rating
+        initializeSpinner();
+    }
+
+    /**
+     * Initializes spinner for minimum rating.
+     */
+    private void initializeSpinner() {
+      // TODO: Set the spinner value to the minimum rating from the appState
+      minRatingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
     }
 
     /**
