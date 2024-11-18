@@ -42,13 +42,14 @@ public class HTTPToolsTest {
     @Test
     public void testMakeGenericHttpRequest() throws Exception {
         System.out.println("makeGenericHttpRequest");
-        String url = "";
+        String url = String.format("https://api.themoviedb.org/3/movie/%s?language=en-US", 603692);
         HTTPTools instance = new HTTPTools();
-        String expResult = "";
+        Boolean expResult = true;
+        String searchFor = "John Wick";
         String result = instance.makeGenericHttpRequest(url);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Boolean contains = result.contains(searchFor);
+        
+        assertEquals(expResult, contains);
     }
 
     /**
@@ -57,13 +58,16 @@ public class HTTPToolsTest {
     @Test
     public void testMakeTMOTNHttpRequest() throws Exception {
         System.out.println("makeTMOTNHttpRequest");
-        String url = "";
+        
+        String urlPre = "https://streaming-availability.p.rapidapi.com/shows/movie/";
+        String urlPost = "?series_granularity=show&output_language=en";
+        String url = urlPre + Integer.toString(603692) + urlPost;
         HTTPTools instance = new HTTPTools();
-        String expResult = "";
+        Boolean expResult = true;
+        String searchFor = "John Wick";
         String result = instance.makeTMOTNHttpRequest(url);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Boolean contains = result.contains(searchFor);
+        assertEquals(expResult, contains);
     }
     
 }
