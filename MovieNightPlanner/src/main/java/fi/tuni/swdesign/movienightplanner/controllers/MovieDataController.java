@@ -17,9 +17,10 @@ import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import fi.tuni.swdesign.movienightplanner.models.StreamingResponse;
-import fi.tuni.swdesign.movienightplanner.utilities.Constants;
+import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 import fi.tuni.swdesign.movienightplanner.utilities.GSONTools;
 import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
+import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
 
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
@@ -40,7 +41,7 @@ public class MovieDataController {
 
     private final HTTPTools httpTools = new HTTPTools();
     private final GSONTools gsonTools = new GSONTools();
-    private final Constants con = new Constants();
+    private final TMDbUtility tmdbUtil = new TMDbUtility();
 
     // A map to store the provider details after fetching them from the API.
     private Map<Integer, StreamingProvider> streamProviderMap;
@@ -88,7 +89,7 @@ public class MovieDataController {
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
                     .stream()
-                    .filter(p -> con.PROVIDER_IDS.contains(p.getProviderId()))
+                    .filter(p -> tmdbUtil.PROVIDER_IDS.contains(p.provider_id))
                     .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));
 
         } catch (HttpResponseException ex) {
@@ -176,7 +177,7 @@ public class MovieDataController {
                         int providerId = providerObj.get("provider_id").getAsInt();
 
                         // Only add providers from the predefined PROVIDER_IDS list.
-                        if (con.PROVIDER_IDS.contains(providerId)) {
+                        if (tmdbUtil.PROVIDER_IDS.contains(providerId)) {
                             movie.addStreamingProvider(streamProviderMap.get(providerId));
                         }
                     }
@@ -259,7 +260,7 @@ public class MovieDataController {
         }
 
         if (responseList != null) {
-            var languagesUsed = con.getLanguages();
+            var languagesUsed = LanguageCodes.getAllCountryCodes();
 
             responseList = responseList.stream()
                     .filter(lang -> languagesUsed.contains(lang.getIso639_1()))

@@ -1,16 +1,17 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.App;
-import fi.tuni.swdesign.movienightplanner.models.Genre;
-import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
-import fi.tuni.swdesign.movienightplanner.utilities.Constants;
+import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
+import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
+import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -50,7 +52,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 import org.controlsfx.control.CheckComboBox;
 import org.apache.hc.client5.http.HttpResponseException;
@@ -65,7 +66,6 @@ import org.controlsfx.control.GridView;
 public class SearchViewController {
     
     @FXML TabPane movieViewSelect;
-    @FXML VBox popularRatedView;
     @FXML Button filterButton;
 
     @FXML GridView<Label> filteredView;
@@ -75,14 +75,15 @@ public class SearchViewController {
     @FXML GridPane streamers;
     @FXML CheckComboBox cbGenre;
     @FXML CheckComboBox cbAudio;    
-    @FXML CheckComboBox cbSubtitle;
+    @FXML ComboBox cbSubtitle;
    
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
     private final Label filteredMoviesLoadingLabel = new Label("Loading movies");
 
     private final MovieDataController mdc = new MovieDataController();
-    private final Constants con = new Constants();
+    private final SubtitleDataController sdc = new SubtitleDataController();
+    private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final ImageController ic = new ImageController();
 
     List<CheckBox> selectedProviders = new ArrayList<>();
@@ -149,8 +150,10 @@ public class SearchViewController {
         
         // Set filter options and populate movie lists
         setFilterOptions();
-        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, con.getPopularMoviesUrl());
-        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, con.getTopRatedMoviesUrl());
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl());
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl());
+        cbSubtitle.getItems().add(0, "All");
+        cbSubtitle.getSelectionModel().selectFirst();
         
         // Set streaming provider logos
         setStreamingProviders();
@@ -183,7 +186,33 @@ public class SearchViewController {
     @FXML
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
         List<Integer> providers = getCheckedValues(selectedProviders);
-        populateMovieListAsync(filteredMoviesLoadingLabel, filteredView, con.getFilteredUrl(providers));
+        List<Integer> genres = new ArrayList();
+        List<String> audio = new ArrayList();
+        
+        List<String> genresChecked = (List<String>) cbGenre.getCheckModel().getCheckedItems();
+        List<String> audioChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
+        List<String> subChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
+        Integer lngLength = LanguageCodes.getLanguageListLength();
+        
+        genres.addAll(genresChecked
+                .stream()
+                .map(genreName -> MovieGenres.getGenreIdByName((String) genreName))
+                .collect(Collectors.toList())
+        );
+        
+        if(audioChecked.size() == lngLength) {
+            audio.addAll(LanguageCodes.getAllCountryCodes());
+        }
+        else {
+            for(String a : audioChecked) {
+                audio.add(LanguageCodes.getCountryCodeFromName(a));
+            }
+        }
+        
+        populateMovieListAsync(filteredMoviesLoadingLabel,
+                filteredView,
+                tmdbUtil.getFilteredUrl(genres, audio, providers)
+        );
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
         selectionModel.selectLast();
@@ -214,18 +243,14 @@ public class SearchViewController {
         populateGenreComboBox();
         
         // Populate Language and Subtitle comboboxes
-        List<String> languages = con.getLanguages().stream()
-            .map(Pair::getValue) // Get the second element (country name)
-            .collect(Collectors.toList());
+        List<String> languages = LanguageCodes.getAllLanguageNames();
         cbAudio.getItems().addAll(languages);
         cbSubtitle.getItems().addAll(languages);
         cbAudio.getCheckModel().checkAll();
-        cbSubtitle.getCheckModel().checkAll();
         
         // Set Combobox logic
         setComboBoxLogic(cbGenre);
         setComboBoxLogic(cbAudio);
-        setComboBoxLogic(cbSubtitle);
         
         // Set Filter button onAction logic
         filterButton.setOnAction(event -> {
@@ -441,7 +466,7 @@ public class SearchViewController {
     private void setStreamingProviders() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
-            spHbox.setId(Integer.toString(con.PROVIDER_IDS.get(index)));
+            spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
             index++;
         }
         
@@ -543,15 +568,29 @@ public class SearchViewController {
                 Platform.runLater(() -> {
                 if (moviesResponse != null) {
                     
-                    List<Movie> tempMovieList = moviesResponse.getResults();
+                    List<Movie> movieList = moviesResponse.getResults();
                     
+                    // If subtitle language is selected, filter by that too
+                    if(cbSubtitle.getSelectionModel().getSelectedIndex() != 0) {
+                        String subtitle = LanguageCodes.getCountryCodeFromName(
+                            (String) cbSubtitle.getSelectionModel().getSelectedItem());
+                        Iterator<Movie> iterator = movieList.iterator();
+                        while (iterator.hasNext()) {
+                            Movie movie = iterator.next();
+                            if (!sdc.areSubtitlesAvailable(movie.getId(), subtitle)) {
+                                // Remove movie from list selected language subtitles are not available
+                                iterator.remove();
+                            }
+                        }
+                    }
+                                        
                     if (lView instanceof ListView) {
                         ListView<Movie> listView = (ListView<Movie>) lView;
-                        setMovieListView(tempMovieList, listView);
+                        setMovieListView(movieList, listView);
 
                     } else if (lView instanceof GridView) {
                         GridView<Movie> gridView = (GridView<Movie>) lView;
-                        setMovieGridView(tempMovieList, gridView);
+                        setMovieGridView(movieList, gridView);
                     }
 
                 } else {
@@ -565,36 +604,12 @@ public class SearchViewController {
      * Populates the genre combo box asynchronously by fetching genre data from the API.
      */
     private void populateGenreComboBox() {
-        // Fetch Genre-list from TMDB
-        CompletableFuture.supplyAsync(() -> {
-            GenresResponse temp = null;
-            
-            try {
-                temp = mdc.fetchGenres(con.getGenresUrl());
-            } catch (HttpResponseException ex) {
-
-                this.HTTPErrorCode = ex.getStatusCode();              
-                this.HTTPErrorMessage = ex.getReasonPhrase();
-                
-                return null;
-            }
-            return temp;
-        })
-        .thenAccept(genreResponse -> {
-            Platform.runLater(() -> {
-                if(genreResponse != null) {
-                    List<String> genreList = genreResponse.getGenres()
-                            .stream()
-                            .map(Genre::getName)
-                            .collect(Collectors.toList()); 
-
-                    cbGenre.getItems().addAll(genreList);
-                    cbGenre.getCheckModel().checkAll();
-
-                } else {
-                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
-                }
-            });
-        });
+        cbGenre.getItems().addAll(
+                MovieGenres.getAllGenresByName().keySet()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList())
+        );
+        cbGenre.getCheckModel().checkAll();
     }
 }

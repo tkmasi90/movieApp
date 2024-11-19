@@ -99,11 +99,11 @@ public class HTTPTools implements iHTTPOperations {
             
             SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
             // TODO: Switch to API key and login. 
-            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
+            request.addHeader("Authorization", "Bearer 8Kuz42ChD4wK@TL");
             request.addHeader("accept", "application/json");
             request.addHeader("Content-Type", "application/json");
-            request.addHeader("x-rapidapi-ua", "RapidAPI-Playground");
-            request.addHeader("x-rapidapi-key", "828f0857d0msh8bd2546014cdc05p18e636jsn76036c21d578");
+            request.addHeader("x-rapidapi-ua", "Authorization 1");
+            request.addHeader("x-rapidapi-key", "b29cb6dddfmsh7cbb34c1dc4a10dp103a5fjsnc06750531447");
             request.addHeader("x-rapidapi-host", "streaming-availability.p.rapidapi.com");
             
             Future<SimpleHttpResponse> future = httpClient.execute(request, null);

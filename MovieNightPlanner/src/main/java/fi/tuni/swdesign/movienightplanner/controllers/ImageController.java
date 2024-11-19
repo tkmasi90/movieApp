@@ -1,20 +1,13 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
+import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 
 /**
  * Controller class for the image-related features.
@@ -23,8 +16,9 @@ import javafx.stage.Stage;
  */
 public class ImageController {
 
+    TMDbUtility tmdbUtil = new TMDbUtility();
     // The base URL for TMDb images
-    private static final String TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+    String baseUrl = tmdbUtil.getImagesBaseUrl();
 
     /**
      * This method takes the image path from TMDb API and sets the image in the specified ImageView.
@@ -43,7 +37,7 @@ public class ImageController {
         String size = (width != null) ? "w" + width : "original";
         
         // Construct the full URL using the base URL, size, and image path
-        String fullImageUrl = TMDB_IMAGE_BASE_URL + size + imagePath;
+        String fullImageUrl = baseUrl + size + imagePath;
 
         if(imagePath == null) 
         {
@@ -104,7 +98,7 @@ public class ImageController {
         CompletableFuture.runAsync(() -> {
             // Determine the size parameter for the URL
             String size = "w45"; 
-            String fullImageUrl = TMDB_IMAGE_BASE_URL + size + imagePath;
+            String fullImageUrl = baseUrl + size + imagePath;
 
             // If imagePath is null, use the local fallback image
             if (imagePath == null) {
@@ -128,7 +122,7 @@ public class ImageController {
      * @param imageView The ImageView where the poster image will be displayed.
      */
     public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView, Integer height ) {
-        String fullImageUrl = TMDB_IMAGE_BASE_URL + "w500" + imagePath;
+        String fullImageUrl = baseUrl + "w500" + imagePath;
         
         // If imagePath is null, use the local fallback image
         if (imagePath == null) {
