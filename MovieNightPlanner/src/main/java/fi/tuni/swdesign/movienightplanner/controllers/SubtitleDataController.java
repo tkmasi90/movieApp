@@ -51,7 +51,11 @@ public class SubtitleDataController {
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-
+        
+        if (tempJsonObject == null) {
+            return false;
+        }
+            
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
@@ -88,6 +92,10 @@ public class SubtitleDataController {
 
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
+        }
+        
+        if (tempJsonObject == null) {
+            return false;
         }
 
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
@@ -137,6 +145,10 @@ public class SubtitleDataController {
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
+        
+        if (tempJsonObject == null) {
+            return serviceList;
+        }
 
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
@@ -179,7 +191,11 @@ public class SubtitleDataController {
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-
+        
+        if (tempJsonObject == null) {
+            return false;
+        }
+                
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
         finnishJsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
@@ -219,6 +235,10 @@ public class SubtitleDataController {
 
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
+        }
+        
+        if (tempJsonObject == null) {
+            return subtitleList;
         }
 
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
@@ -267,12 +287,14 @@ public class SubtitleDataController {
         } catch (IOException | InterruptedException e) {
             System.out.println(e);
         }
-
+        
+        if (tempJsonObject == null) {
+            return false;
+        }
+                
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
         JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
-        
-        System.out.println(jsonArray);
 
         return jsonArray != null;
     };

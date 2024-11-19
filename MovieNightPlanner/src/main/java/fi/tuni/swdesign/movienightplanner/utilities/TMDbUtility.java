@@ -152,7 +152,6 @@ public final class TMDbUtility {
      * @return a formatted URL string for filtered movies
      */
     public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList) {
-        System.out.println(String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList)));
         return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList));
     }
     
