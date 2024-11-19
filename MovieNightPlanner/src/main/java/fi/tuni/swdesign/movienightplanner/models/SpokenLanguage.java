@@ -14,11 +14,11 @@ import com.google.gson.annotations.Expose;
 public class SpokenLanguage {
 
     @Expose
-    public String english_name;
+    private String english_name;
     @Expose
-    public String iso_639_1;
+    private String iso_639_1;
     @Expose
-    public String name;
+    private String name;
 
     /**
      * Gets the English name.

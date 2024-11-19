@@ -88,7 +88,7 @@ public class MovieDataController {
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
                     .stream()
-                    .filter(p -> con.PROVIDER_IDS.contains(p.provider_id))
+                    .filter(p -> con.PROVIDER_IDS.contains(p.getProviderId()))
                     .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));
 
         } catch (HttpResponseException ex) {
@@ -262,7 +262,7 @@ public class MovieDataController {
             var languagesUsed = con.getLanguages();
 
             responseList = responseList.stream()
-                    .filter(lang -> languagesUsed.contains(lang.iso_639_1))
+                    .filter(lang -> languagesUsed.contains(lang.getIso639_1()))
                     .collect(Collectors.toList());
         }
 

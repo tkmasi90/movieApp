@@ -18,39 +18,39 @@ public class ProductionCountry {
     private String name;
 
     /**
- * Gets the ISO 3166-1 code.
- *
- * @return the ISO 3166-1 code
- */
-public String getIso3166_1() {
-    return iso_3166_1;
-}
+     * Gets the ISO 3166-1 code.
+     *
+     * @return the ISO 3166-1 code
+     */
+    public String getIso3166_1() {
+        return iso_3166_1;
+    }
 
-/**
- * Sets the ISO 3166-1 code.
- *
- * @param iso_3166_1 the ISO 3166-1 code to set
- */
-public void setIso3166_1(String iso_3166_1) {
-    this.iso_3166_1 = iso_3166_1;
-}
+    /**
+     * Sets the ISO 3166-1 code.
+     *
+     * @param iso_3166_1 the ISO 3166-1 code to set
+     */
+    public void setIso3166_1(String iso_3166_1) {
+        this.iso_3166_1 = iso_3166_1;
+    }
 
-/**
- * Gets the name.
- *
- * @return the name
- */
-public String getName() {
-    return name;
-}
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-/**
- * Sets the name.
- *
- * @param name the name to set
- */
-public void setName(String name) {
-    this.name = name;
-}
+    /**
+     * Sets the name.
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }
