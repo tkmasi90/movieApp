@@ -263,7 +263,7 @@ public class MovieDataController {
             var languagesUsed = LanguageCodes.getAllCountryCodes();
 
             responseList = responseList.stream()
-                    .filter(lang -> languagesUsed.contains(lang.iso_639_1))
+                    .filter(lang -> languagesUsed.contains(lang.getIso639_1()))
                     .collect(Collectors.toList());
         }
 

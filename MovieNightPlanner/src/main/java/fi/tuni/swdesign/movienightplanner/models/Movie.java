@@ -16,33 +16,33 @@ import java.util.ArrayList;
 public class Movie {
 
     @Expose
-    public boolean adult;
+    private boolean adult;
     @Expose
-    public String backdrop_path;
+    private String backdrop_path;
     @Expose
-    public List<Integer> genre_ids;
+    private List<Integer> genre_ids;
     @Expose
-    public int id;
+    private int id;
     @Expose
-    public String original_language;
+    private String original_language;
     @Expose
-    public String original_title;
+    private String original_title;
     @Expose
-    public String overview;
+    private String overview;
     @Expose
-    public double popularity;
+    private double popularity;
     @Expose
-    public String poster_path;
+    private String poster_path;
     @Expose
-    public String release_date;
+    private String release_date;
     @Expose
-    public String title;
+    private String title;
     @Expose
-    public boolean video;
+    private boolean video;
     @Expose
-    public double vote_average;
+    private double vote_average;
     @Expose
-    public int vote_count;
+    private int vote_count;
 
     private ArrayList<StreamingProvider> streamingProviders;
     

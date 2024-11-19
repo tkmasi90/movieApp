@@ -15,13 +15,13 @@ import com.google.gson.annotations.Expose;
 public class StreamingProvider {
 
     @Expose
-    public String provider_name;
+    private String provider_name;
 
     @Expose
-    public int provider_id;
+    private int provider_id;
 
     @Expose
-    public String logo_path;
+    private String logo_path;
 
     /**
      * Gets the name of the streaming provider.

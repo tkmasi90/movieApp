@@ -14,11 +14,11 @@ import com.google.gson.annotations.Expose;
 public class ErrorModel {
 
     @Expose
-    public int status_code;
+    private int status_code;
     @Expose
-    public boolean success;
+    private boolean success;
     @Expose
-    public String status_message;
+    private String status_message;
 
     /**
      * Constructs an ErrorModel with the specified status code, success flag,

@@ -14,9 +14,9 @@ import com.google.gson.annotations.Expose;
 public class Genre {
 
     @Expose
-    public int id;
+    private int id;
     @Expose
-    public String name;
+    private String name;
 
     /**
      * Gets the ID.

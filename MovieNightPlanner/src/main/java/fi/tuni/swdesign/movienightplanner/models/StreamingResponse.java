@@ -16,7 +16,7 @@ import java.util.List;
 public class StreamingResponse {
     
     @Expose
-    public List<StreamingProvider> results;
+    private List<StreamingProvider> results;
 
     /**
      * Gets the list of streaming providers in the response.
