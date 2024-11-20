@@ -78,6 +78,9 @@ public class SceneController {
     public void switchToProfile(ActionEvent event) throws IOException {
         ProfileViewController profileViewController = (ProfileViewController) profileScene.getUserData();
         profileViewController.initializeView(); // sets data in the view
+
+        profileViewController.getChartContainer().layout();
+
         stage.setScene(profileScene);
         stage.sizeToScene();
         stage.show();

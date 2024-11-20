@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author kian, Copilot
  */
-public class MovieDetails extends Movie{
+public class MovieDetails extends Movie {
     @Expose
     private List<Genre> genres;
     @Expose
@@ -194,7 +194,7 @@ public class MovieDetails extends Movie{
         if (genres != null && genres.size() > 0) {
             return String.format("%s · %s", getFormattedRuntime(), genres.get(0).getName());
         } else {
-            return release_date;
+            return getReleaseDate();
         }
     }
 
