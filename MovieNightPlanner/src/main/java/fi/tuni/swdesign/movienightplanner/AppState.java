@@ -156,16 +156,18 @@ public class AppState {
     /**
      * Gets the genres of rated movies.
      *
+     * @param minRating the minimum rating to include
      * @return a list of genre names
      */
-    public List<String> getRatedMovieGenres() {
+    public List<String> getRatedMovieGenresByRating(int minRating) {
         List<String> genres = new ArrayList<>();
         for (Movie movie : movies.values()) {
+          if(movie.getVoteAverage() >= minRating)
             for (Integer genreId : movie.getGenreIds()) {
-                String genreName = MovieGenres.getGenreNameById(genreId);
-                if (genreName != null) {
-                    genres.add(genreName);
-                }
+              String genreName = MovieGenres.getGenreNameById(genreId);
+              if (genreName != null) {
+                  genres.add(genreName);
+              }
             }
         }
         return genres;
@@ -174,20 +176,23 @@ public class AppState {
     /**
      * Gets the century categories of rated movies.
      *
+     * @param minRating the minimum rating to include
      * @return a list of century categories (e.g., "90's", "00's")
      */
-    public List<String> getMoviesByCentury() {
+    public List<String> getMoviesByCentury(int minRating) {
         List<String> centuries = new ArrayList<>();
         for (Movie movie : movies.values()) {
+          if(movie.getVoteAverage() >= minRating) {
             String releaseDate = movie.getReleaseDate();
             if (releaseDate != null && releaseDate.length() >= 4) {
-                int year = Integer.parseInt(releaseDate.substring(0, 4));
-                int decade = (year % 100) / 10 * 10;
-                String century = String.format("%02d's", decade);
-                centuries.add(century);
+              int year = Integer.parseInt(releaseDate.substring(0, 4));
+              int decade = (year % 100) / 10 * 10;
+              String century = String.format("%02d's", decade);
+              centuries.add(century);
             } else {
-                centuries.add("Unknown");
+              centuries.add("Unknown");
             }
+          }
         }
         return centuries;
     }

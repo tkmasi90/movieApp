@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
@@ -51,6 +52,8 @@ public class ProfileViewController {
     @FXML private CheckComboBox<String> cbGenre;
     @FXML private CheckComboBox<String> cbAudio;    
     @FXML private Spinner<Integer> minRatingSpinner;
+    @FXML private Spinner<Integer> piechartSpinner;
+    @FXML private Button applyMinButton;
     @FXML private PieChart genresPieChart;
     @FXML private PieChart centuryPieChart;
     @FXML private ListView<String> watchHistoryListView;
@@ -93,6 +96,9 @@ public class ProfileViewController {
         
         // Set spinner for minimum rating
         initializeSpinner();
+
+        // Set spinner for pie chart
+        initializePiechartSpinner();
     }
     
     /**
@@ -140,23 +146,51 @@ public class ProfileViewController {
         populateCenturyPieChart();
         populateWatchHistory();
     }
-    
 
     /**
      * Initializes spinner for minimum rating.
      */
     private void initializeSpinner() {
-      minRatingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
+      minRatingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
     }
 
     /**
-     * Populates the genres pie chart with data based on user-rated movie genres.
+     * Initializes spinner for pie chart.
+     */
+    private void initializePiechartSpinner() {
+      piechartSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
+    }
+
+    /**
+     * Handles the action of the apply button.
+     *
+     * @param event the ActionEvent that triggered this method
+     */
+    @FXML
+    private void handleApplyMinButtonAction(ActionEvent event) {
+        int minRating = piechartSpinner.getValue();
+        populateGenresPieChart(minRating);
+        populateCenturyPieChart(minRating);
+    }
+
+
+    /**
+     * Populates the genres pie chart in the profile view.
      */
     private void populateGenresPieChart() {
+        populateGenresPieChart(1); // Default to minimum rating of 1
+    }
+
+    /**
+     * Populates the genres pie chart in the profile view.
+     *
+     * @param minRating the minimum rating to filter by
+     */
+    private void populateGenresPieChart(int minRating) {
         // Clear existing data
         genresPieChart.getData().clear();
 
-        List<String> genres = appState.getRatedMovieGenres();
+        List<String> genres = appState.getRatedMovieGenresByRating(minRating);
         Map<String, Integer> genreCounts = new HashMap<>();
 
         // Count the occurrences of each genre
@@ -178,10 +212,19 @@ public class ProfileViewController {
      * Populates the century pie chart with data based on user-rated movie release centuries.
      */
     private void populateCenturyPieChart() {
+        populateCenturyPieChart(1); // Default to minimum rating of 1
+    }
+
+    /**
+     * Populates the century pie chart in the profile view.
+     *
+     * @param minRating the minimum rating to filter by
+     */
+    private void populateCenturyPieChart(int minRating) {
         // Clear existing data
         centuryPieChart.getData().clear();
 
-        List<String> centuries = appState.getMoviesByCentury();
+        List<String> centuries = appState.getMoviesByCentury(minRating);
         Map<String, Integer> centuryCounts = new HashMap<>();
 
         // Count the occurrences of each century category
@@ -222,7 +265,21 @@ public class ProfileViewController {
             e.printStackTrace();
         }
     }
-    
+
+        /**
+     * Navigates to the search view.
+     *
+     * @param event the ActionEvent that triggered this method
+     */
+    @FXML
+    public void handleHomeButtonClick(ActionEvent event) throws IOException{
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToSearch(event);
+        }
+    }
+
     /**
      * Saves user preferences and updates the search filters.
      * 

@@ -16,6 +16,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.geometry.Insets?>
 
 <HBox alignment="TOP_LEFT" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" spacing="20.0" style="-fx-background-color: #295ACD;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController">
     <children>
@@ -24,11 +26,24 @@
                 <Insets />
             </HBox.margin>
             <children>
-                <ImageView fx:id="mnpLogo" fitHeight="133.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                    <Image url="@../../../../images/mnp_logo.jpeg" />
-                    </image>
-                </ImageView>
+<Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../images/mnp_logo.jpeg" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets left="16.0" right="16.0" top="16.0" />
+               </HBox.margin>
+            </Button>
             </children>
         </VBox>
         <VBox alignment="TOP_LEFT" prefHeight="915.0" prefWidth="1457.0" spacing="20">
@@ -222,6 +237,13 @@
                 </VBox>
                 <VBox alignment="TOP_LEFT" prefHeight="860.0" prefWidth="479.0" spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 5;">
                     <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Statistics" />
+               <HBox prefHeight="30.0" prefWidth="443.0" spacing="10.0">
+                  <children>
+                     <Label prefHeight="26.0" prefWidth="105.0" text="Minimum rating " />
+                     <Spinner fx:id="piechartSpinner" prefHeight="26.0" prefWidth="64.0" />
+                     <Button fx:id="applyMinButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleApplyMinButtonAction" prefHeight="26.0" prefWidth="66.0" text="Apply" textAlignment="RIGHT" />
+                  </children>
+               </HBox>
                     
                     <VBox fx:id="chartContainer" alignment="TOP_LEFT" spacing="10">
                         <Label style="-fx-font-size: 16;" text="Your favorite genres" />
