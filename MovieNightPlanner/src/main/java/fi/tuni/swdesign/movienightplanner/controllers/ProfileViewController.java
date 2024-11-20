@@ -356,6 +356,20 @@ public class ProfileViewController {
             e.printStackTrace();
         }
     }
+    
+        /**
+     * Navigates to the search view.
+     *
+     * @param event the ActionEvent that triggered this method
+     */
+    @FXML
+    public void handleHomeButtonClick(ActionEvent event) throws IOException{
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToSearch(event);
+        }
+    }
 
 
     /**
