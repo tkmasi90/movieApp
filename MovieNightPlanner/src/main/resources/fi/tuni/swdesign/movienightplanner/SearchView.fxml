@@ -228,7 +228,7 @@
                                     <ComboBox fx:id="cbSubtitle" prefHeight="26.0" prefWidth="323.0" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
-                              <Button fx:id="filterButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.1" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="5.0" translateY="16.0">
+                              <Button fx:id="filterButton" onAction="#handleFilterButtonClick" maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.1" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="5.0" translateY="16.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

@@ -15,7 +15,13 @@ import javafx.stage.Stage;
 
 /**
  * Controller class for managing scene transitions in the application.
- * It handles switching between the search view, movie detail view, and profile view.
+ * This controller facilitates navigation between the search view, movie detail view, and profile view.
+ * It ensures proper initialization and updates of scene-specific controllers during transitions.
+ * 
+ * Dependencies:
+ * - The class requires preloaded {@link Scene} objects for each view.
+ * - Controllers for the views are set as user data in their respective scenes.
+ * 
  * @author Make, ChatGPT(Javadoc comments)
  */
 public class SceneController {
@@ -28,8 +34,10 @@ public class SceneController {
      * Constructs a SceneController with the given stage and initial search scene.
      *
      * @param stage The primary stage where scenes will be displayed.
-     * @param scene The initial search scene to display.
-     * @throws IOException if there is an issue loading the FXML resources.
+     * @param searchScene The initial search scene to display.
+     * @param profileScene The profile scene for user data and settings.
+     * @param movieDetailScene The movie detail scene for displaying movie information.
+     * @throws IOException if there is an issue loading FXML resources.
      */
     public SceneController(Stage stage, Scene searchScene, Scene profileScene, Scene movieDetailScene) throws IOException {
         this.stage = stage;
@@ -78,7 +86,7 @@ public class SceneController {
     public void switchToProfile(ActionEvent event) throws IOException {
         ProfileViewController profileViewController = (ProfileViewController) profileScene.getUserData();
         profileViewController.updateData(); // sets data in the view
-        profileViewController.setFiltersFromState();
+        profileViewController.setFilterDataFromState();
 
         profileViewController.getChartContainer().layout();
 

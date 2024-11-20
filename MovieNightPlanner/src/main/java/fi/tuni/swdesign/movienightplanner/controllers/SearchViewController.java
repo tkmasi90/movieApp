@@ -15,13 +15,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,7 +27,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -39,7 +36,6 @@ import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -52,7 +48,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import org.controlsfx.control.CheckComboBox;
 import org.apache.hc.client5.http.HttpResponseException;
@@ -67,7 +62,6 @@ import org.controlsfx.control.GridView;
 public class SearchViewController {
     
     @FXML TabPane movieViewSelect;
-    @FXML Button filterButton;
 
     @FXML GridView<Label> filteredView;
     @FXML ListView<Label> popularMoviesLView;
@@ -91,25 +85,23 @@ public class SearchViewController {
     private Integer minRating  = 0;
     
     private SceneController sceneController;
+    FilterViewController filterViewController;
     private AppState appState;
     
     // HTTP Error Handling
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
     
-    /**
-    * Sets the {@link SceneController} instance for this controller.
-    * This method is used to inject the {@code SceneController} into the current context, allowing 
-    * this controller to manage and switch scenes as needed.
-    * 
-    * @param sceneController the {@link SceneController} to be associated with this controller.
-    */
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
     
     public void setAppState(AppState appState) {
         this.appState = appState;
+    }
+    
+    public void setFilterViewController(FilterViewController filterViewController) {
+        this.filterViewController = filterViewController;
     }
     
     /**
@@ -152,19 +144,19 @@ public class SearchViewController {
                 System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
             }
         }
-        
+
         movieViewSelect.setFocusTraversable(false);
-        
-        // Set filter options and populate movie lists
-        setFilterOptions();
         populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl());
         populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl());
+                
+    }
+    
+    public void initializeFilters() {
+        // Set filter options and populate movie lists
+        filterViewController.setFilterOptions(cbAudio, cbGenre, cbSubtitle);
         cbSubtitle.getItems().add(0, "All");
         cbSubtitle.getSelectionModel().selectFirst();
-        
-        // Set streaming provider logos
-        setProviderLogos();
-        
+        filterViewController.setProviders(streamers, mdc);
     }
     
     /**
@@ -191,7 +183,8 @@ public class SearchViewController {
      */
     @FXML
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
-        List<Integer> providers = getCheckedValues(selectedProviders);
+        List<Integer> providers = filterViewController
+                .getCheckedValues(selectedProviders);
         List<Integer> genres = new ArrayList();
         List<String> audio = new ArrayList();
         
@@ -227,100 +220,6 @@ public class SearchViewController {
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
         selectionModel.selectLast();
     }
-    
-    /**
-     * Returns a list of streaming provider IDs that have been selected by the user.
-     *
-     * @param checkBoxes List of checkboxes representing streaming providers.
-     * @return A list of integers representing the IDs of selected providers.
-     */
-    private List<Integer> getCheckedValues(List<CheckBox> checkBoxes) {
-        List<Integer> checkedValues = new ArrayList<>();
-        for (CheckBox checkBox : checkBoxes) {
-            if (checkBox.isSelected()) {
-                checkedValues.add(Integer.valueOf(checkBox.getParent().getId()));
-            }
-        }
-        return checkedValues;
-    }
-    
-    /**
-     * Sets filter options for genres, audio, and subtitles. It populates combo boxes
-     * and applies logic for handling selections in the filtering options.
-     */
-    private void setFilterOptions() {
-        // Populate combobox content for filtering
-        populateGenreComboBox();
-        
-        // Populate Language and Subtitle comboboxes
-        List<String> languages = LanguageCodes.getAllLanguageNames();
-        cbAudio.getItems().addAll(languages);
-        cbSubtitle.getItems().addAll(languages);
-        
-        // Set Combobox logic
-        setComboBoxLogic(cbGenre);
-        setComboBoxLogic(cbAudio);
-        
-        // Set Filter button onAction logic
-        filterButton.setOnAction(event -> {
-            try {
-                handleFilterButtonClick(event);
-            }
-            catch (IOException ex) {
-                System.err.println("Error with filter button");
-            }
-        });
-        
-    }
-    
-    /**
-     * Applies logic to a CheckComboBox such that when one item is unchecked, 
-     * all others are unchecked, and if none are checked, all items are selected.
-     *
-     * @param ccb The CheckComboBox to apply the logic to.
-     */
-    private void setComboBoxLogic(CheckComboBox ccb) {
-        // Use an array to store the flag, making it mutable
-        final boolean[] internalChange = {false};
-
-        ccb.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
-            if (internalChange[0]) return; // Exit if an internal change is happening
-
-            while (change.next()) {
-                // Check if all items are initially checked and now an item is unchecked
-                if (change.wasRemoved() && ccb.getCheckModel().getCheckedItems().size() == ccb.getItems().size() - 1) {
-                    // Prevent further triggers during this process
-                    internalChange[0] = true;
-
-                    // Get the last unchecked item (the one that triggered the removal)
-                    String lastUncheckedItem = change.getRemoved().get(0);
-
-                    // Uncheck all items
-                    ccb.getCheckModel().clearChecks();
-
-                    // Check only the item that was previously unchecked
-                    ccb.getCheckModel().check(lastUncheckedItem);
-
-                    // Reset the flag
-                    internalChange[0] = false;
-                }
-//
-//                // Handle the case when only one item is checked, and it gets unchecked
-//                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
-//                    // Prevent further triggers during this process
-//                    internalChange[0] = true;
-//
-//                    // Check all items back again
-//                    ccb.getCheckModel().checkAll();
-//
-//                    // Reset the flag
-//                    internalChange[0] = false;
-//                }
-            }
-            
-        });
-    }
-
 
     /**
     * Populates a ListView with movie data. Each movie is displayed using custom labels 
@@ -466,88 +365,6 @@ public class SearchViewController {
             e.printStackTrace();
         }
     }
-    
-    /**
-    * Sets the streaming providers by iterating over the streaming provider nodes
-    * and assigning unique IDs from the provider list. After assigning the IDs, 
-    * the method invokes {@link #setStreamingProviderLogos()} to apply the provider logos.
-    */
-    private void setProviderLogos() {
-        int index = 0;    
-        for(Node spHbox : streamers.getChildren()) {
-            spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
-            index++;
-        }
-        
-        setStreamingProviderLogos();
-    }
-    
-    /**
-     * Sets the streaming provider logos in the search view by fetching and displaying them in the UI.
-     * If providers are not loaded, it will display an error logo.
-     */
-    private void setStreamingProviderLogos() {
-       
-        if(mdc.getStreamProviderMap() == null) {
-            System.err.println("Could not load providers");
-        }
-        
-        else{
-            Set<Node> imageViews = streamers.lookupAll(".image-view");
-            String urlPrefix = "https://media.themoviedb.org/t/p/original";
-            
-            // Loop through each ImageView
-            for (Node node : imageViews) {
-
-                int parentId = Integer.parseInt(node.getParent().getId());
-
-                if (node instanceof ImageView) {
-                    ImageView imageView = (ImageView) node;  
-
-                    String logoUrl = urlPrefix + mdc.getStreamProviderMap()
-                            .get(parentId).getLogoPath();
-
-                    if (logoUrl == null) {
-                        Image errorLogo = new Image(this.getClass()
-                                .getResource("/images/errorLogo.png")
-                                .toString(), true);
-
-                        imageView.setImage(errorLogo);
-                        continue;
-                    }      
-
-                    // Create a rectangle with the same width and height as the ImageView
-                    Rectangle clip = new Rectangle(imageView.getFitWidth(),
-                            imageView.getFitHeight());
-
-                    // Set the corner radius for rounded edges
-                    clip.setArcWidth(20);
-                    clip.setArcHeight(20);
-
-                    // Apply the clip to the ImageView
-                    imageView.setClip(clip);
-
-                    Image logoImage = new Image(logoUrl, true);
-                    imageView.setImage(logoImage);
-                    
-                    CheckBox checkBox = (CheckBox) imageView.getParent()
-                                .lookup(".check-box");
-                    
-
-                    
-
-                    imageView.setOnMouseClicked(event -> {
-                        if(checkBox.isSelected()) {
-                            checkBox.setSelected(false);
-                        }
-                        else {
-                            checkBox.setSelected(true);
-                        }
-                    });
-                }
-            }
-        }
-    }
    
         /**
      * Populates a ListView with a list of movies asynchronously by fetching movie data from the API.
@@ -610,22 +427,12 @@ public class SearchViewController {
     }
    
     /**
-     * Populates the genre combo box.
-     */
-    private void populateGenreComboBox() {
-        cbGenre.getItems().addAll(
-                MovieGenres.getAllGenresByName().keySet()
-                .stream()
-                .sorted()
-                .collect(Collectors.toList())
-        );
-        cbGenre.getCheckModel().checkAll();
-    }
-
-    public void updateFilters() {
-        
+    * Updates the filter settings in the UI based on the user's preferences stored in the application state.
+    * The method synchronizes the state of checkboxes and other UI components to reflect the user's
+    * preferred streaming providers, genres, and audio options. It also sets the minimum rating filter.
+    */
+    public void updateFilterData() {
         var prefProviders = appState.getPrefProviders();
-        
         if(prefProviders.isEmpty()) {
             streamers.lookupAll(".check-box").stream()
                     .filter(node -> node instanceof CheckBox)
@@ -672,6 +479,12 @@ public class SearchViewController {
         minRating = appState.getPrefMinRating();
     }
     
+    /**
+    * Sets the minimum rating for the filter.
+    * This method updates the internal state to reflect the desired minimum rating.
+    *
+    * @param rating The minimum rating to be set (e.g., a value between 1 and 10).
+    */
     public void setMinRating(Integer rating) {
         minRating = rating;
     }

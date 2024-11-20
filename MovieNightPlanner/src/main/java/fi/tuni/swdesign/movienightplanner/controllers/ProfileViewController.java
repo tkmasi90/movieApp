@@ -1,30 +1,20 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
-import fi.tuni.swdesign.movienightplanner.models.Genre;
-import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
-import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
-import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import org.apache.hc.client5.http.HttpResponseException;
 import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -33,21 +23,21 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 
 /**
- * Controller class for handling the profile view of the application. 
- * This class is responsible for fetching and displaying the streaming providers.
+ * Controller class for managing the profile view in the application. 
+ * It handles displaying user preferences, watch history, and statistical data such as pie charts.
+ * The class also facilitates saving and updating user preferences.
  * 
- * @author Sviat, GH Copilot
+ * @author Sviat, GH Copilot, Markus, Kian
  */
 public class ProfileViewController {
     private SceneController sceneController;
     private SearchViewController searchViewController;
+    private FilterViewController filterViewController;
+    
     private AppState appState;
     private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final MovieDataController mdc = new MovieDataController();
@@ -60,14 +50,10 @@ public class ProfileViewController {
     @FXML private GridPane streamers;
     @FXML private CheckComboBox<String> cbGenre;
     @FXML private CheckComboBox<String> cbAudio;    
-
     @FXML private Spinner<Integer> minRatingSpinner;
-
     @FXML private PieChart genresPieChart;
     @FXML private PieChart centuryPieChart;
-
     @FXML private ListView<String> watchHistoryListView;
-
     @FXML private VBox chartContainer;
 
 
@@ -78,14 +64,22 @@ public class ProfileViewController {
     public void setSearchViewController(SearchViewController searchViewController) {
         this.searchViewController = searchViewController;
     }
+        
+    public void setFilterViewController(FilterViewController filterViewController) {
+        this.filterViewController = filterViewController;
+    }
+    
+    public void setAppState(AppState appState) {
+        this.appState = appState;
+    }
 
     /**
-     * Initializes the controller.
+     * Initializes the profile view controller. 
+     * Fetches streaming provider data if not already loaded and sets up the rating spinner.
      */
     @FXML
     public void initialize(){
-        // This function doesn't need be called each time.
-        // We can fetch this data only on first time and save to a local json
+
         if(mdc.getStreamProviderMap() == null) {
             try {
                 mdc.fetchStreamingProviders();
@@ -97,66 +91,23 @@ public class ProfileViewController {
             }
         }
         
-        setComboBoxLogic(cbGenre);
-        setComboBoxLogic(cbAudio);
-        
-        // Set Streaming Provider IDs and logos for filtering.
-        setStreamingProviders();
-        setFilterOptions();
-        
         // Set spinner for minimum rating
         initializeSpinner();
     }
     
     /**
-     * Applies logic to a CheckComboBox such that when one item is unchecked, 
-     * all others are unchecked, and if none are checked, all items are selected.
-     *
-     * @param ccb The CheckComboBox to apply the logic to.
+     * Initializes filter options for genres, audio, and providers.
      */
-    private void setComboBoxLogic(CheckComboBox ccb) {
-        // Use an array to store the flag, making it mutable
-        final boolean[] internalChange = {false};
-
-        ccb.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
-            if (internalChange[0]) return; // Exit if an internal change is happening
-
-            while (change.next()) {
-                // Check if all items are initially checked and now an item is unchecked
-                if (change.wasRemoved() && ccb.getCheckModel().getCheckedItems().size() == ccb.getItems().size() - 1) {
-                    // Prevent further triggers during this process
-                    internalChange[0] = true;
-
-                    // Get the last unchecked item (the one that triggered the removal)
-                    String lastUncheckedItem = change.getRemoved().get(0);
-
-                    // Uncheck all items
-                    ccb.getCheckModel().clearChecks();
-
-                    // Check only the item that was previously unchecked
-                    ccb.getCheckModel().check(lastUncheckedItem);
-
-                    // Reset the flag
-                    internalChange[0] = false;
-                }
-
-//                // Handle the case when only one item is checked, and it gets unchecked
-//                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
-//                    // Prevent further triggers during this process
-//                    internalChange[0] = true;
-//
-//                    // Check all items back again
-//                    ccb.getCheckModel().checkAll();
-//
-//                    // Reset the flag
-//                    internalChange[0] = false;
-//                }
-            }
-            
-        });
+    public void initializeFilters() {
+        // Set filter options and populate movie lists
+        filterViewController.setFilterOptions(cbAudio, cbGenre, null);
+        filterViewController.setProviders(streamers, mdc);
     }
     
-    public void setFiltersFromState() {
+    /**
+     * Applies user preferences from the application state to the UI components.
+     */
+    public void setFilterDataFromState() {
         for(Node cb : streamers.lookupAll(".check-box")) {
             if (cb instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) cb;
@@ -168,19 +119,22 @@ public class ProfileViewController {
                 }
             }
         }
-                    
+        // Set genres and audio checkboxes
         cbGenre.getCheckModel().clearChecks();
         cbGenre.getCheckModel().checkIndices(
             appState.getPrefGenres().stream().mapToInt(o -> (int) o).toArray()
         );
-       
         cbAudio.getCheckModel().clearChecks();
         cbAudio.getCheckModel().checkIndices(
             appState.getPrefAudio().stream().mapToInt(o -> (int) o).toArray()
         );
+        // Set minimum rating
         minRatingSpinner.getValueFactory().setValue(appState.getPrefMinRating());
     }
     
+    /**
+     * Updates the data displayed in the profile view, such as pie charts and watch history.
+     */
     public void updateData() {
         populateGenresPieChart();
         populateCenturyPieChart();
@@ -192,12 +146,11 @@ public class ProfileViewController {
      * Initializes spinner for minimum rating.
      */
     private void initializeSpinner() {
-      // TODO: Set the spinner value to the minimum rating from the appState
       minRatingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
     }
 
     /**
-     * Populates the genres pie chart in the profile view.
+     * Populates the genres pie chart with data based on user-rated movie genres.
      */
     private void populateGenresPieChart() {
         // Clear existing data
@@ -222,7 +175,7 @@ public class ProfileViewController {
     }
 
     /**
-     * Populates the century pie chart in the profile view.
+     * Populates the century pie chart with data based on user-rated movie release centuries.
      */
     private void populateCenturyPieChart() {
         // Clear existing data
@@ -247,110 +200,13 @@ public class ProfileViewController {
     }
 
     /**
-     * Sets the streaming providers by iterating over the streaming provider nodes
-     * and assigning unique IDs from the provider list. After assigning the IDs, 
-     * the method invokes {@link #setStreamingProviderLogos()} to apply the provider logos.
-     * IT is required to fetch the providers before calling this method.
-     */
-    private void setStreamingProviders() {
-        int index = 0;    
-        for(Node spHbox : streamers.getChildren()) {
-            spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
-            index++;
-        }
-        
-        setStreamingProviderLogos();
-    }
-
-    /**
-     * Sets the streaming provider logos in the search view by fetching and displaying them in the UI.
-     * If providers are not loaded, it will display an error logo.
-     */
-    private void setStreamingProviderLogos() {
-       
-        if(mdc.getStreamProviderMap() == null) {
-            System.err.println("Could not load providers");
-        } else {
-            Set<Node> imageViews = streamers.lookupAll(".image-view");
-            String urlPrefix = "https://media.themoviedb.org/t/p/original";
-            
-            // Loop through each ImageView
-            for (Node node : imageViews) {
-
-                int parentId = Integer.parseInt(node.getParent().getId());
-
-                if (node instanceof ImageView) {
-                    ImageView imageView = (ImageView) node;  
-
-                    String logoUrl = urlPrefix + mdc.getStreamProviderMap()
-                            .get(parentId).getLogoPath();
-
-                    // Create a rectangle with the same width and height as the ImageView
-                    Rectangle clip = new Rectangle(imageView.getFitWidth(),
-                            imageView.getFitHeight());
-
-                    // Set the corner radius for rounded edges
-                    clip.setArcWidth(20);
-                    clip.setArcHeight(20);
-
-                    // Apply the clip to the ImageView
-                    imageView.setClip(clip);
-
-                    Image logoImage = new Image(logoUrl, true);
-                    imageView.setImage(logoImage);
-                    
-                    CheckBox checkBox = (CheckBox) imageView.getParent()
-                                .lookup(".check-box");
-                    
-                    imageView.setOnMouseClicked(event -> {
-                        if(checkBox.isSelected()) {
-                            checkBox.setSelected(false);
-                        }
-                        else {
-                            checkBox.setSelected(true);
-                        }
-                    });
-                    
-
-                }
-            }
-        }
-    }
-
-    /**
-     * Populates list view of watch history
+     * Populates the watch history list view with user's watch history.
      */
     private void populateWatchHistory() {
       watchHistoryListView.getItems().clear();
       List<String> watchHistory = appState.getWatchHistory();
       Collections.reverse(watchHistory);
       watchHistoryListView.getItems().addAll(watchHistory);
-    }
-
-    /**
-     * Populates the genre combo box.
-     */
-    private void populateGenreComboBox() {
-        cbGenre.getItems().addAll(
-                MovieGenres.getAllGenresByName().keySet()
-                .stream()
-                .sorted()
-                .collect(Collectors.toList())
-        );
-        cbGenre.getCheckModel().checkAll();
-    }
-
-    /**
-     * Sets filter options for genres, audio, and subtitles. It populates combo boxes
-     * and applies logic for handling selections in the filtering options.
-     */
-    private void setFilterOptions() {
-        // Populate combobox content for filtering
-        populateGenreComboBox();
-        
-        // Populate Language and Subtitle comboboxes
-        List<String> languages = LanguageCodes.getAllLanguageNames();
-        cbAudio.getItems().addAll(languages);
     }
 
     /**
@@ -367,6 +223,11 @@ public class ProfileViewController {
         }
     }
     
+    /**
+     * Saves user preferences and updates the search filters.
+     * 
+     * @param event the ActionEvent triggered by the save button
+     */
     @FXML
     private void savePreferences(ActionEvent event) {
         
@@ -387,17 +248,14 @@ public class ProfileViewController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        searchViewController.updateFilters();
+        searchViewController.updateFilterData();
     }
-
 
     /**
-     * sets the appstate
+     * Returns the container for displaying charts in the profile view.
+     * 
+     * @return the VBox container for charts
      */
-    public void setAppState(AppState appState) {
-        this.appState = appState;
-    }
-
     public VBox getChartContainer() {
         return chartContainer;
     }

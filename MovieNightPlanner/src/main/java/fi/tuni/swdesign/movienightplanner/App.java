@@ -2,6 +2,7 @@ package fi.tuni.swdesign.movienightplanner;
 
 import fi.tuni.swdesign.movienightplanner.utilities.FileDataController;
 import com.google.gson.JsonIOException;
+import fi.tuni.swdesign.movienightplanner.controllers.FilterViewController;
 import fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController;
 import fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController;
 import fi.tuni.swdesign.movienightplanner.controllers.SceneController;
@@ -57,11 +58,15 @@ public class App extends Application {
         // Set scenes for SceneController
         SceneController sceneController = new SceneController(stage, searchScene, profileScene, detailsScene);
         
+        FilterViewController filterViewController = new FilterViewController();
+        
         // Set Search View
         SearchViewController searchViewController = searchLoader.getController();
         searchViewController.setSceneController(sceneController);
         searchViewController.setAppState(this.appState);
-        searchViewController.updateFilters();
+        searchViewController.setFilterViewController(filterViewController);
+        searchViewController.initializeFilters();
+        searchViewController.updateFilterData();
         
         // Set Profile View
         ProfileViewController profileViewController = profileLoader.getController();
@@ -70,13 +75,17 @@ public class App extends Application {
         profileViewController.setAppState(this.appState);
         profileScene.setUserData(profileViewController);
         profileViewController.updateData();
-        profileViewController.setFiltersFromState();
+        profileViewController.setFilterDataFromState();
+        profileViewController.setFilterViewController(filterViewController);
+        profileViewController.initializeFilters();
         
         // Set Movie Detail View
         MovieDetailsController movieDetailsController = detailsLoader.getController();
         movieDetailsController.setSceneController(sceneController);
         movieDetailsController.setAppState(this.appState);
         detailsScene.setUserData(movieDetailsController);
+        
+        
         
         stage.show();
     }

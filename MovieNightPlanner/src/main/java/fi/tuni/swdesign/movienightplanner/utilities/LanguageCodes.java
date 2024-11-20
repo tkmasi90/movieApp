@@ -11,17 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Utility class for language code management with subtitles.
- *
+ * Utility class for managing language codes and their corresponding ISO codes and names.
+ * This class provides static methods to access language data, including country codes, 
+ * ISO codes, and language names.
+ * 
  * @author janii, Markus, Copilot
  */
 public class LanguageCodes {
    
+    /** A map containing language data, where the key is the country code, and the value is a {@link Pair} of ISO code and language name. */
     private static final Map<String, Pair<String, String>> LANGUAGES;
     
     /**
-     * Constructs a LanguageCodes instance and initializes the language map with
-     * predefined language codes.
+     * Static initializer block to populate the language data map.
+     * The map is wrapped as unmodifiable to ensure it cannot be altered after initialization.
      */
     static {
         Map<String, Pair<String, String>> languageMap = new LinkedHashMap<>();
@@ -122,27 +125,59 @@ public class LanguageCodes {
         return languageNames;
     }
     
+    /**
+     * Gets the total number of language entries in the map.
+     *
+     * @return The number of language entries in the map.
+     */
     public static Integer getLanguageListLength() {
         return LANGUAGES.size();
     }
 
+    /**
+     * Helper class to represent a pair of ISO code and language name.
+     *
+     * @param <T> The type of the ISO code (e.g., {@link String}).
+     * @param <U> The type of the language name (e.g., {@link String}).
+     */
     private static class Pair<T, U> {
         private final T isoCode;
         private final U languageName;
 
+        /**
+         * Constructs a {@code Pair} with the given ISO code and language name.
+         *
+         * @param isoCode The ISO code (e.g., "fin").
+         * @param languageName The language name (e.g., "Finnish").
+         */
         public Pair(T isoCode, U languageName) {
             this.isoCode = isoCode;
             this.languageName = languageName;
         }
 
+        /**
+         * Gets the ISO code.
+         *
+         * @return The ISO code.
+         */
         public T getIsoCode() {
             return isoCode;
         }
-
+        
+        /**
+         * Gets the language name.
+         *
+         * @return The language name.
+         */
         public U getLanguageName() {
             return languageName;
         }
 
+        /**
+         * Returns a string representation of the pair in the format "isoCode - languageName".
+         *
+         * @return A string representation of the pair.
+         */
         @Override
         public String toString() {
             return isoCode + " - " + languageName;
