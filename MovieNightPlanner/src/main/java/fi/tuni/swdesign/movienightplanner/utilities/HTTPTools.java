@@ -48,7 +48,7 @@ public class HTTPTools implements iHTTPOperations {
             
             SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
             // TODO: Switch to API key and login. 
-            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZDc4ZTFkOGE4ZDkyOTc3ODhkZmJlM2U4ZjFmODI2MiIsIm5iZiI6MTcyNjY0NzQxMy4zMTU5MzUsInN1YiI6IjY2ZWE4YjQ0NTE2OGE4OTZlMTFmNDkxZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-Nh_jobP1QsTwiihO2YVhrRTuaX89mle0qVx_nKxZEs");
+            request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ZDAyZjc4ODU0Njc3MTZiYTkyY2Y4YzNjNDY1MTY3OCIsIm5iZiI6MTczMjA5MTUzMy41NjIyMTE1LCJzdWIiOiI2NmViZTA4MTYyYzRiYjE4Yzk3NDhhNTciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.886SZG7YHvNDZq2fBtLkls5RnqSgGaecx66ZpALxD5o");
             request.addHeader("accept", "application/json");
             
             Future<SimpleHttpResponse> future = httpClient.execute(request, null);

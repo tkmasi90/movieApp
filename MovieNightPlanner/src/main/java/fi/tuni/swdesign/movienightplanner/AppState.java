@@ -9,6 +9,7 @@ import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import com.google.gson.annotations.Expose;
+import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,13 +32,28 @@ public class AppState {
     private Map<Integer, Movie> movies;
 
     @Expose
-    private ArrayList<Movie> watchHistory;
+    private List<Movie> watchHistory;
+    
+    @Expose
+    private List<String> prefProviders;
+    
+    @Expose
+    private List<Integer> prefGenres;
+    
+    @Expose
+    private List<Integer> prefAudio;
+    
+    @Expose
+    private Integer prefMinRating;
 
     public AppState() {
         this.searchHistory = new ArrayList<>();
         this.movieRatings = new HashMap<>();
         this.movies = new HashMap<>();
         this.watchHistory = new ArrayList<>();
+        this.prefProviders = new ArrayList<>();
+        this.prefGenres = new ArrayList<>();
+        this.prefAudio = new ArrayList<>();
     }
 
     /**
@@ -57,7 +73,42 @@ public class AppState {
     public void addSearchedMovie(Movie movieSearch){
         this.searchHistory.add(movieSearch);
     }
+    
+    public void setPrefProviders(List<String> providers) {
+        this.prefProviders.clear();
+        this.prefProviders.addAll(providers);
+    }
+    
+    public void setPrefGenres(List<Integer> genres) {
+        this.prefGenres.clear();
+        this.prefGenres.addAll(genres);
+    }
+    
+    public void setPrefAudio(List<Integer> audios) {
+        this.prefAudio.clear();
+        this.prefAudio.addAll(audios);
+    }
+    
+    public void setPrefMinRating(Integer minRating) {
+        this.prefMinRating = minRating;
+    }
 
+    public List<String> getPrefProviders() {
+        return prefProviders;
+    }
+
+    public List<Integer> getPrefGenres() {
+        return prefGenres;
+    }
+
+    public List<Integer> getPrefAudio() {
+        return prefAudio;
+    }
+
+    public Integer getPrefMinRating() {
+        return prefMinRating;
+    }
+    
     /**
     * Saves the rating for a movie.
     *

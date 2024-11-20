@@ -34,7 +34,7 @@ public class Movie {
     @Expose
     private String poster_path;
     @Expose
-    private String release_date;
+     String release_date;
     @Expose
     private String title;
     @Expose

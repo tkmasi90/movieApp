@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.App;
+import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
@@ -86,9 +87,10 @@ public class SearchViewController {
     private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final ImageController ic = new ImageController();
 
-    List<CheckBox> selectedProviders = new ArrayList<>();
+    private final List<CheckBox> selectedProviders = new ArrayList<>();
     
     private SceneController sceneController;
+    private AppState appState;
     
     // HTTP Error Handling
     private int HTTPErrorCode;
@@ -103,6 +105,10 @@ public class SearchViewController {
     */
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
+    }
+    
+    public void setAppState(AppState appState) {
+        this.appState = appState;
     }
     
     /**
@@ -125,7 +131,7 @@ public class SearchViewController {
                             BackgroundRepeat.NO_REPEAT,
                             BackgroundPosition.CENTER,
                             BackgroundSize.DEFAULT))));
-        
+
         // Set placeholders and initialize movie lists
         popularMoviesLView.setPlaceholder(popularMoviesLoadingLabel);
         topRatedMoviesLview.setPlaceholder(topRatedMoviesLoadingLabel);
@@ -156,8 +162,7 @@ public class SearchViewController {
         cbSubtitle.getSelectionModel().selectFirst();
         
         // Set streaming provider logos
-        setStreamingProviders();
-
+        setProviderLogos();
         
     }
     
@@ -463,7 +468,7 @@ public class SearchViewController {
     * and assigning unique IDs from the provider list. After assigning the IDs, 
     * the method invokes {@link #setStreamingProviderLogos()} to apply the provider logos.
     */
-    private void setStreamingProviders() {
+    private void setProviderLogos() {
         int index = 0;    
         for(Node spHbox : streamers.getChildren()) {
             spHbox.setId(Integer.toString(tmdbUtil.PROVIDER_IDS.get(index)));
@@ -601,7 +606,7 @@ public class SearchViewController {
     }
    
     /**
-     * Populates the genre combo box asynchronously by fetching genre data from the API.
+     * Populates the genre combo box.
      */
     private void populateGenreComboBox() {
         cbGenre.getItems().addAll(
@@ -611,5 +616,31 @@ public class SearchViewController {
                 .collect(Collectors.toList())
         );
         cbGenre.getCheckModel().checkAll();
+    }
+
+    public void updateFilters() {
+        // Update Provider Selection
+        for(Node spHbox : streamers.getChildren()) {
+            CheckBox checkBox = (CheckBox) spHbox.lookup(".check-box");
+            for(String id : appState.getPrefProviders())
+                if(id.equals(spHbox.getId())) {
+                    checkBox.setSelected(true);
+                }
+                else {
+                    checkBox.setSelected(false);
+                }
+        }
+        
+        // Update Genre Selection
+        int[] intsG = appState.getPrefGenres().stream()
+                        .mapToInt(Integer::intValue)
+                        .toArray();
+        cbGenre.getCheckModel().checkIndices(intsG);
+        
+        // Update Audio Selection
+        int[] intsA = appState.getPrefAudio().stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
+        cbGenre.getCheckModel().checkIndices(intsA);
     }
 }

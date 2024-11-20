@@ -6,12 +6,9 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 
 import java.io.IOException;
 
-import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -24,9 +21,8 @@ import javafx.stage.Stage;
 public class SceneController {
     private final Stage stage;
     private final Scene searchScene;
-    private Scene movieDetailScene;
-    private Scene profileScene;
-    private AppState appState;
+    private final Scene movieDetailScene;
+    private final Scene profileScene;
     
      /**
      * Constructs a SceneController with the given stage and initial search scene.
@@ -35,19 +31,11 @@ public class SceneController {
      * @param scene The initial search scene to display.
      * @throws IOException if there is an issue loading the FXML resources.
      */
-    public SceneController(Stage stage, Scene scene) throws IOException {
+    public SceneController(Stage stage, Scene searchScene, Scene profileScene, Scene movieDetailScene) throws IOException {
         this.stage = stage;
-        searchScene = scene;
-
-    }
-
-    /**
-     * Sets the application state, allowing access to shared data between scenes.
-     *
-     * @param appState The application state to set.
-     */
-    public void setAppState(AppState appState) {
-        this.appState = appState;
+        this.searchScene = searchScene;
+        this.profileScene = profileScene;
+        this.movieDetailScene = movieDetailScene;
     }
     
     /**
@@ -73,16 +61,6 @@ public class SceneController {
 
     @FXML
     public void switchToMovieDetail(MouseEvent event, Movie movie) throws IOException {
-        if (movieDetailScene == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fi/tuni/swdesign/movienightplanner/MovieDetailsView.fxml"));
-            Parent root = loader.load();
-            MovieDetailsController movieDetailViewController = loader.getController();
-            movieDetailViewController.setSceneController(this); // Set SceneController
-            movieDetailViewController.setAppState(this.appState); // Set AppState
-            movieDetailScene = new Scene(root);
-            movieDetailScene.setUserData(movieDetailViewController);
-        }
-
         MovieDetailsController movieDetailViewController = (MovieDetailsController) movieDetailScene.getUserData();
         movieDetailViewController.setMovie(movie);
         stage.setScene(movieDetailScene);
@@ -98,16 +76,6 @@ public class SceneController {
      */
     @FXML
     public void switchToProfile(ActionEvent event) throws IOException {
-        if (profileScene == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fi/tuni/swdesign/movienightplanner/ProfileView.fxml"));
-            Parent root = loader.load();
-            ProfileViewController profileViewController = loader.getController();
-            profileViewController.setSceneController(this); // Set SceneController
-            profileViewController.setAppState(this.appState); // Set AppState
-            profileScene = new Scene(root);
-            profileScene.setUserData(profileViewController);
-          }
-
         ProfileViewController profileViewController = (ProfileViewController) profileScene.getUserData();
         profileViewController.initializeView(); // sets data in the view
         stage.setScene(profileScene);

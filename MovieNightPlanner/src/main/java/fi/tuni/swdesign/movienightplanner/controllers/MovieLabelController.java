@@ -49,8 +49,8 @@ public class MovieLabelController {
      * @param movie the movie object containing streaming provider information
      */
     public void addLogo(Movie movie) {
-        movieLabelName.setText(movie.title);
-        movieLabelYear.setText(movie.release_date.substring(0, 4));
+        movieLabelName.setText(movie.getTitle());
+        movieLabelYear.setText(movie.getReleaseDate().substring(0, 4));
 
         // Clear existing logos
         movieLabelLogos.getChildren().clear();

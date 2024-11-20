@@ -156,10 +156,10 @@ public final class TMDbUtility {
     }
     
     /** The base URL for discovering movies from TMDb */
-    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s?api_key=6d02f7885467716ba92cf8c3c4651678";
     
     /** The base URL for discovering movies from TMDb using filters */
-    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s?api_key=6d02f7885467716ba92cf8c3c4651678";
     
     /** The URL for fetching available movie genres from TMDb */
     private final String GENRES_URL = "https://api.themoviedb.org/3/genre/movie/list";

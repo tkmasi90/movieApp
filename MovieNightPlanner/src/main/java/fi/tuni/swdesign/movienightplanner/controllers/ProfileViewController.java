@@ -41,6 +41,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class ProfileViewController {
     private SceneController sceneController;
+    private SearchViewController searchViewController;
     private AppState appState;
     private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final MovieDataController mdc = new MovieDataController();
@@ -63,6 +64,10 @@ public class ProfileViewController {
 
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
+    }
+    
+    public void setSearchViewController(SearchViewController searchViewController) {
+        this.searchViewController = searchViewController;
     }
 
     /**
