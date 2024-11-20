@@ -88,6 +88,7 @@ public class SearchViewController {
     private final ImageController ic = new ImageController();
 
     private final List<CheckBox> selectedProviders = new ArrayList<>();
+    private Integer minRating  = 0;
     
     private SceneController sceneController;
     private AppState appState;
@@ -194,8 +195,12 @@ public class SearchViewController {
         List<Integer> genres = new ArrayList();
         List<String> audio = new ArrayList();
         
-        List<String> genresChecked = (List<String>) cbGenre.getCheckModel().getCheckedItems();
-        List<String> audioChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
+        List<String> genresChecked = (List<String>) cbGenre
+                .getCheckModel()
+                .getCheckedItems();
+        List<String> audioChecked = (List<String>) cbAudio
+                .getCheckModel()
+                .getCheckedItems();
         Integer lngLength = LanguageCodes.getLanguageListLength();
         
         genres.addAll(genresChecked
@@ -212,10 +217,11 @@ public class SearchViewController {
                 audio.add(LanguageCodes.getCountryCodeFromName(a));
             }
         }
-        
-        populateMovieListAsync(filteredMoviesLoadingLabel,
+                
+        populateMovieListAsync(
+                filteredMoviesLoadingLabel,
                 filteredView,
-                tmdbUtil.getFilteredUrl(genres, audio, providers)
+                tmdbUtil.getFilteredUrl(genres, audio, providers, minRating.toString())
         );
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
@@ -578,15 +584,15 @@ public class SearchViewController {
                         String subtitle = LanguageCodes.getCountryCodeFromName(
                             (String) cbSubtitle.getSelectionModel().getSelectedItem());
                         Iterator<Movie> iterator = movieList.iterator();
-                        while (iterator.hasNext()) {
+                        while(iterator.hasNext()) {
                             Movie movie = iterator.next();
-                            if (!sdc.areSubtitlesAvailable(movie.getId(), subtitle)) {
+                            if(!sdc.areSubtitlesAvailable(movie.getId(), subtitle)) {
                                 // Remove movie from list selected language subtitles are not available
                                 iterator.remove();
                             }
                         }
                     }
-                                        
+                                     
                     if (lView instanceof ListView) {
                         ListView<Movie> listView = (ListView<Movie>) lView;
                         setMovieListView(movieList, listView);
@@ -662,5 +668,11 @@ public class SearchViewController {
             cbAudio.getCheckModel().clearChecks();
             cbAudio.getCheckModel().checkIndices(intsA);
         }
+        
+        minRating = appState.getPrefMinRating();
+    }
+    
+    public void setMinRating(Integer rating) {
+        minRating = rating;
     }
 }

@@ -151,15 +151,16 @@ public final class TMDbUtility {
      * @param list the list of provider IDs to include in the URL
      * @return a formatted URL string for filtered movies
      */
-    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList) {
-        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList));
+    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList, String minRating) {
+        System.out.println(String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList), minRating));
+        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList), minRating);
     }
     
         /** The base URL for discovering movies from TMDb */
     private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
     
     /** The base URL for discovering movies from TMDb using filters */
-    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s&vote_average.gte=%s&vote_count.gte=200";
 
     
     /** The URL for fetching available movie genres from TMDb */

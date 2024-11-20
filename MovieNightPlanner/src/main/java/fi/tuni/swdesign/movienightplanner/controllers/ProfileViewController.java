@@ -170,7 +170,6 @@ public class ProfileViewController {
         }
                     
         cbGenre.getCheckModel().clearChecks();
-        
         cbGenre.getCheckModel().checkIndices(
             appState.getPrefGenres().stream().mapToInt(o -> (int) o).toArray()
         );
@@ -179,7 +178,7 @@ public class ProfileViewController {
         cbAudio.getCheckModel().checkIndices(
             appState.getPrefAudio().stream().mapToInt(o -> (int) o).toArray()
         );
-        
+        minRatingSpinner.getValueFactory().setValue(appState.getPrefMinRating());
     }
     
     public void updateData() {
