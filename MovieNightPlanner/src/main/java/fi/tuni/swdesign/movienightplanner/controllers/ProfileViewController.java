@@ -1,7 +1,6 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.AppState;
-import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 
 import java.io.IOException;
 
@@ -19,7 +18,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
@@ -40,9 +38,7 @@ public class ProfileViewController {
     private FilterViewController filterViewController;
     
     private AppState appState;
-    private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final MovieDataController mdc = new MovieDataController();
-    private final ImageController ic = new ImageController();
 
     // HTTP Error Handling
     private int HTTPErrorCode;
@@ -53,7 +49,6 @@ public class ProfileViewController {
     @FXML private CheckComboBox<String> cbAudio;    
     @FXML private Spinner<Integer> minRatingSpinner;
     @FXML private Spinner<Integer> piechartSpinner;
-    @FXML private Button applyMinButton;
     @FXML private PieChart genresPieChart;
     @FXML private PieChart centuryPieChart;
     @FXML private ListView<String> watchHistoryListView;
