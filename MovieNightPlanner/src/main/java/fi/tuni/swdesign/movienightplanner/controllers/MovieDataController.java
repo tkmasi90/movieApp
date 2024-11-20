@@ -89,7 +89,7 @@ public class MovieDataController {
             // Filter the providers to include only the ones in PROVIDER_IDS.
             streamProviderMap = streamResponse.getResults()
                     .stream()
-                    .filter(p -> tmdbUtil.PROVIDER_IDS.contains(p.provider_id))
+                    .filter(p -> tmdbUtil.PROVIDER_IDS.contains(p.getProviderId()))
                     .collect(Collectors.toMap(StreamingProvider::getProviderId, p -> p));
 
         } catch (HttpResponseException ex) {
