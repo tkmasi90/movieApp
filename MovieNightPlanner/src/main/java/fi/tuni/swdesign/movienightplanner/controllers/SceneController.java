@@ -77,7 +77,8 @@ public class SceneController {
     @FXML
     public void switchToProfile(ActionEvent event) throws IOException {
         ProfileViewController profileViewController = (ProfileViewController) profileScene.getUserData();
-        profileViewController.initializeView(); // sets data in the view
+        profileViewController.updateData(); // sets data in the view
+        profileViewController.setFiltersFromState();
 
         profileViewController.getChartContainer().layout();
 

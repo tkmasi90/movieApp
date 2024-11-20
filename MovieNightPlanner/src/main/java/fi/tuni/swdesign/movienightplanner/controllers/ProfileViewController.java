@@ -5,6 +5,7 @@ import fi.tuni.swdesign.movienightplanner.models.GenresResponse;
 import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.utilities.TMDbUtility;
 import fi.tuni.swdesign.movienightplanner.utilities.LanguageCodes;
+import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import java.io.IOException;
 import java.util.Set;
@@ -16,12 +17,14 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -49,7 +52,6 @@ public class ProfileViewController {
     private final TMDbUtility tmdbUtil = new TMDbUtility();
     private final MovieDataController mdc = new MovieDataController();
     private final ImageController ic = new ImageController();
-    private List<CheckBox> selectedProviders = new ArrayList<>();
 
     // HTTP Error Handling
     private int HTTPErrorCode;
@@ -58,7 +60,6 @@ public class ProfileViewController {
     @FXML private GridPane streamers;
     @FXML private CheckComboBox<String> cbGenre;
     @FXML private CheckComboBox<String> cbAudio;    
-    @FXML private CheckComboBox<String> cbSubtitle;
 
     @FXML private Spinner<Integer> minRatingSpinner;
 
@@ -68,6 +69,7 @@ public class ProfileViewController {
     @FXML private ListView<String> watchHistoryListView;
 
     @FXML private VBox chartContainer;
+
 
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
@@ -80,7 +82,8 @@ public class ProfileViewController {
     /**
      * Initializes the controller.
      */
-    public void initializeView(){
+    @FXML
+    public void initialize(){
         // This function doesn't need be called each time.
         // We can fetch this data only on first time and save to a local json
         if(mdc.getStreamProviderMap() == null) {
@@ -93,23 +96,98 @@ public class ProfileViewController {
                 System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
             }
         }
-
+        
+        setComboBoxLogic(cbGenre);
+        setComboBoxLogic(cbAudio);
+        
         // Set Streaming Provider IDs and logos for filtering.
         setStreamingProviders();
         setFilterOptions();
-
-        // Set genres pie chart
-        populateGenresPieChart();
-
-        // Set century pie chart
-        populateCenturyPieChart();
-
-        // Set watch history list view
-        populateWatchHistory();
-
+        
         // Set spinner for minimum rating
         initializeSpinner();
     }
+    
+    /**
+     * Applies logic to a CheckComboBox such that when one item is unchecked, 
+     * all others are unchecked, and if none are checked, all items are selected.
+     *
+     * @param ccb The CheckComboBox to apply the logic to.
+     */
+    private void setComboBoxLogic(CheckComboBox ccb) {
+        // Use an array to store the flag, making it mutable
+        final boolean[] internalChange = {false};
+
+        ccb.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
+            if (internalChange[0]) return; // Exit if an internal change is happening
+
+            while (change.next()) {
+                // Check if all items are initially checked and now an item is unchecked
+                if (change.wasRemoved() && ccb.getCheckModel().getCheckedItems().size() == ccb.getItems().size() - 1) {
+                    // Prevent further triggers during this process
+                    internalChange[0] = true;
+
+                    // Get the last unchecked item (the one that triggered the removal)
+                    String lastUncheckedItem = change.getRemoved().get(0);
+
+                    // Uncheck all items
+                    ccb.getCheckModel().clearChecks();
+
+                    // Check only the item that was previously unchecked
+                    ccb.getCheckModel().check(lastUncheckedItem);
+
+                    // Reset the flag
+                    internalChange[0] = false;
+                }
+
+//                // Handle the case when only one item is checked, and it gets unchecked
+//                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
+//                    // Prevent further triggers during this process
+//                    internalChange[0] = true;
+//
+//                    // Check all items back again
+//                    ccb.getCheckModel().checkAll();
+//
+//                    // Reset the flag
+//                    internalChange[0] = false;
+//                }
+            }
+            
+        });
+    }
+    
+    public void setFiltersFromState() {
+        for(Node cb : streamers.lookupAll(".check-box")) {
+            if (cb instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) cb;
+                checkBox.setSelected(false);
+                for(var prov : appState.getPrefProviders()) {
+                    if (prov.equals(checkBox.getParent().getId())) {
+                        checkBox.setSelected(true);
+                    }
+                }
+            }
+        }
+                    
+        cbGenre.getCheckModel().clearChecks();
+        
+        cbGenre.getCheckModel().checkIndices(
+            appState.getPrefGenres().stream().mapToInt(o -> (int) o).toArray()
+        );
+       
+        cbAudio.getCheckModel().clearChecks();
+        cbAudio.getCheckModel().checkIndices(
+            appState.getPrefAudio().stream().mapToInt(o -> (int) o).toArray()
+        );
+        
+    }
+    
+    public void updateData() {
+        populateGenresPieChart();
+        populateCenturyPieChart();
+        populateWatchHistory();
+    }
+    
 
     /**
      * Initializes spinner for minimum rating.
@@ -225,7 +303,6 @@ public class ProfileViewController {
                     CheckBox checkBox = (CheckBox) imageView.getParent()
                                 .lookup(".check-box");
                     
-
                     imageView.setOnMouseClicked(event -> {
                         if(checkBox.isSelected()) {
                             checkBox.setSelected(false);
@@ -235,7 +312,7 @@ public class ProfileViewController {
                         }
                     });
                     
-                    selectedProviders.add(checkBox);
+
                 }
             }
         }
@@ -252,39 +329,16 @@ public class ProfileViewController {
     }
 
     /**
-     * Populates the genre combo box asynchronously by fetching genre data from the API.
+     * Populates the genre combo box.
      */
     private void populateGenreComboBox() {
-        // Fetch Genre-list from TMDB
-        CompletableFuture.supplyAsync(() -> {
-            GenresResponse temp = null;
-            
-            try {
-                temp = mdc.fetchGenres(tmdbUtil.getGenresUrl());
-            } catch (HttpResponseException ex) {
-
-                this.HTTPErrorCode = ex.getStatusCode();              
-                this.HTTPErrorMessage = ex.getReasonPhrase();
-                
-                return null;
-            }
-            return temp;
-        })
-        .thenAccept(genreResponse -> {
-            Platform.runLater(() -> {
-                if(genreResponse != null) {
-                    List<String> genreList = genreResponse.getGenres()
-                            .stream()
-                            .map(Genre::getName)
-                            .collect(Collectors.toList()); 
-
-                    cbGenre.getItems().addAll(genreList);
-
-                } else {
-                    System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
-                }
-            });
-        });
+        cbGenre.getItems().addAll(
+                MovieGenres.getAllGenresByName().keySet()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList())
+        );
+        cbGenre.getCheckModel().checkAll();
     }
 
     /**
@@ -298,7 +352,6 @@ public class ProfileViewController {
         // Populate Language and Subtitle comboboxes
         List<String> languages = LanguageCodes.getAllLanguageNames();
         cbAudio.getItems().addAll(languages);
-        cbSubtitle.getItems().addAll(languages);
     }
 
     /**
@@ -308,12 +361,34 @@ public class ProfileViewController {
      */
     @FXML
     private void navigateToSearchView(ActionEvent event) {
-        System.out.println("Button clicked, navigating to Search View...");
         try {
             sceneController.switchToSearch(event); // Delegate scene switching to SceneController
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    @FXML
+    private void savePreferences(ActionEvent event) {
+        
+        try {
+            List<String> checkedProviders = new ArrayList<>();
+            for(Node cb : streamers.lookupAll(".check-box")) {
+                if (cb instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) cb;
+                    if (checkBox.isSelected()) {
+                        checkedProviders.add(checkBox.getParent().getId());
+                    }
+                }
+            }       
+            appState.setPrefProviders(checkedProviders);
+            appState.setPrefAudio(cbAudio.getCheckModel().getCheckedIndices());
+            appState.setPrefGenres(cbGenre.getCheckModel().getCheckedIndices());
+            appState.setPrefMinRating(minRatingSpinner.getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        searchViewController.updateFilters();
     }
 
 

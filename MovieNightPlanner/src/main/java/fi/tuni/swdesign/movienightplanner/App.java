@@ -27,6 +27,11 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         readAppStateFromFile();
+        
+        // Add title and logo for app
+        stage.setTitle("Movie Night Planner");
+        URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
+        stage.getIcons().add(new Image(logoUrl.toString()));
 
         // Load the SearchView and set its SceneController
         FXMLLoader searchLoader = loadFXML("SearchView");
@@ -40,6 +45,7 @@ public class App extends Application {
         FXMLLoader profileLoader = loadFXML("ProfileView");
         Parent profileView = profileLoader.load();
 
+        // Create Scenes
         Scene searchScene = new Scene(searchView);
         Scene detailsScene = new Scene(detailsView);
         Scene profileScene = new Scene(profileView);
@@ -47,10 +53,6 @@ public class App extends Application {
         stage.setScene(searchScene);
         stage.sizeToScene();
         stage.setResizable(false);
-        
-        stage.setTitle("Movie Night Planner");
-        URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
-        stage.getIcons().add(new Image(logoUrl.toString()));
 
         // Set scenes for SceneController
         SceneController sceneController = new SceneController(stage, searchScene, profileScene, detailsScene);
@@ -64,8 +66,11 @@ public class App extends Application {
         // Set Profile View
         ProfileViewController profileViewController = profileLoader.getController();
         profileViewController.setSceneController(sceneController);
-        profileViewController.setAppState(this.appState); 
+        profileViewController.setSearchViewController(searchViewController);
+        profileViewController.setAppState(this.appState);
         profileScene.setUserData(profileViewController);
+        profileViewController.updateData();
+        profileViewController.setFiltersFromState();
         
         // Set Movie Detail View
         MovieDetailsController movieDetailsController = detailsLoader.getController();

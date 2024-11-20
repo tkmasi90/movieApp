@@ -196,7 +196,6 @@ public class SearchViewController {
         
         List<String> genresChecked = (List<String>) cbGenre.getCheckModel().getCheckedItems();
         List<String> audioChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
-        List<String> subChecked = (List<String>) cbAudio.getCheckModel().getCheckedItems();
         Integer lngLength = LanguageCodes.getLanguageListLength();
         
         genres.addAll(genresChecked
@@ -251,7 +250,6 @@ public class SearchViewController {
         List<String> languages = LanguageCodes.getAllLanguageNames();
         cbAudio.getItems().addAll(languages);
         cbSubtitle.getItems().addAll(languages);
-        cbAudio.getCheckModel().checkAll();
         
         // Set Combobox logic
         setComboBoxLogic(cbGenre);
@@ -300,18 +298,18 @@ public class SearchViewController {
                     // Reset the flag
                     internalChange[0] = false;
                 }
-
-                // Handle the case when only one item is checked, and it gets unchecked
-                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
-                    // Prevent further triggers during this process
-                    internalChange[0] = true;
-
-                    // Check all items back again
-                    ccb.getCheckModel().checkAll();
-
-                    // Reset the flag
-                    internalChange[0] = false;
-                }
+//
+//                // Handle the case when only one item is checked, and it gets unchecked
+//                else if (ccb.getCheckModel().getCheckedItems().isEmpty()) {
+//                    // Prevent further triggers during this process
+//                    internalChange[0] = true;
+//
+//                    // Check all items back again
+//                    ccb.getCheckModel().checkAll();
+//
+//                    // Reset the flag
+//                    internalChange[0] = false;
+//                }
             }
             
         });
@@ -530,6 +528,8 @@ public class SearchViewController {
                                 .lookup(".check-box");
                     
 
+                    
+
                     imageView.setOnMouseClicked(event -> {
                         if(checkBox.isSelected()) {
                             checkBox.setSelected(false);
@@ -538,8 +538,6 @@ public class SearchViewController {
                             checkBox.setSelected(true);
                         }
                     });
-                    
-                    selectedProviders.add(checkBox);
                 }
             }
         }
@@ -619,28 +617,50 @@ public class SearchViewController {
     }
 
     public void updateFilters() {
-        // Update Provider Selection
-        for(Node spHbox : streamers.getChildren()) {
-            CheckBox checkBox = (CheckBox) spHbox.lookup(".check-box");
-            for(String id : appState.getPrefProviders())
-                if(id.equals(spHbox.getId())) {
-                    checkBox.setSelected(true);
-                }
-                else {
-                    checkBox.setSelected(false);
-                }
+        
+        var prefProviders = appState.getPrefProviders();
+        
+        if(prefProviders.isEmpty()) {
+            streamers.lookupAll(".check-box").stream()
+                    .filter(node -> node instanceof CheckBox)
+                    .map(node -> (CheckBox) node)
+                    .forEach(cb -> cb.setSelected(true));  
+        }
+        else {
+            // Update Provider Selection
+            for(Node spHbox : streamers.getChildren()) {
+                CheckBox checkBox = (CheckBox) spHbox.lookup(".check-box");
+                checkBox.setSelected(false);
+                for(String id : prefProviders)
+                    if(id.equals(spHbox.getId())) {
+                        checkBox.setSelected(true);
+                    }
+            }
         }
         
         // Update Genre Selection
         int[] intsG = appState.getPrefGenres().stream()
                         .mapToInt(Integer::intValue)
                         .toArray();
-        cbGenre.getCheckModel().checkIndices(intsG);
+        
+        if(intsG.length == 0) {
+            cbGenre.getCheckModel().checkAll();
+        } else {
+            cbGenre.getCheckModel().clearChecks();
+            cbGenre.getCheckModel().checkIndices(intsG);
+        }
         
         // Update Audio Selection
         int[] intsA = appState.getPrefAudio().stream()
                 .mapToInt(Integer::intValue)
                 .toArray();
-        cbGenre.getCheckModel().checkIndices(intsA);
+        
+        if(intsA.length == 0) {
+            cbAudio.getCheckModel().checkAll();
+        }
+        else {
+            cbAudio.getCheckModel().clearChecks();
+            cbAudio.getCheckModel().checkIndices(intsA);
+        }
     }
 }
