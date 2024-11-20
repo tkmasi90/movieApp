@@ -117,17 +117,16 @@ public class MovieDetailsController {
     }
 
     /**
-     * Navigates to the profile view.
+     * Navigates to the search view.
      *
      * @param event the ActionEvent that triggered this method
      */
     @FXML
-    public void navigateToProfileView(ActionEvent event) {
-        try {
-            sceneController.switchToProfile(event);
-            clearMovieDetails();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void handleHomeButtonClick(ActionEvent event) throws IOException{
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToSearch(event);
         }
     }
 

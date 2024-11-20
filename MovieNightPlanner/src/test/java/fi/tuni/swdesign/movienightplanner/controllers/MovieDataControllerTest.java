@@ -9,7 +9,6 @@ import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.MoviesResponse;
 import fi.tuni.swdesign.movienightplanner.models.SpokenLanguage;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
-import fi.tuni.swdesign.movienightplanner.utilities.Constants;
 import java.util.List;
 import java.util.Map;
 import org.apache.hc.client5.http.HttpResponseException;
@@ -27,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MovieDataControllerTest {
     
     private MovieDataController movieDataController;
-    private Constants constants;
     
     public MovieDataControllerTest() {
     }
@@ -43,30 +41,12 @@ public class MovieDataControllerTest {
     @BeforeEach
     public void setUp() {
         movieDataController = new MovieDataController();
-        constants = new Constants();
     }
     
     @AfterEach
     public void tearDown() {
     }
 
-//    /**
-//     * Test of fetchMoviesResponse method, of class MovieDataController.
-//     */
-//    @Test
-//    public void testFetchMoviesResponse() throws Exception {
-//        
-//        System.out.println("fetchMoviesResponse");
-//        String url = String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", constants.getProvidersString());
-// 
-//        try {
-//            MoviesResponse response = movieDataController.fetchMoviesResponse(url);
-//            assertNotNull(response);
-//            assertNotNull(response.getResults());
-//        } catch (Exception e) {
-//            fail("Exception was thrown: " + e.getMessage());
-//        }
-//    }
 
     /**
      * Test of fetchStreamingProviders method, of class MovieDataController.

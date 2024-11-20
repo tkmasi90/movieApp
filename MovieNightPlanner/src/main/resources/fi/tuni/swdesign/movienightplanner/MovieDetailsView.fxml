@@ -4,11 +4,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.effect.GaussianBlur?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
    <children>
@@ -25,8 +29,26 @@
                   <ImageView fx:id="posterImage" fitHeight="276.0" fitWidth="200.0" layoutX="136.0" layoutY="61.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="firstProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="secondProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1130.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button fx:id="homeButton" layoutX="31.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToSearchView" text="Home" />
-                  <Button fx:id="profileButton" layoutX="1555.0" layoutY="27.0" mnemonicParsing="false" onAction="#navigateToProfileView" text="Profile" />
+                  
+<Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../images/mnp_logo.jpeg" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets left="16.0" right="16.0" top="16.0" />
+               </HBox.margin>
+            </Button>
+                  
                   <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="61.0" prefHeight="35.0" prefWidth="616.0" text="Movie Name (year)" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="24.0" />
