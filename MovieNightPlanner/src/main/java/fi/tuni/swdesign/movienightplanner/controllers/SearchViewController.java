@@ -26,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -83,6 +84,10 @@ public class SearchViewController {
 
     private final List<CheckBox> selectedProviders = new ArrayList<>();
     private Integer minRating  = 1;
+    
+    private Integer popPage;
+    private Integer topPage;
+    private Integer filterPage;
     
     private SceneController sceneController;
     FilterViewController filterViewController;
@@ -144,10 +149,14 @@ public class SearchViewController {
                 System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
             }
         }
+        
+        popPage = 1;
+        topPage = 1;
+        filterPage = 1;
 
         movieViewSelect.setFocusTraversable(false);
-        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl());
-        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl());
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl(popPage++), false);
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl(topPage++), false);
                 
     }
     
@@ -215,11 +224,13 @@ public class SearchViewController {
                 filteredMoviesLoadingLabel,
                 filteredView,
                 tmdbUtil.getFilteredUrl(
+                        filterPage++,
                         genres,
                         audio,
                         providers,
                         minRating.toString()
-                )
+                ),
+                false
         );
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
@@ -233,59 +244,80 @@ public class SearchViewController {
     * @param movies the list of movies to display in the ListView
     * @param lView  the ListView component that will display the movie labels
     */
-    private void setMovieListView(List<Movie> movies, ListView<Movie> lView) {
+    private void setMovieListView(List<Movie> movies, ListView<Movie> lView, Runnable loadMoreAction) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
+        movieList.add(null);
         lView.setItems(movieList);
         // Create a map to cache the graphics for each movie
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
 
-        lView.setCellFactory(lv -> new ListCell<Movie>() {
-            @Override
-            protected void updateItem(Movie movie, boolean empty) {
-                super.updateItem(movie, empty);
-
-                if (empty || movie == null) {
-                    setText(null);
-                    setGraphic(null);
-                    setStyle("");
-                } else {
-                    // Check if the movie is already cached
-                    if (movieLabelCache.containsKey(movie)) {
-                        // Use the cached label (StackPane)
-                        setGraphic(movieLabelCache.get(movie));
-                    } else {
-                        // Load the movie label and cache it
-                        FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
-                        try {
-                            StackPane movieLabel = loader.load();  // Load the FXML
-                            MovieLabelController mlController = loader.getController();  // Get the controller
-
-                            // Populate the movie label with data from the movie object
-                            mlController.addLogo(movie);
-                            
-                            mlController.setClipRectangleSize(458, 257);
-                            
-                            mlController.addMovieImage(movie, 257);
-
-                            // Cache the graphic for later use
-                            movieLabelCache.put(movie, movieLabel);
-                            // Set the graphic for the current cell
-                            setGraphic(movieLabel);
-                            
-                        } catch (IOException e) {
-                            e.printStackTrace();
+        lView.setCellFactory(lv -> {
+            return new ListCell<Movie>() {
+                @Override
+                protected void updateItem(Movie movie, boolean empty) {
+                    super.updateItem(movie, empty);
+                    
+                    if (empty) {
+                        setText(null);
+                        setGraphic(null);
+                        setStyle("");
+                    } else if (movie != null) {
+                        // Check if the movie is already cached
+                        if (movieLabelCache.containsKey(movie)) {
+                            // Use the cached label (StackPane)
+                            setGraphic(movieLabelCache.get(movie));
+                        } else {
+                            // Load the movie label and cache it
+                            FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
+                            try {
+                                StackPane movieLabel = loader.load();  // Load the FXML
+                                MovieLabelController mlController = loader.getController();  // Get the controller
+                                
+                                // Populate the movie label with data from the movie object
+                                mlController.addLogo(movie);
+                                
+                                mlController.setClipRectangleSize(458, 257);
+                                
+                                mlController.addMovieImage(movie, 257);
+                                
+                                // Cache the graphic for later use
+                                movieLabelCache.put(movie, movieLabel);
+                                // Set the graphic for the current cell
+                                setGraphic(movieLabel);
+                                
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        
+                        // Make the cell background transparent
+                        setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
+                        setPrefWidth(448);
+                        setPrefHeight(247);
+                        
+                        // Handle clicks on the movie
+                        setOnMouseClicked(event -> handleMovieClick(event, movie));
                     }
                     
-                    // Make the cell background transparent
-                    setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
-                    setPrefWidth(448);
-                    setPrefHeight(247);
-
-                    // Handle clicks on the movie
-                    setOnMouseClicked(event -> handleMovieClick(event, movie));
+                    else {
+                        // "Load More Results" placeholder
+                        Label loadMoreLabel = new Label("Load More Results");
+                        loadMoreLabel.setPrefWidth(448);
+                        loadMoreLabel.setPrefHeight(247);
+                        loadMoreLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff; -fx-cursor: hand;");
+                        loadMoreLabel.setOnMouseClicked(event -> {
+                            System.out.println("more results clicked");
+                            loadMoreAction.run();
+                            });
+                        
+                        StackPane loadMorePane = new StackPane(loadMoreLabel);
+                        loadMorePane.setStyle("-fx-background-color: transparent; -fx-padding: 15px;");
+                        setGraphic(loadMorePane);
+                        
+                        setOnMouseClicked(null);
+                    }
                 }
-            }
+            };
         });
     }
     
@@ -296,8 +328,9 @@ public class SearchViewController {
     * @param movies the list of movies to display in the GridView
     * @param lView  the GridView component that will display the movie labels
     */
-    private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
+    private void setMovieGridView(List<Movie> movies, GridView<Movie> lView, Runnable loadMoreAction) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
+        movieList.add(null);
         lView.setItems(movieList);
         lView.setCellWidth(490);
         lView.setCellHeight(320);
@@ -312,10 +345,10 @@ public class SearchViewController {
             protected void updateItem(Movie movie, boolean empty) {
                 super.updateItem(movie, empty);
 
-                if (empty || movie == null) {
+                if (empty) {
                     setText(null);
                     setGraphic(null);
-                } else {
+                } else if (movie != null) {
                     // Check if the movie is already cached
                     if (movieLabelCache.containsKey(movie)) {
                         // Use the cached label (StackPane)
@@ -350,6 +383,22 @@ public class SearchViewController {
                     // Handle clicks on the movie
                     setOnMouseClicked(event -> handleMovieClick(event, movie));
                 }
+                
+                 else {
+                    // "Load More Results" placeholder
+                    Label loadMoreLabel = new Label("Load More Results");
+                    loadMoreLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff; -fx-cursor: hand;");
+                    loadMoreLabel.setOnMouseClicked(event -> {
+                        System.out.println("more results clicked");
+                        loadMoreAction.run();
+                            });
+
+                    StackPane loadMorePane = new StackPane(loadMoreLabel);
+                    loadMorePane.setStyle("-fx-background-color: transparent; -fx-padding: 15px;");
+                    setGraphic(loadMorePane);
+                    
+                    setOnMouseClicked(null);
+                }
             }
         });
     }
@@ -378,7 +427,7 @@ public class SearchViewController {
      * @param lView The ListView or GridView to populate with movie data.
      * @param url The URL to fetch movie data from.
      */
-    private void populateMovieListAsync(Label loadingLabel, Node lView, String url) {       
+    private void populateMovieListAsync(Label loadingLabel, Node lView, String url, boolean append) {   
         // Fetch movies from TMDB
         CompletableFuture.supplyAsync(() -> {
             MoviesResponse temp = null;
@@ -417,11 +466,19 @@ public class SearchViewController {
                                      
                     if (lView instanceof ListView) {
                         ListView<Movie> listView = (ListView<Movie>) lView;
-                        setMovieListView(movieList, listView);
+                        if (append) {
+                            listView.getItems().addAll(movieList);
+                        } else {
+                            setMovieListView(movieList, listView, () -> loadMoreMovies(listView));
+                        }
 
                     } else if (lView instanceof GridView) {
                         GridView<Movie> gridView = (GridView<Movie>) lView;
-                        setMovieGridView(movieList, gridView);
+                        if (append) {
+                            gridView.getItems().addAll(movieList);
+                        } else {
+                            setMovieGridView(movieList, gridView, () -> loadMoreMovies(gridView));
+                        }
                     }
 
                 } else {
@@ -430,7 +487,59 @@ public class SearchViewController {
             });
         });
     }
-   
+    
+    private void loadMoreMovies(Node lView) {
+        String url = determineUrlForNode(lView);
+
+        if (url != null) {
+            populateMovieListAsync(null, lView, url, true); // Append new results
+        }
+    }
+    
+    private String determineUrlForNode(Node lView) {
+        if (lView == popularMoviesLView) {
+            return tmdbUtil.getPopularMoviesUrl(popPage++);
+        } else if (lView == topRatedMoviesLview) {
+            return tmdbUtil.getTopRatedMoviesUrl(topPage++);
+        } else if (lView == filteredView) {
+            return createFilteredMoviesUrl();
+        }
+        return null;
+    }
+
+    private String createFilteredMoviesUrl() {
+        List<Integer> providers = filterViewController
+                .getCheckedValues(selectedProviders);
+        List<Integer> genres = new ArrayList();
+        List<String> audio = new ArrayList();
+        
+        List<String> genresChecked = (List<String>) cbGenre
+                .getCheckModel()
+                .getCheckedItems();
+        List<String> audioChecked = (List<String>) cbAudio
+                .getCheckModel()
+                .getCheckedItems();
+        Integer lngLength = LanguageCodes.getLanguageListLength();
+        
+        genres.addAll(genresChecked
+                .stream()
+                .map(genreName -> MovieGenres.getGenreIdByName((String) genreName))
+                .collect(Collectors.toList())
+        );
+        
+        if(audioChecked.size() == lngLength) {
+            audio.addAll(LanguageCodes.getAllCountryCodes());
+        }
+        else {
+            for(String a : audioChecked) {
+                audio.add(LanguageCodes.getCountryCodeFromName(a));
+            }
+        }
+
+        return tmdbUtil.getFilteredUrl(filterPage++, genres, audio, providers, minRating.toString());
+    }
+
+
     /**
     * Updates the filter settings in the UI based on the user's preferences stored in the application state.
     * The method synchronizes the state of checkboxes and other UI components to reflect the user's

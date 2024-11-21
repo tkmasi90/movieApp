@@ -117,8 +117,8 @@ public final class TMDbUtility {
      * 
      * @return a formatted URL string for popular movies
      */
-    public String getPopularMoviesUrl() {
-        return String.format(MOVIE_BASE_URL, getProvidersString());
+    public String getPopularMoviesUrl(Integer page) {
+        return String.format(MOVIE_BASE_URL, page, getProvidersString());
     }
     
     /**
@@ -127,8 +127,8 @@ public final class TMDbUtility {
      * 
      * @return a formatted URL string for top-rated movies
      */
-    public String getTopRatedMoviesUrl() {
-        return String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", getProvidersString());
+    public String getTopRatedMoviesUrl(Integer page) {
+        return String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=%s&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", page, getProvidersString());
     }
     
     /**
@@ -159,15 +159,15 @@ public final class TMDbUtility {
      * @param minRating The minimum rating to include in the filter.
      * @return A formatted URL string with the applied filters, ready for use in TMDb API requests.
      */
-    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList, String minRating) {
-        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList), minRating);
+    public String getFilteredUrl(Integer page, List<Integer> genreList, List<String> audioList, List<Integer> provList, String minRating) {
+        return String.format(MOVIE_BASE_URL_FILTER, page, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList), minRating);
     }
     
     /** The base URL for discovering movies from TMDb */
-    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=%s&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
     
     /** The base URL for discovering movies from TMDb using filters */
-    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s&vote_average.gte=%s&vote_count.gte=200";
+    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=%s&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s&vote_average.gte=%s&vote_count.gte=200";
 
     
     /** The URL for fetching available movie genres from TMDb */
