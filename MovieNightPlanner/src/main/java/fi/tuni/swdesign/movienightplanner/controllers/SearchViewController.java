@@ -82,7 +82,7 @@ public class SearchViewController {
     private final ImageController ic = new ImageController();
 
     private final List<CheckBox> selectedProviders = new ArrayList<>();
-    private Integer minRating  = 0;
+    private Integer minRating  = 1;
     
     private SceneController sceneController;
     FilterViewController filterViewController;
@@ -214,7 +214,12 @@ public class SearchViewController {
         populateMovieListAsync(
                 filteredMoviesLoadingLabel,
                 filteredView,
-                tmdbUtil.getFilteredUrl(genres, audio, providers, minRating.toString())
+                tmdbUtil.getFilteredUrl(
+                        genres,
+                        audio,
+                        providers,
+                        minRating.toString()
+                )
         );
         
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();

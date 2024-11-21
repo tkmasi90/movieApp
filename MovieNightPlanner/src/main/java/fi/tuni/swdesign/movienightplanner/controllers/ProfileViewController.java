@@ -130,7 +130,12 @@ public class ProfileViewController {
             appState.getPrefAudio().stream().mapToInt(o -> (int) o).toArray()
         );
         // Set minimum rating
-        minRatingSpinner.getValueFactory().setValue(appState.getPrefMinRating());
+        Integer minRating = appState.getPrefMinRating();
+        if(minRating == null) {
+            minRatingSpinner.getValueFactory().setValue(1);
+        } else {
+            minRatingSpinner.getValueFactory().setValue(appState.getPrefMinRating());
+        }
     }
     
     /**
