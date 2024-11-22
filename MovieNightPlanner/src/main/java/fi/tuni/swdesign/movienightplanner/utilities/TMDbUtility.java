@@ -118,7 +118,6 @@ public final class TMDbUtility {
      * @return a formatted URL string for popular movies
      */
     public String getPopularMoviesUrl(Integer page) {
-        System.out.println(String.format(MOVIE_BASE_URL, page, getProvidersString()));
         return String.format(MOVIE_BASE_URL, page, getProvidersString());
     }
     

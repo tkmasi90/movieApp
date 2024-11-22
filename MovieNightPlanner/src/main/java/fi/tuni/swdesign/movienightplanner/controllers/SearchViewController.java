@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -246,7 +247,6 @@ public class SearchViewController {
     */
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView, Runnable loadMoreAction) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
-        movieList.add(null);
         lView.setItems(movieList);
         // Create a map to cache the graphics for each movie
         Map<Movie, StackPane> movieLabelCache = new HashMap<>();
@@ -256,67 +256,58 @@ public class SearchViewController {
                 @Override
                 protected void updateItem(Movie movie, boolean empty) {
                     super.updateItem(movie, empty);
+                    FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
+
+                    try {
+                        StackPane movieLabel = loader.load();  // Load the FXML
+                        MovieLabelController mlController = loader.getController();  // Get the controller
                     
-                    if (empty) {
+                        if (empty) {
                         setText(null);
                         setGraphic(null);
                         setStyle("");
                         setOnMouseClicked(null);
-                    } else if (movie != null) {
-                        // Check if the movie is already cached
-                        if (movieLabelCache.containsKey(movie)) {
-                            // Use the cached label (StackPane)
-                            setGraphic(movieLabelCache.get(movie));
-                        } else {
-                            // Load the movie label and cache it
-                            FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
-                            try {
-                                StackPane movieLabel = loader.load();  // Load the FXML
-                                MovieLabelController mlController = loader.getController();  // Get the controller
-                                
+                        } else if (movie != null) {
+                            // Check if the movie is already cached
+                            if (movieLabelCache.containsKey(movie)) {
+                                // Use the cached label (StackPane)
+                                setGraphic(movieLabelCache.get(movie));
+                            } else {
+
                                 // Populate the movie label with data from the movie object
                                 mlController.addLogo(movie);
-                                
+
                                 mlController.setClipRectangleSize(458, 257);
-                                
+
                                 mlController.addMovieImage(movie, 257);
-                                
+
                                 // Cache the graphic for later use
                                 movieLabelCache.put(movie, movieLabel);
                                 // Set the graphic for the current cell
                                 setGraphic(movieLabel);
-                                
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
+                            // Handle clicks on the movie
+                            setOnMouseClicked(event -> handleMovieClick(event, movie));
+                        }
+                        // null is used for "Load More Results"-label
+                        else {
+                            mlController.setClipRectangleSize(458, 257);
+                            mlController.addShowMore(458, 257);
+                            setGraphic(movieLabel);
+                            movieLabel.setOnMouseClicked(event -> {
+                                loadMoreAction.run();
+                                });
+                            setOnMouseClicked(null);
                         }
                         
                         // Make the cell background transparent
-                        setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
-                        setPrefWidth(448);
-                        setPrefHeight(247);
-                        
-                        // Handle clicks on the movie
-                        setOnMouseClicked(event -> handleMovieClick(event, movie));
+                            setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
+                            setPrefWidth(448);
+                            setPrefHeight(247);
                     }
-                    
-                    else {
-                        // "Load More Results" placeholder
-                        Label loadMoreLabel = new Label("Load More Results");
-                        loadMoreLabel.setPrefWidth(448);
-                        loadMoreLabel.setPrefHeight(247);
-                        loadMoreLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff; -fx-cursor: hand;");
-                        loadMoreLabel.setOnMouseClicked(event -> {
-                            System.out.println("more results clicked");
-                            loadMoreAction.run();
-                            });
-                        
-                        StackPane loadMorePane = new StackPane(loadMoreLabel);
-                        loadMorePane.setStyle("-fx-background-color: transparent; -fx-padding: 15px;");
-                        setGraphic(loadMorePane);
-                        
-                        setOnMouseClicked(null);
-                    }
+                    catch (IOException e) {
+                            e.printStackTrace();
+                        }
                 }
             };
         });
@@ -329,9 +320,8 @@ public class SearchViewController {
     * @param movies the list of movies to display in the GridView
     * @param lView  the GridView component that will display the movie labels
     */
-    private void setMovieGridView(List<Movie> movies, GridView<Movie> lView, Runnable loadMoreAction) {
+    private void setMovieGridView(List<Movie> movies, GridView<Movie> lView) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
-        movieList.add(null);
         lView.setItems(movieList);
         lView.setCellWidth(490);
         lView.setCellHeight(320);
@@ -386,22 +376,6 @@ public class SearchViewController {
                     // Handle clicks on the movie
                     setOnMouseClicked(event -> handleMovieClick(event, movie));
                 }
-                
-                 else {
-                    // "Load More Results" placeholder
-                    Label loadMoreLabel = new Label("Load More Results");
-                    loadMoreLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff; -fx-cursor: hand;");
-                    loadMoreLabel.setOnMouseClicked(event -> {
-                        System.out.println("more results clicked");
-                        loadMoreAction.run();
-                            });
-
-                    StackPane loadMorePane = new StackPane(loadMoreLabel);
-                    loadMorePane.setStyle("-fx-background-color: transparent; -fx-padding: 15px;");
-                    setGraphic(loadMorePane);
-                    
-                    setOnMouseClicked(null);
-                }
             }
         });
     }
@@ -430,60 +404,39 @@ public class SearchViewController {
      * @param lView The ListView or GridView to populate with movie data.
      * @param url The URL to fetch movie data from.
      */
-    private void populateMovieListAsync(Label loadingLabel, Node lView, String url, boolean append) {   
-        // Fetch movies from TMDB
+    private void populateMovieListAsync(Label loadingLabel, Node lView, String url, boolean append) {
+        if (lView instanceof ListView) {
+            // Existing ListView population logic for popular movies
+            populateListViewAsync(loadingLabel, (ListView<Movie>) lView, url, append);
+        } else if (lView instanceof GridView) {
+            // Populate GridView for filtered movies (multiple pages)
+            populateGridViewAsync((GridView<Movie>) lView, url);
+        }
+    }
+    
+    private void populateListViewAsync(Label loadingLabel, ListView<Movie> listView, String url, boolean append) {
         CompletableFuture.supplyAsync(() -> {
             MoviesResponse temp = null;
-            
             try {
                 temp = mdc.fetchMoviesResponse(url);
             } catch (HttpResponseException ex) {
-
-                this.HTTPErrorCode = ex.getStatusCode();              
+                this.HTTPErrorCode = ex.getStatusCode();
                 this.HTTPErrorMessage = ex.getReasonPhrase();
-                
                 return null;
             }
             return temp;
-        })
-            // When fetch complete, update ListView
-            .thenAccept(moviesResponse -> {
-                Platform.runLater(() -> {
+        }).thenAccept(moviesResponse -> {
+            Platform.runLater(() -> {
                 if (moviesResponse != null) {
-                    
                     List<Movie> movieList = moviesResponse.getResults();
-                    
-                    // If subtitle language is selected, filter by that too
-                    if(cbSubtitle.getSelectionModel().getSelectedIndex() != 0) {
-                        String subtitle = LanguageCodes.getCountryCodeFromName(
-                            (String) cbSubtitle.getSelectionModel().getSelectedItem());
-                        Iterator<Movie> iterator = movieList.iterator();
-                        while(iterator.hasNext()) {
-                            Movie movie = iterator.next();
-                            if(!sdc.areSubtitlesAvailable(movie.getId(), subtitle)) {
-                                // Remove movie from list selected language subtitles are not available
-                                iterator.remove();
-                            }
-                        }
+                    if (append) {
+                        listView.getItems().remove(null); // remove last "show more"-label
+                        movieList.add(null); // add new "show more"-label to end of the list
+                        listView.getItems().addAll(movieList);
+                    } else {
+                        movieList.add(null);
+                        setMovieListView(movieList, listView, () -> loadMoreMovies(listView));
                     }
-                                     
-                    if (lView instanceof ListView) {
-                        ListView<Movie> listView = (ListView<Movie>) lView;
-                        if (append) {
-                            listView.getItems().addAll(movieList);
-                        } else {
-                            setMovieListView(movieList, listView, () -> loadMoreMovies(listView));
-                        }
-
-                    } else if (lView instanceof GridView) {
-                        GridView<Movie> gridView = (GridView<Movie>) lView;
-                        if (append) {
-                            gridView.getItems().addAll(movieList);
-                        } else {
-                            setMovieGridView(movieList, gridView, () -> loadMoreMovies(gridView));
-                        }
-                    }
-
                 } else {
                     loadingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
                 }
@@ -491,9 +444,41 @@ public class SearchViewController {
         });
     }
     
+    private void populateGridViewAsync(GridView<Movie> lView, String url) {
+        List<Movie> allMovies = new ArrayList<>();
+        AtomicInteger pageCounter = new AtomicInteger(1); // Keeps track of current page being fetched
+
+        // Start the fetching process with the first page
+        fetchNextPage(lView, allMovies, pageCounter);
+    }
+    
+    private void fetchNextPage(GridView<Movie> lView, List<Movie> allMovies, AtomicInteger pageCounter) {
+    int currentPage = pageCounter.getAndIncrement();  // Get and increment the page number
+    if (currentPage <= 10) {  // Limit to 5 pages
+        final int page = currentPage;
+        CompletableFuture.supplyAsync(() -> {
+            MoviesResponse temp = null;
+            try {
+                temp = mdc.fetchMoviesResponse(tmdbUtil.getFilteredUrl(page, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), minRating.toString()));
+            } catch (HttpResponseException ex) {
+                return null;  // If there's an error, return null
+            }
+            return temp;  // Return the fetched MoviesResponse
+        }).thenAccept(moviesResponse -> {
+            Platform.runLater(() -> {
+                if (moviesResponse != null) {
+                    allMovies.addAll(moviesResponse.getResults()); // Add new page of movies
+                    setMovieGridView(allMovies, lView); // Update the GridView after each page
+                    fetchNextPage(lView, allMovies, pageCounter);  // Continue fetching the next page
+                }
+            });
+        });
+    }
+}
+
+    
     private void loadMoreMovies(Node lView) {
         String url = determineUrlForNode(lView);
-
         if (url != null) {
             populateMovieListAsync(null, lView, url, true); // Append new results
         }

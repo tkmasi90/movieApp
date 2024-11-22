@@ -7,6 +7,7 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -30,10 +31,9 @@ public class MovieLabelController {
     private Text movieLabelYear;
     @FXML
     private TilePane movieLabelLogos;
-    
     @FXML
     private Rectangle clippingRectangle;
-    
+        
     public void setClipRectangleSize(double width, double height) {
         clippingRectangle.setWidth(width);
         clippingRectangle.setHeight(height);
@@ -56,6 +56,15 @@ public class MovieLabelController {
         for (StreamingProvider prov : movie.getStreamingProviders()) {
             imageController.loadLogosIntoMovieLabel(prov.getLogoPath(), movieLabelLogos);
         }
+    }
+    
+    public void addShowMore(Integer width, Integer height) {
+        movieLabel.getChildren().clear();
+        movieLabel.setPrefHeight(height);
+        movieLabel.setPrefWidth(width);
+        imageController.loadPosterIntoMovieLabel("showMore", movieLabelImage, height);
+        StackPane.setAlignment(movieLabelImage, Pos.CENTER);
+        movieLabel.getChildren().add(movieLabelImage);
     }
 
     /**

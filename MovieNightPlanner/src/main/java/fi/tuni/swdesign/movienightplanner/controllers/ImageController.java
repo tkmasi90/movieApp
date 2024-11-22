@@ -137,6 +137,10 @@ public class ImageController {
         if (imagePath == null) {
             fullImageUrl = this.getClass().getResource("/images/grayBackground.png").toString();
         }
+        
+        if("showMore".equals(imagePath)) {
+            fullImageUrl = this.getClass().getResource("/images/showMore.png").toString();
+        }
             
         Image image = new Image(fullImageUrl, true);
         // Run on a separate thread for image loading
