@@ -5,13 +5,19 @@ import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Controller class for the image-related features.
- *
+ * Controller class for handling image-related features in the application.
+ * This includes loading images into ImageViews, handling logos, and managing
+ * poster images for movies. Integrates with the TMDb API for image resources.
+ * 
+ * Dependencies include TMDbUtility and MovieDataController.
+ * 
  * @author kian, Make
  */
 public class ImageController {
@@ -117,9 +123,12 @@ public class ImageController {
     }
     
     /**
-     * This method takes the image path from TMDb API and sets the image in the given ImageView.
-     * @param imagePath The image path provided by the TMDb API (e.g., "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg")
+     * Loads a poster image from the TMDb API into the specified ImageView.
+     * The poster image is resized to a specified height while maintaining its aspect ratio.
+     * 
+     * @param imagePath The image path from the TMDb API (e.g., "/poster.jpg").
      * @param imageView The ImageView where the poster image will be displayed.
+     * @param height The desired height for the poster image.
      */
     public void loadPosterIntoMovieLabel(String imagePath, ImageView imageView, Integer height ) {
         String fullImageUrl = baseUrl + "w500" + imagePath;
@@ -138,5 +147,48 @@ public class ImageController {
                 imageView.setFitHeight(height);
             });
         });
+    }
+    
+    /**
+     * Loads a streaming provider logo into an ImageView and applies a rounded
+     * clip to the image. The method also returns the associated CheckBox for the
+     * provider.
+     * 
+     * @param imageView The ImageView where the provider logo will be displayed.
+     * @param mdc The MovieDataController providing the streaming provider data.
+     * @return The CheckBox associated with the streaming provider.
+     */
+    public CheckBox loadProviderLogos(ImageView imageView, MovieDataController mdc) {
+        String urlPrefix = "https://media.themoviedb.org/t/p/original";
+        int parentId = Integer.parseInt(imageView.getParent().getId());
+        String logoUrl = urlPrefix + mdc.getStreamProviderMap()
+                            .get(parentId).getLogoPath();
+
+        if (logoUrl == null) {
+            Image errorLogo = new Image(this.getClass()
+                    .getResource("/images/errorLogo.png")
+                    .toString(), true);
+
+            imageView.setImage(errorLogo);
+        }      
+
+        // Create a rectangle with the same width and height as the ImageView
+        Rectangle clip = new Rectangle(imageView.getFitWidth(),
+                imageView.getFitHeight());
+
+        // Set the corner radius for rounded edges
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+
+        // Apply the clip to the ImageView
+        imageView.setClip(clip);
+
+        Image logoImage = new Image(logoUrl, true);
+        imageView.setImage(logoImage);
+
+        CheckBox checkBox = (CheckBox) imageView.getParent()
+                    .lookup(".check-box");
+        
+        return checkBox;
     }
 }

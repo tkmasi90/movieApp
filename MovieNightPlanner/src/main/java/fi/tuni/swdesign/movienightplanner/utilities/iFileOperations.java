@@ -19,6 +19,7 @@ public interface iFileOperations {
     /**
     * Reads app state data from a JSON file.
     * 
+    * @param filename The name of the JSON file to read from.
     * @return the AppState object deserialized from the file
     * @throws FileNotFoundException if the specified file is not found
     * @throws Exception if an error occurs while reading the file
@@ -29,6 +30,7 @@ public interface iFileOperations {
     * Writes state data to a file.
     * 
     * @param appState the AppState object to be serialized into a file
+    * @param filename The name of the file where the data will be written.
     * @return true if the write operation is successful
     * @throws com.google.gson.JsonIOException
     * @throws java.io.IOException

@@ -140,30 +140,39 @@ public final class TMDbUtility {
         return GENRES_URL;
     }
     
+    /**
+     * Retrieves the URL for fetching images from TMDb.
+     * 
+     * @return the URL string for fetching images
+     */
     public String getImagesBaseUrl() {
         return TMDB_IMAGE_BASE_URL;
     }
     
-    
     /**
-     * Generates a filtered URL for discovering movies from TMDb based on a specific list of providers.
-     * 
-     * @param list the list of provider IDs to include in the URL
-     * @return a formatted URL string for filtered movies
+     * Generates a formatted URL for discovering movies from TMDb based on specified filtering criteria.
+     * The URL incorporates filters for genres, audio languages, streaming providers, and minimum rating.
+     *
+     * @param genreList A list of genre IDs to filter movies by.
+     * @param audioList A list of audio language codes to filter movies by.
+     * @param provList A list of streaming provider IDs to include in the filter.
+     * @param minRating The minimum rating to include in the filter.
+     * @return A formatted URL string with the applied filters, ready for use in TMDb API requests.
      */
-    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList) {
-        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList));
+    public String getFilteredUrl(List<Integer> genreList, List<String> audioList, List<Integer> provList, String minRating) {
+        return String.format(MOVIE_BASE_URL_FILTER, getFiltersInt(genreList), getFiltersString(audioList), getFiltersInt(provList), minRating);
     }
     
     /** The base URL for discovering movies from TMDb */
-    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
     
     /** The base URL for discovering movies from TMDb using filters */
-    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s";
+    private final String MOVIE_BASE_URL_FILTER= "https://api.themoviedb.org/3/discover/movie?api_key=6d02f7885467716ba92cf8c3c4651678&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=FI&with_genres=%s&with_original_language=%s&with_watch_monetization_types=flatrate%%7Cfree&with_watch_providers=%s&vote_average.gte=%s&vote_count.gte=200";
+
     
     /** The URL for fetching available movie genres from TMDb */
     private final String GENRES_URL = "https://api.themoviedb.org/3/genre/movie/list";
     
-    /** The Url for fetching images from TMDb */
+    /** The URL for fetching images from TMDb */
     private final String TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 }

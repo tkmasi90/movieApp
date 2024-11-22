@@ -7,8 +7,6 @@ package fi.tuni.swdesign.movienightplanner.controllers;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -63,8 +61,9 @@ public class MovieLabelController {
     /**
      * Adds the movie image (backdrop) to the movie label.
      *
-     * @param movie the movie object containing the backdrop path
-     */
+    * @param movie  The {@link Movie} object containing the backdrop path for the image.
+    * @param height The desired height of the image in pixels. The width is adjusted proportionally.
+    */
     public void addMovieImage(Movie movie, Integer height) {
         imageController.loadPosterIntoMovieLabel(movie.getBackdropPath(), movieLabelImage, height);
     }

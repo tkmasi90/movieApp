@@ -2,6 +2,9 @@ package fi.tuni.swdesign.movienightplanner;
 
 import fi.tuni.swdesign.movienightplanner.utilities.FileDataController;
 import com.google.gson.JsonIOException;
+import fi.tuni.swdesign.movienightplanner.controllers.FilterViewController;
+import fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController;
+import fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController;
 import fi.tuni.swdesign.movienightplanner.controllers.SceneController;
 import fi.tuni.swdesign.movienightplanner.controllers.SearchViewController;
 import java.io.FileNotFoundException;
@@ -21,32 +24,70 @@ public class App extends Application {
     
     /** AppState object to manage user data and the application state */
     private AppState appState;
-    private Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
         readAppStateFromFile();
-
-        // Load the SearchView and set its SceneController
-        FXMLLoader searchLoader = loadFXML("SearchView");
-        Parent searchView = searchLoader.load();
-
-        scene = new Scene(searchView);
         
-        stage.setScene(scene);
-        stage.sizeToScene();
-        stage.setResizable(false);
-        
+        // Add title and logo for app
         stage.setTitle("Movie Night Planner");
         URL logoUrl = this.getClass().getResource("/images/movie_reel.jpeg");
         stage.getIcons().add(new Image(logoUrl.toString()));
 
-        stage.show();
+        // Load the SearchView and set its SceneController
+        FXMLLoader searchLoader = loadFXML("SearchView");
+        Parent searchView = searchLoader.load();
         
+        // Load the MovieDetailsView and set its SceneController
+        FXMLLoader detailsLoader = loadFXML("MovieDetailsView");
+        Parent detailsView = detailsLoader.load();
+        
+        // Load the ProfileView and set its SceneController
+        FXMLLoader profileLoader = loadFXML("ProfileView");
+        Parent profileView = profileLoader.load();
+
+        // Create Scenes
+        Scene searchScene = new Scene(searchView);
+        Scene detailsScene = new Scene(detailsView);
+        Scene profileScene = new Scene(profileView);
+        
+        stage.setScene(searchScene);
+        stage.sizeToScene();
+        stage.setResizable(false);
+
+        // Set scenes for SceneController
+        SceneController sceneController = new SceneController(stage, searchScene, profileScene, detailsScene);
+        
+        FilterViewController filterViewController = new FilterViewController();
+        
+        // Set Search View
         SearchViewController searchViewController = searchLoader.getController();
-        SceneController sceneController = new SceneController(stage, scene);
-        searchViewController.setSceneController(sceneController); // Set SceneController
-        sceneController.setAppState(this.appState);
+        searchViewController.setSceneController(sceneController);
+        searchViewController.setAppState(this.appState);
+        searchViewController.setFilterViewController(filterViewController);
+        searchViewController.initializeFilters();
+        searchViewController.updateFilterData();
+        
+        // Set Profile View
+        ProfileViewController profileViewController = profileLoader.getController();
+        profileViewController.setSceneController(sceneController);
+        profileViewController.setSearchViewController(searchViewController);
+        profileViewController.setAppState(this.appState);
+        profileScene.setUserData(profileViewController);
+        profileViewController.updateData();
+        profileViewController.setFilterDataFromState();
+        profileViewController.setFilterViewController(filterViewController);
+        profileViewController.initializeFilters();
+        
+        // Set Movie Detail View
+        MovieDetailsController movieDetailsController = detailsLoader.getController();
+        movieDetailsController.setSceneController(sceneController);
+        movieDetailsController.setAppState(this.appState);
+        detailsScene.setUserData(movieDetailsController);
+        
+        
+        
+        stage.show();
     }
 
     /**
