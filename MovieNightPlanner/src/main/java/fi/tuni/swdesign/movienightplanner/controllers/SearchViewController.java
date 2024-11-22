@@ -12,12 +12,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -27,7 +25,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -193,44 +190,12 @@ public class SearchViewController {
      */
     @FXML
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
-        List<Integer> providers = filterViewController
-                .getCheckedValues(selectedProviders);
-        List<Integer> genres = new ArrayList();
-        List<String> audio = new ArrayList();
-        
-        List<String> genresChecked = (List<String>) cbGenre
-                .getCheckModel()
-                .getCheckedItems();
-        List<String> audioChecked = (List<String>) cbAudio
-                .getCheckModel()
-                .getCheckedItems();
-        Integer lngLength = LanguageCodes.getLanguageListLength();
-        
-        genres.addAll(genresChecked
-                .stream()
-                .map(genreName -> MovieGenres.getGenreIdByName((String) genreName))
-                .collect(Collectors.toList())
-        );
-        
-        if(audioChecked.size() == lngLength) {
-            audio.addAll(LanguageCodes.getAllCountryCodes());
-        }
-        else {
-            for(String a : audioChecked) {
-                audio.add(LanguageCodes.getCountryCodeFromName(a));
-            }
-        }
+        String filteredUrl = createFilteredMoviesUrl();
                 
         populateMovieListAsync(
                 filteredMoviesLoadingLabel,
                 filteredView,
-                tmdbUtil.getFilteredUrl(
-                        filterPage++,
-                        genres,
-                        audio,
-                        providers,
-                        minRating.toString()
-                ),
+                filteredUrl,
                 false
         );
         
@@ -397,23 +362,27 @@ public class SearchViewController {
         }
     }
    
-        /**
-     * Populates a ListView with a list of movies asynchronously by fetching movie data from the API.
-     * 
-     * @param loadingLabel The label to display while loading movies.
-     * @param lView The ListView or GridView to populate with movie data.
-     * @param url The URL to fetch movie data from.
-     */
+
     private void populateMovieListAsync(Label loadingLabel, Node lView, String url, boolean append) {
         if (lView instanceof ListView) {
             // Existing ListView population logic for popular movies
             populateListViewAsync(loadingLabel, (ListView<Movie>) lView, url, append);
         } else if (lView instanceof GridView) {
             // Populate GridView for filtered movies (multiple pages)
-            populateGridViewAsync((GridView<Movie>) lView, url);
+            populateGridViewAsync((GridView<Movie>) lView);
         }
     }
     
+    /**
+     * Populates a ListView asynchronously by fetching movie data from the given URL.
+     * If the `append` parameter is true, new movies are added to the existing list.
+     * If `append` is false, the current list is replaced with the new set of movies.
+     * 
+     * @param loadingLabel The label to display while loading the movie list.
+     * @param listView The ListView to populate with movie items.
+     * @param url The URL to fetch movie data from.
+     * @param append If true, new movies are appended to the existing list; otherwise, the list is replaced.
+     */
     private void populateListViewAsync(Label loadingLabel, ListView<Movie> listView, String url, boolean append) {
         CompletableFuture.supplyAsync(() -> {
             MoviesResponse temp = null;
@@ -444,39 +413,12 @@ public class SearchViewController {
         });
     }
     
-    private void populateGridViewAsync(GridView<Movie> lView, String url) {
-        List<Movie> allMovies = new ArrayList<>();
-        AtomicInteger pageCounter = new AtomicInteger(1); // Keeps track of current page being fetched
-
-        // Start the fetching process with the first page
-        fetchNextPage(lView, allMovies, pageCounter);
-    }
-    
-    private void fetchNextPage(GridView<Movie> lView, List<Movie> allMovies, AtomicInteger pageCounter) {
-    int currentPage = pageCounter.getAndIncrement();  // Get and increment the page number
-    if (currentPage <= 10) {  // Limit to 5 pages
-        final int page = currentPage;
-        CompletableFuture.supplyAsync(() -> {
-            MoviesResponse temp = null;
-            try {
-                temp = mdc.fetchMoviesResponse(tmdbUtil.getFilteredUrl(page, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), minRating.toString()));
-            } catch (HttpResponseException ex) {
-                return null;  // If there's an error, return null
-            }
-            return temp;  // Return the fetched MoviesResponse
-        }).thenAccept(moviesResponse -> {
-            Platform.runLater(() -> {
-                if (moviesResponse != null) {
-                    allMovies.addAll(moviesResponse.getResults()); // Add new page of movies
-                    setMovieGridView(allMovies, lView); // Update the GridView after each page
-                    fetchNextPage(lView, allMovies, pageCounter);  // Continue fetching the next page
-                }
-            });
-        });
-    }
-}
-
-    
+    /**
+     * Loads more movies into the specified ListView by determining the appropriate URL and fetching new results.
+     * The new results are then appended to the existing list of movies.
+     * 
+     * @param lView The ListView to which new movie results will be appended.
+     */
     private void loadMoreMovies(Node lView) {
         String url = determineUrlForNode(lView);
         if (url != null) {
@@ -484,6 +426,56 @@ public class SearchViewController {
         }
     }
     
+    /**
+     * Populates a GridView asynchronously by fetching movie data across multiple pages.
+     * This method will start fetching from the first page and continue until 10 pages are retrieved.
+     * 
+     * @param lView The GridView to populate with movie items.
+     */
+    private void populateGridViewAsync(GridView<Movie> lView) {
+        List<Movie> allMovies = new ArrayList<>();
+
+        // Start the fetching process with the first page
+        fetchNextPage(lView, allMovies);
+    }
+    
+    /**
+     * Fetches the next page of movie data and adds it to the provided list of movies.
+     * Once the movies are loaded, the GridView is updated, and the next page is fetched recursively.
+     * The process stops after 10 pages.
+     * 
+     * @param lView The GridView to populate with movie items.
+     * @param allMovies The list of all movies fetched so far, which will be updated with the new results.
+     */
+    private void fetchNextPage(GridView<Movie> lView, List<Movie> allMovies) {
+        if (filterPage++ <= 10) {  // Limit to 5 pages
+            CompletableFuture.supplyAsync(() -> {
+                MoviesResponse temp = null;
+                try {
+                    temp = mdc.fetchMoviesResponse(tmdbUtil.getFilteredUrl(filterPage, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), minRating.toString()));
+                } catch (HttpResponseException ex) {
+                    return null;  // If there's an error, return null
+                }
+                return temp;  // Return the fetched MoviesResponse
+            }).thenAccept(moviesResponse -> {
+                Platform.runLater(() -> {
+                    if (moviesResponse != null) {
+                        allMovies.addAll(moviesResponse.getResults()); // Add new page of movies
+                        setMovieGridView(allMovies, lView); // Update the GridView after each page
+                        fetchNextPage(lView, allMovies);  // Continue fetching the next page
+                    }
+                });
+            });
+        }
+    }
+
+    /**
+     * Determines the appropriate URL for the movie list based on the given ListView node.
+     * This method selects the correct URL for popular movies, top-rated movies, or filtered movies.
+     * 
+     * @param lView The ListView to determine the URL for.
+     * @return The URL to fetch movie data from, or null if no URL could be determined.
+     */
     private String determineUrlForNode(Node lView) {
         if (lView == popularMoviesLView) {
             return tmdbUtil.getPopularMoviesUrl(popPage++);
@@ -494,7 +486,12 @@ public class SearchViewController {
         }
         return null;
     }
-
+    
+    /**
+     * Creates a URL for fetching filtered movie data based on the selected genres, audio, providers, and minimum rating.
+     * 
+     * @return The URL to fetch filtered movie data from.
+     */
     private String createFilteredMoviesUrl() {
         List<Integer> providers = filterViewController
                 .getCheckedValues(selectedProviders);
