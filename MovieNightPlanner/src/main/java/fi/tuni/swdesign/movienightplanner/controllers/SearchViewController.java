@@ -261,6 +261,7 @@ public class SearchViewController {
                         setText(null);
                         setGraphic(null);
                         setStyle("");
+                        setOnMouseClicked(null);
                     } else if (movie != null) {
                         // Check if the movie is already cached
                         if (movieLabelCache.containsKey(movie)) {
@@ -348,6 +349,8 @@ public class SearchViewController {
                 if (empty) {
                     setText(null);
                     setGraphic(null);
+                    setStyle("");
+                    setOnMouseClicked(null);
                 } else if (movie != null) {
                     // Check if the movie is already cached
                     if (movieLabelCache.containsKey(movie)) {
