@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -173,7 +175,6 @@ public class ProfileViewController {
         populateCenturyPieChart(minRating);
     }
 
-
     /**
      * Populates the genres pie chart in the profile view.
      */
@@ -187,25 +188,33 @@ public class ProfileViewController {
      * @param minRating the minimum rating to filter by
      */
     private void populateGenresPieChart(int minRating) {
-        // Clear existing data
-        genresPieChart.getData().clear();
+        CompletableFuture.supplyAsync(() -> {
+            List<String> genres = appState.getRatedMovieGenresByRating(minRating);
+            Map<String, Integer> genreCounts = new HashMap<>();
 
-        List<String> genres = appState.getRatedMovieGenresByRating(minRating);
-        Map<String, Integer> genreCounts = new HashMap<>();
+            // Count the occurrences of each genre
+            for (String genre : genres) {
+                genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
+            }
 
-        // Count the occurrences of each genre
-        for (String genre : genres) {
-            genreCounts.put(genre, genreCounts.getOrDefault(genre, 0) + 1);
-        }
-
-        // Create PieChart data
-        List<PieChart.Data> pieChartData = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : genreCounts.entrySet()) {
-            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
-        }
-
-        // Set the data to the PieChart
-        genresPieChart.setData(FXCollections.observableArrayList(pieChartData));
+            // Create PieChart data
+            List<PieChart.Data> pieChartData = new ArrayList<>();
+            for (Map.Entry<String, Integer> entry : genreCounts.entrySet()) {
+                pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+            }
+            
+            return pieChartData;
+        }).thenAccept(pieChartData -> {
+                Platform.runLater(() -> {
+                // Clear existing data
+                genresPieChart.getData().clear();
+                // Set the data to the PieChart
+                genresPieChart.setData(FXCollections.observableArrayList(pieChartData));
+            });
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
     }
 
     /**
@@ -221,25 +230,37 @@ public class ProfileViewController {
      * @param minRating the minimum rating to filter by
      */
     private void populateCenturyPieChart(int minRating) {
-        // Clear existing data
-        centuryPieChart.getData().clear();
+        
+        CompletableFuture.supplyAsync(() -> {
 
-        List<String> centuries = appState.getMoviesByCentury(minRating);
-        Map<String, Integer> centuryCounts = new HashMap<>();
+            List<String> centuries = appState.getMoviesByCentury(minRating);
+            Map<String, Integer> centuryCounts = new HashMap<>();
+            
+            // Count occurrences of each century
+            if (centuries != null) {
+                for (String century : centuries) {
+                    centuryCounts.put(century, centuryCounts.getOrDefault(century, 0) + 1);
+                }
+            }
 
-        // Count the occurrences of each century category
-        for (String century : centuries) {
-            centuryCounts.put(century, centuryCounts.getOrDefault(century, 0) + 1);
-        }
+            // Create PieChart data
+            List<PieChart.Data> pieChartData = new ArrayList<>();
+            for (Map.Entry<String, Integer> entry : centuryCounts.entrySet()) {
+                pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+            }
+            
+            return pieChartData;
 
-        // Create PieChart data
-        List<PieChart.Data> pieChartData = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : centuryCounts.entrySet()) {
-            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
-        }
-
-        // Set the data to the PieChart
-        centuryPieChart.setData(FXCollections.observableArrayList(pieChartData));
+        }).thenAccept(pieChartData -> {
+            Platform.runLater(() -> {
+                // Set the data to the PieChart
+                centuryPieChart.getData().clear();
+                centuryPieChart.setData(FXCollections.observableArrayList(pieChartData));
+            });
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
     }
 
     /**
