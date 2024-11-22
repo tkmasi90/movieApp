@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -62,18 +66,20 @@ public class SearchViewController {
     
     @FXML TabPane movieViewSelect;
 
-    @FXML GridView<Label> filteredView;
-    @FXML ListView<Label> popularMoviesLView;
-    @FXML ListView<Label> topRatedMoviesLview;
+    @FXML GridView<Movie> filteredView;
+    @FXML ListView<Movie> popularMoviesLView;
+    @FXML ListView<Movie> topRatedMoviesLview;
     @FXML VBox mainView;
     @FXML GridPane streamers;
     @FXML CheckComboBox cbGenre;
     @FXML CheckComboBox cbAudio;    
     @FXML ComboBox cbSubtitle;
+    @FXML StackPane filterStackPane;
+    @FXML Button filterButton;
    
-    private final Label popularMoviesLoadingLabel = new Label("Loading popular movies");
-    private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies");
-    private final Label filteredMoviesLoadingLabel = new Label("Loading movies");
+    private final Label popularMoviesLoadingLabel = new Label("Loading popular movies...");
+    private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies...");
+    private final Label filteredMoviesLoadingLabel = new Label("Click 'Show Results' to search for movies");
 
     private final MovieDataController mdc = new MovieDataController();
     private final SubtitleDataController sdc = new SubtitleDataController();
@@ -81,7 +87,7 @@ public class SearchViewController {
     private final ImageController ic = new ImageController();
 
     private final List<CheckBox> selectedProviders = new ArrayList<>();
-    private Integer minRating  = 1;
+    private Integer minRating;
     
     private Integer popPage;
     private Integer topPage;
@@ -94,7 +100,7 @@ public class SearchViewController {
     // HTTP Error Handling
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
-    
+   
     public void setSceneController(SceneController sceneController) {
         this.sceneController = sceneController;
     }
@@ -129,10 +135,7 @@ public class SearchViewController {
                             BackgroundSize.DEFAULT))));
 
         // Set placeholders and initialize movie lists
-        popularMoviesLView.setPlaceholder(popularMoviesLoadingLabel);
-        topRatedMoviesLview.setPlaceholder(topRatedMoviesLoadingLabel);
-        popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
-        topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
+
 
         // TODO:
         // This function doesn't need be called each time.
@@ -147,6 +150,7 @@ public class SearchViewController {
                 System.err.println("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
             }
         }
+        setupLoadingLabels();
         
         popPage = 1;
         topPage = 1;
@@ -164,6 +168,36 @@ public class SearchViewController {
         cbSubtitle.getItems().add(0, "All");
         cbSubtitle.getSelectionModel().selectFirst();
         filterViewController.setProviders(streamers, mdc);
+    }
+    
+    // Method to set up GridView with a loading label
+    private void setupLoadingLabels() {
+        
+        popularMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
+        popularMoviesLView.setPlaceholder(popularMoviesLoadingLabel);
+        topRatedMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
+        topRatedMoviesLview.setPlaceholder(topRatedMoviesLoadingLabel);
+
+        popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
+        topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
+
+        filteredMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
+
+        filterStackPane.getChildren().add(filteredMoviesLoadingLabel);
+        // Center the loading label in the container
+        StackPane.setAlignment(filteredMoviesLoadingLabel, Pos.CENTER);
+    }
+
+    // Show the loading label
+    private void showLoadingLabel() {
+        filteredMoviesLoadingLabel.setVisible(true);
+        filteredMoviesLoadingLabel.setManaged(true);
+    }
+
+    // Hide the loading label
+    private void hideLoadingLabel() {
+        filteredMoviesLoadingLabel.setVisible(false);
+        filteredMoviesLoadingLabel.setManaged(false);
     }
     
     /**
@@ -190,18 +224,36 @@ public class SearchViewController {
      */
     @FXML
     private void handleFilterButtonClick(ActionEvent event) throws IOException {
+        // Disable the search button while the task is ongoing
+        filterButton.setDisable(true);
+        filteredView.setVisible(false);
+
+        // Set loading label
+        filteredMoviesLoadingLabel.setText("Loading movies, please wait...");
+
+        filteredView.getItems().clear();
+
+        // Reset filter page counter
+        filterPage = 1;
+
+        // Create the filtered URL
         String filteredUrl = createFilteredMoviesUrl();
-                
-        populateMovieListAsync(
+
+        // Start a new task to fetch movies
+        CompletableFuture.runAsync(() -> {
+            populateMovieListAsync(
                 filteredMoviesLoadingLabel,
                 filteredView,
                 filteredUrl,
                 false
-        );
-        
+            );
+        });
+        // Switch to the last tab after the search
         SingleSelectionModel<Tab> selectionModel = movieViewSelect.getSelectionModel();
         selectionModel.selectLast();
     }
+
+
 
     /**
     * Populates a ListView with movie data. Each movie is displayed using custom labels 
@@ -433,10 +485,8 @@ public class SearchViewController {
      * @param lView The GridView to populate with movie items.
      */
     private void populateGridViewAsync(GridView<Movie> lView) {
-        List<Movie> allMovies = new ArrayList<>();
-
         // Start the fetching process with the first page
-        fetchNextPage(lView, allMovies);
+        fetchNextPage(lView);
     }
     
     /**
@@ -447,27 +497,107 @@ public class SearchViewController {
      * @param lView The GridView to populate with movie items.
      * @param allMovies The list of all movies fetched so far, which will be updated with the new results.
      */
-    private void fetchNextPage(GridView<Movie> lView, List<Movie> allMovies) {
-        if (filterPage++ <= 10) {  // Limit to 5 pages
-            CompletableFuture.supplyAsync(() -> {
-                MoviesResponse temp = null;
-                try {
-                    temp = mdc.fetchMoviesResponse(tmdbUtil.getFilteredUrl(filterPage, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), minRating.toString()));
-                } catch (HttpResponseException ex) {
-                    return null;  // If there's an error, return null
+private void fetchNextPage(GridView<Movie> lView) {
+    // Disable the search button before starting the fetch
+    filterButton.setDisable(true);
+
+    showLoadingLabel();
+
+    ObservableList<Movie> allMovies = FXCollections.observableArrayList(lView.getItems());
+    Set<Movie> existingMovies = new HashSet<>(allMovies);
+
+    if (filterPage <= 10) { // Limit to 10 pages
+        CompletableFuture.supplyAsync(() -> {
+            MoviesResponse temp = null;
+            try {
+                temp = mdc.fetchMoviesResponse(determineUrlForNode(lView));
+                if(filterPage > temp.getTotalPages()) {
+                    filterButton.setDisable(false);
+                    return null;
                 }
-                return temp;  // Return the fetched MoviesResponse
-            }).thenAccept(moviesResponse -> {
-                Platform.runLater(() -> {
-                    if (moviesResponse != null) {
-                        allMovies.addAll(moviesResponse.getResults()); // Add new page of movies
+            } catch (HttpResponseException ex) {
+                this.HTTPErrorCode = ex.getStatusCode();
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                return null;
+            }
+            return temp;
+        }).thenAccept(moviesResponse -> {
+            Platform.runLater(() -> {
+                if (moviesResponse != null) {
+                    List<Movie> newMovies = moviesResponse.getResults();
+                    
+                    // Filter out already displayed movies
+                    newMovies.removeIf(existingMovies::contains);
+
+                    // If subtitle language is selected, filter by that too
+                    if (cbSubtitle.getSelectionModel().getSelectedIndex() != 0) {
+                        String subtitle = LanguageCodes.getCountryCodeFromName(
+                                (String) cbSubtitle.getSelectionModel().getSelectedItem());
+
+                        // Perform subtitle filtering asynchronously
+                        CompletableFuture.supplyAsync(() -> 
+                            newMovies.stream()
+                                     .filter(movie -> sdc.areSubtitlesAvailable(movie.getId(), subtitle))
+                                     .collect(Collectors.toList())
+                        ).thenAccept(filteredMovies -> {
+                            Platform.runLater(() -> {
+                                allMovies.addAll(filteredMovies); // Add new page of movies
+
+                                lView.setItems(allMovies);
+                                setMovieGridView(allMovies, lView); // Update the GridView after each page
+
+                                filterPage = 100;
+                                if(!allMovies.isEmpty())
+                                    hideLoadingLabel();
+                            });
+                        });
+                    } else {
+                        allMovies.addAll(newMovies);
+                        lView.setItems(allMovies);
                         setMovieGridView(allMovies, lView); // Update the GridView after each page
-                        fetchNextPage(lView, allMovies);  // Continue fetching the next page
+
+                        filterPage++;
+                        filteredView.setVisible(true);
+                        fetchNextPage(lView); // Continue fetching the next page
+
+                        if(!allMovies.isEmpty())
+                            hideLoadingLabel();
                     }
-                });
+                } else {
+                    // Handle errors and hide loading label
+                    filteredMoviesLoadingLabel.setText("Failed to load movies. Please try again.");
+                }
             });
+        }).exceptionally(ex -> {
+            // Handle any exception, ensure the button is re-enabled in case of an error
+            Platform.runLater(() -> {
+                filteredMoviesLoadingLabel.setText("Failed to load movies. Please try again.");
+            });
+            ex.printStackTrace();
+            return null;
+        }).thenRun(() -> {
+            // This block runs once the entire task completes, either success or error
+            // Check if we've reached the 10-page limit or not
+            Platform.runLater(() -> {
+                if (filterPage > 10 || allMovies.isEmpty()) {
+                    // Re-enable the search button once all pages are fetched or on error
+                    filterButton.setDisable(false);
+                }
+            });
+        });
+    } else {
+        // If no more pages to fetch, re-enable the search button
+        if (allMovies.isEmpty()) {
+            filteredMoviesLoadingLabel.setText("No movies found");
         }
+        // Ensure the button is enabled if we're done fetching
+        Platform.runLater(() -> {
+            filterButton.setDisable(false);
+        });
     }
+}
+
+
 
     /**
      * Determines the appropriate URL for the movie list based on the given ListView node.
@@ -521,7 +651,7 @@ public class SearchViewController {
             }
         }
 
-        return tmdbUtil.getFilteredUrl(filterPage++, genres, audio, providers, minRating.toString());
+        return tmdbUtil.getFilteredUrl(filterPage, genres, audio, providers, minRating.toString());
     }
 
 
@@ -536,7 +666,10 @@ public class SearchViewController {
             streamers.lookupAll(".check-box").stream()
                     .filter(node -> node instanceof CheckBox)
                     .map(node -> (CheckBox) node)
-                    .forEach(cb -> cb.setSelected(true));  
+                    .forEach(cb -> {
+                        cb.setSelected(true);
+                        selectedProviders.add(cb);
+                    });  
         }
         else {
             // Update Provider Selection
@@ -546,6 +679,7 @@ public class SearchViewController {
                 for(String id : prefProviders)
                     if(id.equals(spHbox.getId())) {
                         checkBox.setSelected(true);
+                        selectedProviders.add(checkBox);
                     }
             }
         }
@@ -575,7 +709,8 @@ public class SearchViewController {
             cbAudio.getCheckModel().checkIndices(intsA);
         }
         
-        minRating = appState.getPrefMinRating();
+        
+        minRating = appState.getPrefMinRating()== null ? 0 : appState.getPrefMinRating();
     }
     
     /**

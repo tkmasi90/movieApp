@@ -295,6 +295,8 @@ public class SubtitleDataController {
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
         JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
+        
+        System.out.println(jsonArray);
 
         return jsonArray != null;
     };

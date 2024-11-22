@@ -99,10 +99,12 @@ public final class TMDbUtility {
      * @return a URL-encoded string representing the genres or languages, or {@code null} if encoding fails
      */
     public String getFiltersString(List<String> list) {
-                try {
+        try
+        {
             return URLEncoder.encode((list.stream()
                     .collect(Collectors.joining("|"))), "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
+        }
+        catch (UnsupportedEncodingException ex) {
         }
         return null;
     }

@@ -12,5 +12,8 @@
   ],
   "movieRatings": {},
   "movies": {},
-  "watchHistory": []
+  "watchHistory": [],
+  "prefProviders": [],
+  "prefGenres": [],
+  "prefAudio": []
 }

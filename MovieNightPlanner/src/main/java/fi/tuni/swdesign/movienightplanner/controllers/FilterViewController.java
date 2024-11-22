@@ -47,7 +47,11 @@ public class FilterViewController {
         populateGenreComboBox(cbGenre);
         
         // Populate Language and Subtitle comboboxes
-        List<String> languages = LanguageCodes.getAllLanguageNames();
+        List<String> languages = LanguageCodes.getAllCountryCodes()
+                .stream()
+                .filter(sub -> !sub.equals("ko") && !sub.equals("ja"))
+                .map(cc -> LanguageCodes.getNameFromCc(cc))
+                .toList();
         cbAudio.getItems().addAll(languages);
         if(cbSubtitle != null)
             cbSubtitle.getItems().addAll(languages);
@@ -162,8 +166,7 @@ public class FilterViewController {
             
             // Loop through each ImageView and set logos
             for (Node node : imageViews) {
-                if (node instanceof ImageView) {
-                    ImageView imageView = (ImageView) node;
+                if (node instanceof ImageView imageView) {
                     CheckBox checkBox = ic.loadProviderLogos(imageView, mdc);
 
                     imageView.setOnMouseClicked(event -> {
