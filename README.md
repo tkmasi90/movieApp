@@ -1,8 +1,8 @@
 # Software Design - Group assignment
 
-**GRADABLE VERSION COMMIT MESSAGE:** *MID-TERM DELIVERABLE*
+**GRADABLE VERSION COMMIT MESSAGE:** *FINAL DELIVERABLE*
 
-**GRADABLE VERSION TAG:** *v0.5 MID-TERM DELIVERABLE*
+**GRADABLE VERSION TAG:** *v1.0 FINAL DELIVERABLE*
 
 ## Environment
 Movie Night Planner is a basic NetBeans application. A relatively recent version (e.g., 20+) can be used to build and run the application.
