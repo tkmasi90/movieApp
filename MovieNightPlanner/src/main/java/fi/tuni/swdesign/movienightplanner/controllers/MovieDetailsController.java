@@ -54,10 +54,14 @@ public class MovieDetailsController {
     @FXML private Label directorLabel;
     @FXML private Label writerPlaceholderLabel;
     @FXML private Label directorPlaceholderLabel;
+
     @FXML private ImageView posterImage;
     @FXML private ImageView backdropImage;
     @FXML private ImageView firstProviderImage;
     @FXML private ImageView secondProviderImage;
+    @FXML private ImageView thirdProviderImage;
+    @FXML private ImageView fourthProviderImage;
+
     @FXML private ImageView star1Image;
     @FXML private ImageView star2Image;
     @FXML private ImageView star3Image;
@@ -259,6 +263,8 @@ public class MovieDetailsController {
         // clear the images first
         firstProviderImage.setImage(null);
         secondProviderImage.setImage(null);
+        thirdProviderImage.setImage(null);
+        fourthProviderImage.setImage(null);
 
         List<StreamingProvider> providers = movie.getStreamingProviders();
         int i = 0;
@@ -267,6 +273,10 @@ public class MovieDetailsController {
                 imageController.loadImageIntoView(provider.getLogoPath(), "firstProviderImage", sceneController.getMovieDetailScene());
             } else if( i == 1 ) {
                 imageController.loadImageIntoView(provider.getLogoPath(), "secondProviderImage", sceneController.getMovieDetailScene());
+            } else if ( i == 2 ) {
+                imageController.loadImageIntoView(provider.getLogoPath(), "thirdProviderImage", sceneController.getMovieDetailScene());
+            } else if ( i == 3 ) {
+                imageController.loadImageIntoView(provider.getLogoPath(), "fourthProviderImage", sceneController.getMovieDetailScene());
             } else {
               break;
             }
