@@ -72,13 +72,18 @@ public class LanguageCodes {
     }
 
     /**
-     * Gets the country code from a country code key.
+     * Gets the country name from a country code key.
      *
      * @param name the key to lookup
      * @return the same country code key, or null if not found
      */
-    public static String getCcFromName(String name) {
-        return LANGUAGES.containsKey(name) ? name : null;
+    public static String getNameFromCc(String cc) {
+        for (Map.Entry<String, Pair<String, String>> entry : LANGUAGES.entrySet()) {
+            if (entry.getKey().equals(cc)) {
+                return entry.getValue().getLanguageName();
+            }
+        }
+        return null;
     }
     
     public static String getIsoCodeFromName(String name) {

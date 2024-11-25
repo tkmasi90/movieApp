@@ -18,14 +18,14 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<HBox alignment="TOP_LEFT" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" spacing="20.0" style="-fx-background-color: #295ACD;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController">
+<HBox fx:id="profileView" alignment="TOP_LEFT" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController">
     <children>
         <VBox>
             <HBox.margin>
                 <Insets />
             </HBox.margin>
             <children>
-<Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
+            <Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-padding: -8px 0px 0px -8px;">
                <graphic>
                   <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
