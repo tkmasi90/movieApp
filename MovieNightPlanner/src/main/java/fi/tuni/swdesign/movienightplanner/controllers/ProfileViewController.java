@@ -18,14 +18,25 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * Controller class for managing the profile view in the application. 
@@ -46,6 +57,7 @@ public class ProfileViewController {
     private int HTTPErrorCode;
     private String HTTPErrorMessage;
 
+    @FXML private HBox profileView;
     @FXML private GridPane streamers;
     @FXML private CheckComboBox<String> cbGenre;
     @FXML private CheckComboBox<String> cbAudio;    
@@ -79,6 +91,19 @@ public class ProfileViewController {
      */
     @FXML
     public void initialize(){
+        
+        profileView.setBackground(
+            new Background(
+                    Collections.singletonList(new BackgroundFill(
+                            Color.WHITE, 
+                            new CornerRadii(500), 
+                            new Insets(10))),
+                    Collections.singletonList(new BackgroundImage(
+                            new Image(this.getClass().getResource("/images/background.png").toString(), profileView.getMaxWidth(), profileView.getMaxHeight(), false, false),
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundPosition.CENTER,
+                            BackgroundSize.DEFAULT))));
 
         if(mdc.getStreamProviderMap() == null) {
             try {
