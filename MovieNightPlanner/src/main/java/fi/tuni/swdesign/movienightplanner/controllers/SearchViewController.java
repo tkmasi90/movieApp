@@ -183,7 +183,7 @@ public class SearchViewController {
 
         filteredMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
 
-        filterStackPane.getChildren().add(filteredMoviesLoadingLabel);
+        filterStackPane.getChildren().addAll(filteredMoviesLoadingLabel);
         // Center the loading label in the container
         StackPane.setAlignment(filteredMoviesLoadingLabel, Pos.CENTER);
     }
