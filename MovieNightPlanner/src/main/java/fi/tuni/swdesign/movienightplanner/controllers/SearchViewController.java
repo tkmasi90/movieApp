@@ -547,6 +547,7 @@ private void fetchNextPage(GridView<Movie> lView) {
                                 setMovieGridView(allMovies, lView); // Update the GridView after each page
 
                                 filterPage = 100;
+                                filteredView.setVisible(true);
                                 if(!allMovies.isEmpty())
                                     hideLoadingLabel();
                             });

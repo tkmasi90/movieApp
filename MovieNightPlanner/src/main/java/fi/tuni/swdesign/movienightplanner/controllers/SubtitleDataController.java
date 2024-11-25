@@ -275,8 +275,10 @@ public class SubtitleDataController {
      */
     public boolean areSubtitlesAvailable(int movieId, String language) {
 
+        Set<String> serviceList = new HashSet<>();
         JsonObject tempJsonObject = null;
         JsonObject streamingOptionsJsonObject = null;
+        SubtitleService[] tempServices = null;
 
         String url = urlPre + Integer.toString(movieId) + urlPost;
 
@@ -296,8 +298,19 @@ public class SubtitleDataController {
 
         JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
         
-        System.out.println(jsonArray);
+        if (jsonArray != null) {
+            tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(jsonArray.toString(), SubtitleService[].class);
+        }
 
-        return jsonArray != null;
+        if (tempServices != null) {
+            for (SubtitleService s : tempServices) {
+                for (SubtitleService.Subtitle st : s.subtitles) {
+                    if (st.getLocale().getLanguage().equals(LanguageCodes.getIsoCodeFromCc(language))) {
+                        serviceList.add(s.getService().getName());
+                    }
+                }
+            }
+        }
+        return !serviceList.isEmpty();
     };
 }
