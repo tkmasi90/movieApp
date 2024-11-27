@@ -34,7 +34,7 @@ public final class TMDbUtility {
         public static final int VIAPLAY = 76;
         public static final int AREENA = 323;
         public static final int RUUTU = 338;
-        public static final int APPLE = 2;
+        public static final int APPLE = 350;
         public static final int SKY = 1773;
         public static final int MTV = 2029;
         public static final int MAX = 1899;
