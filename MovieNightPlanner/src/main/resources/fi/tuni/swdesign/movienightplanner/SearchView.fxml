@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
@@ -228,7 +229,7 @@
                                     <ComboBox fx:id="cbSubtitle" prefHeight="26.0" prefWidth="323.0" style="-fx-background-color: RGB(238, 241, 244);" />
                                  </children>
                               </VBox>
-                              <Button fx:id="filterButton" onAction="#handleFilterButtonClick" maxWidth="1.7976931348623157E308" mnemonicParsing="false" scaleX="1.1" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="5.0" translateY="16.0">
+                              <Button fx:id="filterButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleFilterButtonClick" scaleX="1.1" scaleY="1.2" style="-fx-background-color: RGB(238, 241, 244, 1); -fx-background-radius: 20;" text="Show Results" textFill="#205675" translateX="5.0" translateY="16.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -341,10 +342,15 @@
             </Tab>
             <Tab closable="false" text="RESULTS">
                <content>
-                  <GridView fx:id="filteredView" maxWidth="1584.0" minWidth="1584.0" prefWidth="1584.0" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20" translateX="8.0">
-                     <padding>
-                        <Insets bottom="8.0" top="8.0" />
-                     </padding></GridView>
+                  <StackPane fx:id="filterStackPane" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20">
+                     <children>
+                        <GridView fx:id="filteredView" maxWidth="1584.0" minWidth="1584.0" prefWidth="1584.0" translateX="8.0">
+                           <padding>
+                              <Insets bottom="8.0" top="8.0" />
+                           </padding>
+                        </GridView>
+                     </children>
+                  </StackPane>
                </content>
             </Tab>
          </tabs>

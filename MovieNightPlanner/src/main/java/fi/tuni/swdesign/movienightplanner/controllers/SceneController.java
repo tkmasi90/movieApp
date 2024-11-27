@@ -88,6 +88,7 @@ public class SceneController {
         profileViewController.updateData(); // sets data in the view
         profileViewController.setFilterDataFromState();
 
+        // Update the chart container layout to ensure proper rendering of the charts
         profileViewController.getChartContainer().layout();
 
         stage.setScene(profileScene);
