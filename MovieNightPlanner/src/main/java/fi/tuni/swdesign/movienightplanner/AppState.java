@@ -152,6 +152,21 @@ public class AppState {
         }
         return watchHistory;
     }
+    
+        /**
+     * Gets a movie from the history.
+     *
+     * @return a list of rated movies
+     */
+    public Movie getMovieFromHistory(String movieName) {
+        List<String> watchHistory = new ArrayList<>();
+        for (Movie movie : this.watchHistory) {
+            if(movie.getFormattedTitle().equals(movieName)){
+                return movie;
+            }
+        }
+        return null;
+    }
 
     /**
      * Gets the genres of rated movies.
