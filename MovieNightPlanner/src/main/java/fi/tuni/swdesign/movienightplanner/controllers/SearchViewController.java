@@ -40,6 +40,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -211,7 +212,16 @@ public class SearchViewController {
                 scLabel.setManaged(true);
             }
         });
-
+        // Attach a KeyEvent handler to search when Enter is pressed
+        searchBar.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                try {
+                    handleSearchClick();
+                } catch (IOException ex) {
+                    ex.getStackTrace();
+                }
+            }
+        });
     }
 
     // Method to set up GridView with a loading label
