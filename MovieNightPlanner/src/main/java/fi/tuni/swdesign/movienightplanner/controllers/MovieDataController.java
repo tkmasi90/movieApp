@@ -59,8 +59,8 @@ public class MovieDataController {
         try {
             String httpResponseString = httpTools.makeGenericHttpRequest(url);
             tempMovieList = (MoviesResponse) gsonTools.convertJSONToObjects(httpResponseString, MoviesResponse.class);
+            filterMissingDates(tempMovieList);
 
-            // Add streaming provider information to the movies.
             addStreamingProviders(tempMovieList.getResults());
 
         } catch (HttpResponseException ex) {
@@ -182,8 +182,8 @@ public class MovieDataController {
                         }
                     }
                 }
-                
-                if(fiData.has("free")) {
+
+                if (fiData.has("free")) {
                     JsonArray flatrateArray = fiData.getAsJsonArray("free");
 
                     // Iterate through the providers and print their details
@@ -197,9 +197,7 @@ public class MovieDataController {
                         }
                     }
                 }
-                
-            } else {
-                System.out.println("No data found for county code FI.");
+
             }
 
         } catch (HttpResponseException ex) {
@@ -277,5 +275,13 @@ public class MovieDataController {
      */
     public Map<Integer, StreamingProvider> getStreamProviderMap() {
         return streamProviderMap;
+    }
+
+    private void filterMissingDates(MoviesResponse movieResponse) {
+        List<Movie> filteredMovies = movieResponse.getResults().stream().filter(movie -> {
+            return (!"".equals(movie.getReleaseDate()));
+        }).collect(Collectors.toList());
+       
+        movieResponse.setResults(filteredMovies);
     }
 }

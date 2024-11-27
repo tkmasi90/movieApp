@@ -25,6 +25,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-color: gray;
     -fx-border-width: 0 0 2px 0;
     -fx-border-style: solid;
+    -fx-cursor: hand;
 }
 
 /* Hover effect for tabs */
@@ -40,6 +41,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-width: 0 0 2px 0;
     -fx-border-style: solid;
     -fx-text-base-color: red;
+    -fx-cursor: default;
 }
 
 .tab-down-button {

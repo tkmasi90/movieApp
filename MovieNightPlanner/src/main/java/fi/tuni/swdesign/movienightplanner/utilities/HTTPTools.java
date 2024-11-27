@@ -99,11 +99,9 @@ public class HTTPTools implements iHTTPOperations {
             
             SimpleHttpRequest request = SimpleRequestBuilder.get(url).build();
             // TODO: Switch to API key and login. 
-            request.addHeader("Authorization", "Bearer 8Kuz42ChD4wK@TL");
             request.addHeader("accept", "application/json");
             request.addHeader("Content-Type", "application/json");
-            request.addHeader("x-rapidapi-ua", "Authorization 1");
-            request.addHeader("x-rapidapi-key", "b29cb6dddfmsh7cbb34c1dc4a10dp103a5fjsnc06750531447");
+            request.addHeader("x-rapidapi-key", "b3c77db2b4msh53577b5dd8aab2dp1f6a22jsn1bae23963328");
             request.addHeader("x-rapidapi-host", "streaming-availability.p.rapidapi.com");
             
             Future<SimpleHttpResponse> future = httpClient.execute(request, null);

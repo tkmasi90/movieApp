@@ -29,7 +29,7 @@
                   <ImageView fx:id="firstProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="secondProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1130.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true" />
                   
-                  <Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
+                  <Button fx:id="homeButton" alignment="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-padding: 16px 0px 0px 16px;">
                     <graphic>
                         <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                           <image>

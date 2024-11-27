@@ -67,6 +67,8 @@ public class App extends Application {
         searchViewController.setFilterViewController(filterViewController);
         searchViewController.initializeFilters();
         searchViewController.updateFilterData();
+        searchViewController.setSearch();
+        searchViewController.populateSearchHistory();
         
         // Set Profile View
         ProfileViewController profileViewController = profileLoader.getController();

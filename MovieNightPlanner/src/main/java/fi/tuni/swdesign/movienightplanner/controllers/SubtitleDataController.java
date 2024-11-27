@@ -59,7 +59,7 @@ public class SubtitleDataController {
                 
         streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
 
-        JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
+        JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
         
         if (jsonArray != null) {
             tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(jsonArray.toString(), SubtitleService[].class);

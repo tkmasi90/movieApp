@@ -38,6 +38,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -48,6 +49,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -89,10 +91,17 @@ public class SearchViewController {
     StackPane filterStackPane;
     @FXML
     Button filterButton;
+    @FXML
+    ListView<Movie> searchListView;
+    @FXML
+    TextField searchBar;
+    @FXML
+    Label scLabel;
 
     private final Label popularMoviesLoadingLabel = new Label("Loading popular movies...");
     private final Label topRatedMoviesLoadingLabel = new Label("Loading top-rated movies...");
     private final Label filteredMoviesLoadingLabel = new Label("Click 'Show Results' to search for movies");
+    private final Label searchingLabel = new Label("Searching...");
 
     private final MovieDataController mdc = new MovieDataController();
     private final SubtitleDataController sdc = new SubtitleDataController();
@@ -105,10 +114,11 @@ public class SearchViewController {
     private Integer popPage;
     private Integer topPage;
     private Integer filterPage;
-    
+
     // Create a map to cache the graphics for each movie
-    private Map<Movie, StackPane> movieLabelCacheList = new HashMap<>();
-    private Map<Movie, StackPane> movieLabelCacheGrid = new HashMap<>();
+    private final Map<Movie, StackPane> movieLabelCacheList = new HashMap<>();
+    private final Map<Movie, StackPane> movieLabelCacheGrid = new HashMap<>();
+    private final Map<Movie, HBox> searchLabelCacheList = new HashMap<>();
 
     private SceneController sceneController;
     FilterViewController filterViewController;
@@ -165,7 +175,6 @@ public class SearchViewController {
             }
         }
         setupLoadingLabels();
-
         popPage = 1;
         topPage = 1;
         filterPage = 1;
@@ -185,6 +194,25 @@ public class SearchViewController {
         movieLabelCacheList.clear();
         movieLabelCacheGrid.clear();
     }
+    
+    public void populateSearchHistory() {
+        searchListView.getItems().clear();
+        scLabel.setVisible(true);
+        scLabel.setManaged(true);
+        setMovieListView(appState.getSearchHistory(), searchListView, null);
+    }
+
+    public void setSearch() {
+        searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                // If the search field is empty, show the search history
+                populateSearchHistory();
+                scLabel.setVisible(true);
+                scLabel.setManaged(true);
+            }
+        });
+
+    }
 
     // Method to set up GridView with a loading label
     private void setupLoadingLabels() {
@@ -193,9 +221,11 @@ public class SearchViewController {
         popularMoviesLView.setPlaceholder(popularMoviesLoadingLabel);
         topRatedMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
         topRatedMoviesLview.setPlaceholder(topRatedMoviesLoadingLabel);
+        searchingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
 
         popularMoviesLView.setOrientation(Orientation.HORIZONTAL);
         topRatedMoviesLview.setOrientation(Orientation.HORIZONTAL);
+        searchListView.setOrientation(Orientation.VERTICAL);
 
         filteredMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
 
@@ -271,6 +301,33 @@ public class SearchViewController {
         selectionModel.selectLast();
     }
 
+    @FXML
+    private void handleSearchClick() throws IOException {
+        searchListView.setPlaceholder(searchingLabel);
+        scLabel.setVisible(false);
+        scLabel.setManaged(false);
+        CompletableFuture.supplyAsync(() -> {
+            MoviesResponse temp = null;
+            try {
+                temp = mdc.fetchMoviesResponse(tmdbUtil.getSearchUrl(searchBar.getText()));
+            } catch (HttpResponseException ex) {
+                this.HTTPErrorCode = ex.getStatusCode();
+                this.HTTPErrorMessage = ex.getReasonPhrase();
+                return null;
+            }
+            return temp;
+        }).thenAccept(moviesResponse -> {
+            Platform.runLater(() -> {
+                if (moviesResponse != null) {
+                    List<Movie> movieList = moviesResponse.getResults();
+                    setMovieListView(movieList, searchListView, null);
+                } else {
+                    searchingLabel.setText("Error: " + this.HTTPErrorCode + " - " + this.HTTPErrorMessage);
+                }
+            });
+        });
+    }
+
     /**
      * Populates a ListView with movie data. Each movie is displayed using
      * custom labels that are loaded from an FXML file. These labels are cached
@@ -282,20 +339,20 @@ public class SearchViewController {
     private void setMovieListView(List<Movie> movies, ListView<Movie> lView, Runnable loadMoreAction) {
         ObservableList<Movie> movieList = FXCollections.observableArrayList(movies);
         lView.setItems(movieList);
-        // Create a map to cache the graphics for each movie
-        Map<Movie, StackPane> movieLabelCache = new HashMap<>();
 
-        lView.setCellFactory(lv -> {
-            return new ListCell<Movie>() {
-                @Override
-                protected void updateItem(Movie movie, boolean empty) {
-                    super.updateItem(movie, empty);
-                    FXMLLoader loader = new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
+        lView.setCellFactory(lv -> new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+                FXMLLoader loader = (lView == searchListView)
+                        ? new FXMLLoader(App.class.getResource("MovieSearchResult.fxml"))
+                        : new FXMLLoader(App.class.getResource("MovieLabel.fxml"));
 
-                    try {
-                        StackPane movieLabel = loader.load();  // Load the FXML
-                        MovieLabelController mlController = loader.getController();  // Get the controller
+                try {
+                    Object loadedNode = loader.load(); // Load the FXML
+                    Object controller = loader.getController(); // Get the controller
 
+                    if (controller instanceof MovieLabelController mlController) {
                         if (empty) {
                             setText(null);
                             setGraphic(null);
@@ -303,16 +360,14 @@ public class SearchViewController {
                             setOnMouseClicked(null);
                         } else if (movie != null) {
                             // Check if the movie is already cached
+                            StackPane movieLabel = (StackPane) loadedNode;
                             if (movieLabelCacheList.containsKey(movie)) {
                                 // Use the cached label (StackPane)
                                 setGraphic(movieLabelCacheList.get(movie));
                             } else {
-
                                 // Populate the movie label with data from the movie object
                                 mlController.addLogo(movie);
-
                                 mlController.setClipRectangleSize(458, 257);
-
                                 mlController.addMovieImage(movie, 257);
 
                                 // Cache the graphic for later use
@@ -321,31 +376,43 @@ public class SearchViewController {
                                 setGraphic(movieLabel);
                             }
                             // Handle clicks on the movie
-                            setOnMouseClicked(event -> handleMovieClick(event, movie));
-                        } // null is used for "Load More Results"-label
-                        else {
+                            setOnMouseClicked(event -> handleMovieClick(event, movie, false));
+                        } else {
+                            // "Load More Results" label setup
+                            StackPane movieLabel = (StackPane) loadedNode;
                             mlController.setClipRectangleSize(458, 257);
                             mlController.addShowMore(458, 257);
                             setGraphic(movieLabel);
-                            movieLabel.setOnMouseClicked(event -> {
-                                loadMoreAction.run();
-                            });
+                            movieLabel.setOnMouseClicked(event -> loadMoreAction.run());
                             setOnMouseClicked(null);
                         }
-
                         // Make the cell background transparent
                         setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
                         setPrefWidth(448);
                         setPrefHeight(247);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                    } else if (controller instanceof MovieResultsController mrController && movie != null) {
+                        if (searchLabelCacheList.containsKey(movie)) {
+                            setGraphic(searchLabelCacheList.get(movie));
+                        } else {
+                            // Actions for MovieResultsController
+                            HBox movieLabel = (HBox) loadedNode;
+                            mrController.setResult(movie);
+                            searchLabelCacheList.put(movie, movieLabel);
+                            setGraphic(movieLabel);
+                        }
+                        setOnMouseClicked(event -> handleMovieClick(event, movie, true));
+                        setStyle("-fx-background-color: transparent; -fx-padding: 2px 10px 2px 10px;");
+                        setPrefWidth(320);
                     }
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
-            };
+            }
         });
     }
 
-    
     /**
      * Populates a GridView with movie data. Each movie is displayed using
      * custom labels that are loaded from an FXML file. These labels are cached
@@ -361,8 +428,6 @@ public class SearchViewController {
         lView.setCellHeight(320);
 //        lView.setVerticalCellSpacing(-8);
 //        lView.setHorizontalCellSpacing(-6);
-
-
 
         lView.setCellFactory(lv -> new GridCell<Movie>() {
             @Override
@@ -407,7 +472,7 @@ public class SearchViewController {
                     setStyle("-fx-background-color: transparent; -fx-padding: 10px;");
 
                     // Handle clicks on the movie
-                    setOnMouseClicked(event -> handleMovieClick(event, movie));
+                    setOnMouseClicked(event -> handleMovieClick(event, movie, true));
                 }
             }
         });
@@ -420,9 +485,12 @@ public class SearchViewController {
      * @param event The mouse event triggered by clicking a movie label.
      * @param movie The movie object whose details should be shown.
      */
-    private void handleMovieClick(MouseEvent event, Movie movie) {
+    private void handleMovieClick(MouseEvent event, Movie movie, boolean isSearch) {
         // Logic to switch to the movie details view using SceneController
         try {
+            if (isSearch) {
+                appState.addSearchedMovie(movie);
+            }
             if (sceneController != null) {
                 sceneController.switchToMovieDetail(event, movie);  // Pass the movie to the SceneController
             }
@@ -663,7 +731,7 @@ public class SearchViewController {
 
         genres.addAll(genresChecked
                 .stream()
-                .map(genreName -> MovieGenres.getGenreIdByName((String) genreName)) 
+                .map(genreName -> MovieGenres.getGenreIdByName((String) genreName))
                 .collect(Collectors.toList())
         );
 
