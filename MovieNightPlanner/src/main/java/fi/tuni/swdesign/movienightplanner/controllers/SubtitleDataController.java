@@ -30,6 +30,55 @@ public class SubtitleDataController {
     private final String urlPost = "?series_granularity=show&output_language=en";
 
     /**
+     * Checks if subtitles are available for a given movie in a specific language.
+     *
+     * @param movieId the ID of the movie to check for subtitles
+     * @param language the language code (e.g., "en" for English, "fi" for Finnish) to check for subtitles
+     * @return {@code true} if subtitles in the specified language are available for the movie, {@code false} otherwise
+     */
+    public boolean areSubtitlesAvailable(int movieId, String language) {
+
+        Set<String> serviceList = new HashSet<>();
+        JsonObject tempJsonObject = null;
+        JsonObject streamingOptionsJsonObject = null;
+        SubtitleService[] tempServices = null;
+
+        String url = urlPre + Integer.toString(movieId) + urlPost;
+
+        try {
+            String vastaus = httpTools.makeTMOTNHttpRequest(url);
+            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e);
+        }
+        
+        if (tempJsonObject == null) {
+            return false;
+        }
+                
+        streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
+
+        JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray("fi");
+        
+        if (jsonArray != null) {
+            tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(jsonArray.toString(), SubtitleService[].class);
+        }
+
+        if (tempServices != null) {
+            for (SubtitleService s : tempServices) {
+                for (SubtitleService.Subtitle st : s.subtitles) {
+                    if (st.getLocale().getLanguage().equals(LanguageCodes.getIsoCodeFromCc(language))) {
+                        serviceList.add(s.getService().getName());
+                    }
+                }
+            }
+        }
+        return !serviceList.isEmpty();
+    };
+    
+    
+        /**
      * Checks if Finnish subtitles are available for a given movie from any
      * service.
      *
@@ -266,51 +315,4 @@ public class SubtitleDataController {
         return subtitleList;
     }
     
-    /**
-     * Checks if subtitles are available for a given movie in a specific language.
-     *
-     * @param movieId the ID of the movie to check for subtitles
-     * @param language the language code (e.g., "en" for English, "fi" for Finnish) to check for subtitles
-     * @return {@code true} if subtitles in the specified language are available for the movie, {@code false} otherwise
-     */
-    public boolean areSubtitlesAvailable(int movieId, String language) {
-
-        Set<String> serviceList = new HashSet<>();
-        JsonObject tempJsonObject = null;
-        JsonObject streamingOptionsJsonObject = null;
-        SubtitleService[] tempServices = null;
-
-        String url = urlPre + Integer.toString(movieId) + urlPost;
-
-        try {
-            String vastaus = httpTools.makeTMOTNHttpRequest(url);
-            tempJsonObject = (JsonObject) gsonTools.convertJSONToObjects(vastaus, JsonObject.class);
-
-        } catch (IOException | InterruptedException e) {
-            System.out.println(e);
-        }
-        
-        if (tempJsonObject == null) {
-            return false;
-        }
-                
-        streamingOptionsJsonObject = tempJsonObject.getAsJsonObject("streamingOptions");
-
-        JsonArray jsonArray = streamingOptionsJsonObject.getAsJsonArray(language);
-        
-        if (jsonArray != null) {
-            tempServices = (SubtitleService[]) gsonTools.convertJSONToObjects(jsonArray.toString(), SubtitleService[].class);
-        }
-
-        if (tempServices != null) {
-            for (SubtitleService s : tempServices) {
-                for (SubtitleService.Subtitle st : s.subtitles) {
-                    if (st.getLocale().getLanguage().equals(LanguageCodes.getIsoCodeFromCc(language))) {
-                        serviceList.add(s.getService().getName());
-                    }
-                }
-            }
-        }
-        return !serviceList.isEmpty();
-    };
 }

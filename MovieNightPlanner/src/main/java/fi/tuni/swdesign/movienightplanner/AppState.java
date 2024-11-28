@@ -4,12 +4,10 @@
  */
 package fi.tuni.swdesign.movienightplanner;
 
-import fi.tuni.swdesign.movienightplanner.models.Genre;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
 import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import com.google.gson.annotations.Expose;
-import fi.tuni.swdesign.movienightplanner.models.StreamingProvider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,25 +21,25 @@ import java.util.Map;
 public class AppState {
     
     @Expose
-    private ArrayList<Movie> searchHistory;
+    private final ArrayList<Movie> searchHistory;
     
     @Expose
-    private Map<Integer, Integer> movieRatings;
+    private final Map<Integer, Integer> movieRatings;
 
     @Expose
-    private Map<Integer, Movie> movies;
+    private final Map<Integer, Movie> movies;
 
     @Expose
-    private List<Movie> watchHistory;
+    private final List<Movie> watchHistory;
     
     @Expose
-    private List<String> prefProviders;
+    private final List<String> prefProviders;
     
     @Expose
-    private List<Integer> prefGenres;
+    private final List<Integer> prefGenres;
     
     @Expose
-    private List<Integer> prefAudio;
+    private final List<Integer> prefAudio;
     
     @Expose
     private Integer prefMinRating;
@@ -71,7 +69,9 @@ public class AppState {
     * @param movieSearch the movie to be added
     */    
     public void addSearchedMovie(Movie movieSearch){
-        this.searchHistory.add(movieSearch);
+        if(!searchHistory.contains(movieSearch)) {
+            this.searchHistory.add(movieSearch);
+        }
     }
     
     public void setPrefProviders(List<String> providers) {
@@ -146,11 +146,11 @@ public class AppState {
      * @return a list of rated movies
      */
     public List<String> getWatchHistory() {
-        List<String> watchHistory = new ArrayList<>();
+        List<String> watchHistoryStr = new ArrayList<>();
         for (Movie movie : this.watchHistory) {
-            watchHistory.add(movie.getFormattedTitle());
+            watchHistoryStr.add(movie.getFormattedTitle());
         }
-        return watchHistory;
+        return watchHistoryStr;
     }
 
     /**

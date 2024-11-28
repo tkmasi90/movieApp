@@ -78,12 +78,7 @@ public class LanguageCodes {
      * @return the same country code key, or null if not found
      */
     public static String getNameFromCc(String cc) {
-        for (Map.Entry<String, Pair<String, String>> entry : LANGUAGES.entrySet()) {
-            if (entry.getKey().equals(cc)) {
-                return entry.getValue().getLanguageName();
-            }
-        }
-        return null;
+        return LANGUAGES.get(cc).getLanguageName();
     }
     
     public static String getIsoCodeFromName(String name) {

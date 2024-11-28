@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="520.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="520.0" style="-fx-background-color: RGB(155,165,183, 0.9)" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieResultsController">
+    <children>
+        <ImageView fx:id="searchImg" fitHeight="70.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+            <viewport>
+                <Rectangle2D />
+            </viewport>
+        </ImageView>
+        <Label fx:id="searchName" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" style="-fx-font-size: 24;" text="-Movie name-" textAlignment="CENTER" wrapText="true">
+         <padding>
+            <Insets left="8.0" right="8.0" />
+         </padding></Label>
+    </children>
+</HBox>
