@@ -340,7 +340,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                              <ListView fx:id="searchListView" maxHeight="210.0" maxWidth="553.0" minHeight="210.0" minWidth="553.0" prefHeight="210.0" prefWidth="553.0" style="-fx-background-color: transparent;" />
+                              <ListView fx:id="searchListView" maxHeight="190.0" maxWidth="553.0" minHeight="190.0" minWidth="553.0" prefHeight="190.0" prefWidth="553.0" style="-fx-background-color: transparent;" />
                      </children>
                   </VBox>
                     </children>
