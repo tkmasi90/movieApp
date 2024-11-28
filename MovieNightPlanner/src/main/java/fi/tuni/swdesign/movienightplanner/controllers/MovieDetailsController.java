@@ -54,6 +54,7 @@ public class MovieDetailsController {
     @FXML private Label directorLabel;
     @FXML private Label writerPlaceholderLabel;
     @FXML private Label directorPlaceholderLabel;
+    @FXML private Label streamingAtLabel;
 
     @FXML private ImageView posterImage;
     @FXML private ImageView backdropImage;
@@ -281,6 +282,15 @@ public class MovieDetailsController {
         fourthProviderImage.setImage(null);
 
         List<StreamingProvider> providers = movie.getStreamingProviders();
+
+        // Check if no streamers available
+        if( providers.size() == 0 ) {
+            streamingAtLabel.setText("");
+            return;
+        } else {
+            streamingAtLabel.setText("Streaming at");
+        }
+
         int i = 0;
         for( StreamingProvider provider : providers ) {
             if( i == 0 ) {

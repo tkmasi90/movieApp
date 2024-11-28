@@ -143,6 +143,12 @@ public final class TMDbUtility {
         return String.format("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=%s&sort_by=vote_average.desc&watch_region=FI&with_watch_monetization_types=flatrate&vote_count.gte=200&with_watch_providers=%s", page, getProvidersString());
     }
 
+    /**
+     * Generates the URL for searching movies on TMDb based on a query string.
+     *
+     * @param query The search query string
+     * @return A formatted URL string for searching movies
+     */
     public String getSearchUrl(String query) {
         try {
             // Encode the query to handle spaces and other special characters
