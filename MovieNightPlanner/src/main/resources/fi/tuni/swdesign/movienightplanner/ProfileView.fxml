@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<HBox fx:id="profileView" alignment="TOP_LEFT" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController">
+<HBox fx:id="profileView" alignment="TOP_LEFT" maxHeight="925" maxWidth="1640" minHeight="925.0" minWidth="1640.0" spacing="20.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.ProfileViewController">
     <children>
         <VBox>
             <HBox.margin>
@@ -260,7 +260,7 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <ListView fx:id="watchHistoryListView" prefHeight="803.0" prefWidth="170.0" />
+                  <ListView fx:id="watchHistoryListView" onMouseClicked="#handleMovieHistoryClicked" prefHeight="803.0" prefWidth="170.0" />
                </children>
             </VBox>
             </HBox>

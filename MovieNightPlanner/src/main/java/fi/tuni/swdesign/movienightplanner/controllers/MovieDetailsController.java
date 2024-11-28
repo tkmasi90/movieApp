@@ -133,7 +133,21 @@ public class MovieDetailsController {
             sceneController.switchToSearch(event);
         }
     }
-
+    
+    /**
+    * Navigates to the search view.
+    *
+    * @param event the ActionEvent that triggered this method
+    */
+    @FXML
+    public void handleProfileButtonClick(ActionEvent event) throws IOException{
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            sceneController.switchToProfile(event);
+        }
+    }
+    
     /**
      * Handles the action of the rate button.
      */

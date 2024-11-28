@@ -1,6 +1,7 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
 import fi.tuni.swdesign.movienightplanner.AppState;
+import fi.tuni.swdesign.movienightplanner.models.Movie;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -312,11 +314,11 @@ public class ProfileViewController {
         }
     }
 
-        /**
-     * Navigates to the search view.
-     *
-     * @param event the ActionEvent that triggered this method
-     */
+    /**
+    * Navigates to the search view.
+    *
+    * @param event the ActionEvent that triggered this method
+    */
     @FXML
     public void handleHomeButtonClick(ActionEvent event) throws IOException{
         if (sceneController == null) {
@@ -325,6 +327,23 @@ public class ProfileViewController {
             sceneController.switchToSearch(event);
         }
     }
+    
+        /**
+    * Navigates to the movie detail view.
+    *
+    * @param event the ActionEvent that triggered this method
+    */
+    @FXML
+    public void handleMovieHistoryClicked(MouseEvent event) throws IOException{
+        if (sceneController == null) {
+            System.out.println("SceneController is null in SearchViewController");
+        } else {
+            //System.out.println("clicked on " + watchHistoryListView.getSelectionModel().getSelectedItem());
+            Movie tempMovie = appState.getMovieFromHistory(watchHistoryListView.getSelectionModel().getSelectedItem());
+            sceneController.switchToMovieDetail(event, tempMovie);
+        }
+    }
+    
 
     /**
      * Saves user preferences and updates the search filters.
