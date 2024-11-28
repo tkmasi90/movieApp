@@ -340,7 +340,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                              <ListView fx:id="searchListView" stylesheets="@styles.css" maxHeight="190.0" maxWidth="553.0" minHeight="190.0" minWidth="553.0" prefHeight="190.0" prefWidth="553.0" style="-fx-background-color: transparent;" />
+                              <ListView fx:id="searchListView" maxHeight="190.0" maxWidth="553.0" minHeight="190.0" minWidth="553.0" prefHeight="190.0" prefWidth="553.0" style="-fx-background-color: transparent;" stylesheets="@styles.css" />
                      </children>
                   </VBox>
                     </children>
@@ -402,7 +402,7 @@
                                                 <Insets bottom="4.0" left="12.0" right="4.0" top="4.0" />
                                             </padding>
                                         </Label>
-                                        <ListView fx:id="popularMoviesLView" stylesheets="@styles.css" prefHeight="281.5" prefWidth="1664.0" style="-fx-background-color: transparent;">
+                                        <ListView fx:id="popularMoviesLView" prefHeight="281.5" prefWidth="1664.0" style="-fx-background-color: transparent;" stylesheets="@styles.css">
                                             <padding>
                                                 <Insets right="20.0" />
                                             </padding>
@@ -422,7 +422,7 @@
                                                 <Insets bottom="4.0" left="12.0" right="4.0" top="4.0" />
                                             </padding>
                                         </Label>
-                                        <ListView fx:id="topRatedMoviesLview" stylesheets="@styles.css" prefHeight="281.5" prefWidth="1708.0" style="-fx-background-color: transparent;">
+                                        <ListView fx:id="topRatedMoviesLview" prefHeight="281.5" prefWidth="1708.0" style="-fx-background-color: transparent;" stylesheets="@styles.css">
                                             <padding>
                                                 <Insets right="20.0" />
                                             </padding>
@@ -441,7 +441,7 @@
                 </Tab>
                 <Tab closable="false" text="RESULTS">
                     <content>
-                        <StackPane fx:id="filterStackPane" stylesheets="@styles.css" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20">
+                        <StackPane fx:id="filterStackPane" style="-fx-background-color: RGB(32, 86, 117, 0.9); -fx-background-radius: 20" stylesheets="@styles.css">
                             <children>
                                 <GridView fx:id="filteredView" maxWidth="1584.0" minWidth="1584.0" prefWidth="1584.0" translateX="8.0">
                                     <padding>
@@ -457,5 +457,19 @@
                 <Insets bottom="20.0" left="20.0" right="20.0" />
             </VBox.margin>
         </TabPane>
+      <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: transparent;" styleClass="styles.css">
+         <children>
+            <ImageView fitHeight="45.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../images/TMDB_logo.png" />
+               </image>
+            </ImageView>
+            <Label text="This application uses data from The Movie Database and  JustWatch" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
     </children>
 </VBox>
