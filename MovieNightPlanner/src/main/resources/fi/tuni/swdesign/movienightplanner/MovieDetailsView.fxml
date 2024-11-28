@@ -63,7 +63,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Label layoutX="1050.0" layoutY="102.0" text="Streaming at" textFill="WHITE">
+                  <Label fx:id="streamingAtLabel" layoutX="1050.0" layoutY="102.0" text="Streaming at" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -82,23 +82,20 @@
                   <ImageView fx:id="thirdProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="215.0" pickOnBounds="true" preserveRatio="true" />
                   
                   <Button fx:id="profileButton" alignment="TOP_RIGHT" layoutX="1500.0" layoutY="14.0" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleProfileButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
-               <graphic>
-                  <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../images/4f2e9b89-9a71-4e0e-8450-05a57a56cab1.jpeg" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </graphic>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <HBox.margin>
-                  <Insets left="16.0" right="16.0" top="16.0" />
-               </HBox.margin>
-            </Button>
+                    <graphic>
+                        <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                              <Image url="@../../../../images/4f2e9b89-9a71-4e0e-8450-05a57a56cab1.jpeg" />
+                          </image>
+                          <viewport>
+                              <Rectangle2D />
+                          </viewport>
+                        </ImageView>
+                    </graphic>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                  </Button>
                   <ImageView fx:id="fourthProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1130.0" layoutY="215.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>

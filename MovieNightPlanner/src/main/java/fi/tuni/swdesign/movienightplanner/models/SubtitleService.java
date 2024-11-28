@@ -22,17 +22,7 @@ public class SubtitleService {
     @Expose
     public String link;
     @Expose
-    public String quality;
-    @Expose
-    public List<Audio> audios;
-    @Expose
     public List<Subtitle> subtitles;
-    @Expose
-    public Price price;
-    @Expose
-    public boolean expiresSoon;
-    @Expose
-    public long availableSince;
 
     /**
      * Default constructor for SubtitleService.
@@ -95,42 +85,6 @@ public class SubtitleService {
     }
 
     /**
-     * Gets the quality of the subtitle service.
-     *
-     * @return the quality of the subtitle service
-     */
-    public String getQuality() {
-        return quality;
-    }
-
-    /**
-     * Sets the quality of the subtitle service.
-     *
-     * @param quality the new quality of the subtitle service
-     */
-    public void setQuality(String quality) {
-        this.quality = quality;
-    }
-
-    /**
-     * Gets the list of audios associated with the subtitle service.
-     *
-     * @return the list of audios
-     */
-    public List<Audio> getAudios() {
-        return audios;
-    }
-
-    /**
-     * Sets the list of audios associated with the subtitle service.
-     *
-     * @param audios the new list of audios
-     */
-    public void setAudios(List<Audio> audios) {
-        this.audios = audios;
-    }
-
-    /**
      * Gets the list of subtitles associated with the subtitle service.
      *
      * @return the list of subtitles
@@ -149,60 +103,6 @@ public class SubtitleService {
     }
 
     /**
-     * Gets the price of the subtitle service.
-     *
-     * @return the price of the subtitle service
-     */
-    public Price getPrice() {
-        return price;
-    }
-
-    /**
-     * Sets the price of the subtitle service.
-     *
-     * @param price the new price of the subtitle service
-     */
-    public void setPrice(Price price) {
-        this.price = price;
-    }
-
-    /**
-     * Checks if the subtitle service expires soon.
-     *
-     * @return true if the subtitle service expires soon, false otherwise
-     */
-    public boolean isExpiresSoon() {
-        return expiresSoon;
-    }
-
-    /**
-     * Sets the expiration status of the subtitle service.
-     *
-     * @param expiresSoon the new expiration status
-     */
-    public void setExpiresSoon(boolean expiresSoon) {
-        this.expiresSoon = expiresSoon;
-    }
-
-    /**
-     * Gets the availability date of the subtitle service.
-     *
-     * @return the availability date
-     */
-    public long getAvailableSince() {
-        return availableSince;
-    }
-
-    /**
-     * Sets the availability date of the subtitle service.
-     *
-     * @param availableSince the new availability date
-     */
-    public void setAvailableSince(long availableSince) {
-        this.availableSince = availableSince;
-    }
-
-    /**
      * Represents a service with various attributes such as ID, name, homepage,
      * theme color code, and image set.
      */
@@ -216,8 +116,6 @@ public class SubtitleService {
         public String homePage;
         @Expose
         public String themeColorCode;
-        @Expose
-        public ImageSet imageSet;
 
         /**
          * Default constructor for Service.
@@ -297,129 +195,6 @@ public class SubtitleService {
             this.themeColorCode = themeColorCode;
         }
 
-        /**
-         * Gets the image set of the service.
-         *
-         * @return the image set of the service
-         */
-        public ImageSet getImageSet() {
-            return imageSet;
-        }
-
-        /**
-         * Sets the image set of the service.
-         *
-         * @param imageSet the new image set of the service
-         */
-        public void setImageSet(ImageSet imageSet) {
-            this.imageSet = imageSet;
-        }
-    }
-
-    /**
-     * Represents an image set with different themes.
-     */
-    public static class ImageSet {
-
-        @Expose
-        public String lightThemeImage;
-        @Expose
-        public String darkThemeImage;
-        @Expose
-        public String whiteImage;
-
-        /**
-         * Default constructor for ImageSet.
-         */
-        public ImageSet() {
-        }
-
-        /**
-         * Gets the light theme image.
-         *
-         * @return the light theme image
-         */
-        public String getLightThemeImage() {
-            return lightThemeImage;
-        }
-
-        /**
-         * Sets the light theme image.
-         *
-         * @param lightThemeImage the new light theme image
-         */
-        public void setLightThemeImage(String lightThemeImage) {
-            this.lightThemeImage = lightThemeImage;
-        }
-
-        /**
-         * Gets the dark theme image.
-         *
-         * @return the dark theme image
-         */
-        public String getDarkThemeImage() {
-            return darkThemeImage;
-        }
-
-        /**
-         * Sets the dark theme image.
-         *
-         * @param darkThemeImage the new dark theme image
-         */
-        public void setDarkThemeImage(String darkThemeImage) {
-            this.darkThemeImage = darkThemeImage;
-        }
-
-        /**
-         * Gets the white image.
-         *
-         * @return the white image
-         */
-        public String getWhiteImage() {
-            return whiteImage;
-        }
-
-        /**
-         * Sets the white image.
-         *
-         * @param whiteImage the new white image
-         */
-        public void setWhiteImage(String whiteImage) {
-            this.whiteImage = whiteImage;
-        }
-    }
-
-    /**
-     * Represents an audio with a specific language.
-     */
-    public static class Audio {
-
-        @Expose
-        public String language;
-
-        /**
-         * Default constructor for Audio.
-         */
-        public Audio() {
-        }
-
-        /**
-         * Gets the language of the audio.
-         *
-         * @return the language of the audio
-         */
-        public String getLanguage() {
-            return language;
-        }
-
-        /**
-         * Sets the language of the audio.
-         *
-         * @param language the new language of the audio
-         */
-        public void setLanguage(String language) {
-            this.language = language;
-        }
     }
 
     /**
@@ -507,78 +282,4 @@ public class SubtitleService {
             this.language = language;
         }
     }
-
-    /**
-     * Represents a price with amount, currency, and formatted value.
-     */
-    public static class Price {
-
-        @Expose
-        public String amount;
-        @Expose
-        public String currency;
-        @Expose
-        public String formatted;
-
-        /**
-         * Default constructor for Price.
-         */
-        public Price() {
-        }
-
-        /**
-         * Gets the amount of the price.
-         *
-         * @return the amount of the price
-         */
-        public String getAmount() {
-            return amount;
-        }
-
-        /**
-         * Sets the amount of the price.
-         *
-         * @param amount the new amount of the price
-         */
-        public void setAmount(String amount) {
-            this.amount = amount;
-        }
-
-        /**
-         * Gets the currency of the price.
-         *
-         * @return the currency of the price
-         */
-        public String getCurrency() {
-            return currency;
-        }
-
-        /**
-         * Sets the currency of the price.
-         *
-         * @param currency the new currency of the price
-         */
-        public void setCurrency(String currency) {
-            this.currency = currency;
-        }
-
-        /**
-         * Gets the formatted value of the price.
-         *
-         * @return the formatted value of the price
-         */
-        public String getFormatted() {
-            return formatted;
-        }
-
-        /**
-         * Sets the formatted value of the price.
-         *
-         * @param formatted the new formatted value of the price
-         */
-        public void setFormatted(String formatted) {
-            this.formatted = formatted;
-        }
-    }
-
 }
