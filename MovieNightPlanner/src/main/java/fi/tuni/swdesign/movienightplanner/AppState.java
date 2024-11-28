@@ -9,6 +9,7 @@ import fi.tuni.swdesign.movienightplanner.utilities.MovieGenres;
 
 import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,10 @@ public class AppState {
     *
     * @return searchHistory 
     */
-    public ArrayList<Movie> getSearchHistory(){
-        return this.searchHistory;
+    public List<Movie> getSearchHistory(){
+        List<Movie> searchHistoryReversed = (List <Movie>) searchHistory.clone();
+        Collections.reverse(searchHistoryReversed);
+        return searchHistoryReversed;
     }
 
     /**

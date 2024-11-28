@@ -197,9 +197,7 @@ public class SearchViewController {
     }
     
     public void populateSearchHistory() {
-        searchListView.getItems().clear();
-        scLabel.setVisible(true);
-        scLabel.setManaged(true);
+        showHistoryLabel();
         setMovieListView(appState.getSearchHistory(), searchListView, null);
     }
 
@@ -208,8 +206,7 @@ public class SearchViewController {
             if (newValue.isEmpty()) {
                 // If the search field is empty, show the search history
                 populateSearchHistory();
-                scLabel.setVisible(true);
-                scLabel.setManaged(true);
+                showHistoryLabel();
             }
         });
         // Attach a KeyEvent handler to search when Enter is pressed
@@ -254,6 +251,23 @@ public class SearchViewController {
     private void hideLoadingLabel() {
         filteredMoviesLoadingLabel.setVisible(false);
         filteredMoviesLoadingLabel.setManaged(false);
+    }
+    
+    private void showHistoryLabel() {
+        scLabel.setVisible(true);
+        scLabel.setManaged(true);
+        searchListView.setMinHeight(190);
+        searchListView.setPrefHeight(190);
+        searchListView.setMaxHeight(190);
+    }
+    
+       private void hideHistoryLabel() {
+        searchListView.getItems().clear();
+        scLabel.setVisible(false);
+        scLabel.setManaged(false);
+        searchListView.setMinHeight(210);
+        searchListView.setPrefHeight(210);
+        searchListView.setMaxHeight(210);
     }
 
     /**
@@ -314,8 +328,7 @@ public class SearchViewController {
     @FXML
     private void handleSearchClick() throws IOException {
         searchListView.setPlaceholder(searchingLabel);
-        scLabel.setVisible(false);
-        scLabel.setManaged(false);
+        hideHistoryLabel();
         CompletableFuture.supplyAsync(() -> {
             MoviesResponse temp = null;
             try {
