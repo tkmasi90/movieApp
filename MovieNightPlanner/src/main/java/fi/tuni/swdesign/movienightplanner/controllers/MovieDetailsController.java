@@ -55,6 +55,7 @@ public class MovieDetailsController {
     @FXML private Label writerPlaceholderLabel;
     @FXML private Label directorPlaceholderLabel;
     @FXML private Label streamingAtLabel;
+    @FXML private Label starsLabel;
 
     @FXML private ImageView posterImage;
     @FXML private ImageView backdropImage;
@@ -115,7 +116,6 @@ public class MovieDetailsController {
     private void navigateToSearchView(ActionEvent event) {
         try {
             sceneController.switchToSearch(event);
-            clearMovieDetails();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -208,6 +208,13 @@ public class MovieDetailsController {
               } else {
                   writerPlaceholderLabel.setText("Writer - ");
                   writerLabel.setText(fetchedMovie.getCredits().getWriter());
+              }
+
+              if ( fetchedMovie.getCredits().getDirector() == null ) {
+                  directorPlaceholderLabel.setText("");
+                  directorLabel.setText("");
+              } else {
+                  directorPlaceholderLabel.setText("Director - ");
               }
 
               directorLabel.setText(fetchedMovie.getCredits().getDirector());
@@ -318,6 +325,13 @@ public class MovieDetailsController {
     private void setCast(Movie movie) {
         List<Cast> cast = movie.getCredits().getCast();
         int castSize = cast.size();
+
+        if( castSize == 0 ) {
+            starsLabel.setText("");
+            return;
+        } else {
+            starsLabel.setText("Stars");
+        }
 
         // Show and set data for available cast members
         for (int i = 0; i < castSize && i < 6; i++) {

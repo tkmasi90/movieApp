@@ -70,6 +70,7 @@ public class SceneController {
     @FXML
     public void switchToMovieDetail(MouseEvent event, Movie movie) throws IOException {
         MovieDetailsController movieDetailViewController = (MovieDetailsController) movieDetailScene.getUserData();
+        movieDetailViewController.clearMovieDetails();
         movieDetailViewController.setMovie(movie);
         stage.setScene(movieDetailScene);
         stage.show();

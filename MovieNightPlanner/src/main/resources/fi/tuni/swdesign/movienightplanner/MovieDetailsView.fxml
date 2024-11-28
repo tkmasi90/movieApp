@@ -10,11 +10,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
+<VBox maxHeight="925.0" maxWidth="1640.0" minHeight="925.0" minWidth="1640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.swdesign.movienightplanner.controllers.MovieDetailsController">
    <children>
       <SplitPane orientation="VERTICAL" prefHeight="693.0" prefWidth="830.0">
         <items>
@@ -46,7 +45,7 @@
                     </opaqueInsets>
                   </Button>
                   
-                  <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="61.0" prefHeight="35.0" prefWidth="616.0" text="Movie Name (year)" textFill="WHITE">
+                  <Label fx:id="titleDetailsLabel" layoutX="369.0" layoutY="61.0" prefHeight="35.0" prefWidth="1074.0" text="Movie Name (year)" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="24.0" />
                      </font>
@@ -81,7 +80,7 @@
                   <Label layoutX="509.0" layoutY="144.0" text="/10" textFill="WHITE" />
                   <ImageView fx:id="thirdProviderImage" fitHeight="70.0" fitWidth="70.0" layoutX="1050.0" layoutY="215.0" pickOnBounds="true" preserveRatio="true" />
                   
-                  <Button fx:id="profileButton" alignment="TOP_RIGHT" layoutX="1500.0" layoutY="14.0" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleProfileButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
+                  <Button fx:id="profileButton" alignment="TOP_RIGHT" graphicTextGap="0.0" layoutX="1500.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleProfileButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;">
                     <graphic>
                         <ImageView fitHeight="80.0" fitWidth="80.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                           <image>
@@ -167,7 +166,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label layoutX="24.0" layoutY="73.0" prefHeight="45.0" prefWidth="80.0" text="Stars" textFill="WHITE">
+            <Label fx:id="starsLabel" layoutX="24.0" layoutY="73.0" prefHeight="45.0" prefWidth="80.0" text="Stars" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="28.0" />
                </font>

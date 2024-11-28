@@ -47,8 +47,13 @@ public class ImageController {
 
         if(imagePath == null) 
         {
-            // use unknown image from images
-            fullImageUrl = "/images/unknown.png";
+            // If an image of a star, use unknown profile picture
+            if(fxId.substring(0, 4).equals("star")) {
+              fullImageUrl = "/images/unknown.png";
+            } else {
+              // Use gray background for everything else, e.g., movie posters, backdrops
+              fullImageUrl = "/images/grayBackground.png";
+            }
         }
         
         ImageView imageView = (ImageView) scene.lookup("#" + fxId);
@@ -80,6 +85,7 @@ public class ImageController {
         }
       });
     }
+
 
     /**
      * Overloaded method to load image without specifying width, defaults to original size.
