@@ -9,10 +9,21 @@ import java.util.List;
  * @author kian, Copilot
  */
 public class Credits {
+    /**
+     * Unique identifier for the credits entry.
+     */
     @Expose
     private int id;
+    
+    /**
+     * List of cast members involved in the production.
+     */
     @Expose
     private List<Cast> cast;
+    
+    /**
+     * List of crew members involved in the production.
+     */
     @Expose
     private List<Crew> crew;
 

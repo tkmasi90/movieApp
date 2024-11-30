@@ -15,6 +15,10 @@ import java.util.List;
 
 public class StreamingResponse {
     
+    /**
+     * List of streaming providers.
+     * 
+     */    
     @Expose
     private List<StreamingProvider> results;
 

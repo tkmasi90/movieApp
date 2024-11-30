@@ -13,12 +13,27 @@ import com.google.gson.annotations.Expose;
 import java.util.List;
 
 public class MoviesResponse {
+    /**
+     * The current page of the movie results.
+     */
     @Expose
     private int page;
+    
+    /**
+     * List of movies returned in the response.
+     */
     @Expose
     private List<Movie> results;
+    
+    /**
+     * Total number of pages available.
+     */
     @Expose
     private int total_pages;
+    
+    /**
+     * Total number of movie results available.
+     */
     @Expose
     private int total_results;
 

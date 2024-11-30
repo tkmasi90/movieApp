@@ -22,8 +22,6 @@ public interface iHTTPOperations {
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * @throws IllegalStateException  If the operation failed at the server.
-    * 
-    * @author janii
     */
     public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException;
     
@@ -35,8 +33,6 @@ public interface iHTTPOperations {
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * @throws IllegalStateException  If the operation failed at the server.
-    * 
-    * @author janii
     */
     public String makeTMOTNHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException;
     

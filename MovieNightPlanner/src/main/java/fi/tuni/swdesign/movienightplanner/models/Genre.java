@@ -13,8 +13,15 @@ import com.google.gson.annotations.Expose;
  */
 public class Genre {
 
+    /**
+     * Unique identifier for the genre.
+     */
     @Expose
     private int id;
+    
+    /**
+     * Name of the genre.
+     */
     @Expose
     private String name;
 

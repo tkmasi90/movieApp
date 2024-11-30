@@ -9,22 +9,54 @@ import java.util.List;
  * @author kian, Copilot
  */
 public class MovieDetails extends Movie {
+/**
+     * List of genres associated with the movie.
+     */
     @Expose
     private List<Genre> genres;
+    
+    /**
+     * Homepage URL of the movie.
+     */
     @Expose
     private String homepage;
+    
+    /**
+     * IMDb identifier for the movie.
+     */
     @Expose
     private String imdb_id;
+    
+    /**
+     * List of countries where the movie was produced.
+     */
     @Expose
     private List<String> origin_country;
+    
+    /**
+     * Runtime of the movie in minutes.
+     */
     @Expose
     private int runtime;
+    
+    /**
+     * List of languages spoken in the movie.
+     */
     @Expose
     private List<SpokenLanguage> spoken_languages;
+    
+    /**
+     * Current status of the movie (e.g., Released, Post Production).
+     */
     @Expose
     private String status;
+    
+    /**
+     * Tagline of the movie.
+     */
     @Expose
     private String tagline;
+
 
     /**
      * Returns the list of genres of the movie.

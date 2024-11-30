@@ -14,6 +14,9 @@ import java.util.List;
 
 public class GenresResponse {
 
+        /**
+     * List of genres.
+     */
     @Expose
     private List<Genre> genres;
 

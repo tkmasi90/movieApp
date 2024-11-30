@@ -19,7 +19,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 
 /**
- *
+ * Controller for movie search results.
+ * 
  * @author Make
  */
 public class MovieResultsController {

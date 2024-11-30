@@ -34,8 +34,6 @@ public class HTTPTools implements iHTTPOperations {
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * @throws IllegalStateException  If the operation failed at the server.
-    * 
-    * @author janii
     */
     @Override
     public String makeGenericHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {
@@ -84,8 +82,6 @@ public class HTTPTools implements iHTTPOperations {
     * @throws IOException            If an I/O error occurs.
     * @throws InterruptedException   If the operation is interrupted.
     * @throws IllegalStateException  If the operation failed at the server.
-    * 
-    * @author janii
     */
     @Override
     public String makeTMOTNHttpRequest(String url) throws IOException, InterruptedException, IllegalStateException {

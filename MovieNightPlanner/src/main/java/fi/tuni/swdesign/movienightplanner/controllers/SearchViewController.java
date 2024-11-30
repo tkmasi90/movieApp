@@ -606,8 +606,6 @@ public class SearchViewController {
      * page is fetched recursively. The process stops after 10 pages.
      *
      * @param lView The GridView to populate with movie items.
-     * @param allMovies The list of all movies fetched so far, which will be
-     * updated with the new results.
      */
     private void fetchNextPage(GridView<Movie> lView) {
         // Disable the search button before starting the fetch
