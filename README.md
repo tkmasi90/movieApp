@@ -31,5 +31,5 @@ System: Windows 11 version 10.0 running on amd64; UTF-8; en_US (nb)
 - Merge requests: https://course-gitlab.tuni.fi/compse110-fall2024/jmsk/-/merge_requests
 
 ## Documentation
-- PDF - In folder "Documentation"
-- Javadocs - In folder "Javadoc"
+- PDF - In the folder "Documentation"
+- Javadocs - In the folder "Javadoc"
