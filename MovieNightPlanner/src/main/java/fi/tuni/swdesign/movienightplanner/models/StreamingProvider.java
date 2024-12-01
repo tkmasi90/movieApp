@@ -8,18 +8,27 @@ package fi.tuni.swdesign.movienightplanner.models;
  * Represents a streaming provider, containing its name, ID, and logo path.
  * This class is used to encapsulate the details of a streaming provider 
  * and is primarily used in conjunction with streaming services data.
- * @author Make, ChatGPT(Javadoc comments)
+ * @author Make, ChatGPT & Copilot(Javadoc comments)
  */
 import com.google.gson.annotations.Expose;
 
 public class StreamingProvider {
 
+    /**
+     * The name of the streaming provider.
+     */
     @Expose
     private String provider_name;
-
+    
+    /**
+     * Unique identifier for the streaming provider.
+     */
     @Expose
     private int provider_id;
-
+    
+    /**
+     * Path to the logo image of the streaming provider.
+     */
     @Expose
     private String logo_path;
 

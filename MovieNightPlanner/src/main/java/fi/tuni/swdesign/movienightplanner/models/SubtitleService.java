@@ -15,12 +15,27 @@ import java.util.List;
  */
 public class SubtitleService {
 
+    /**
+     * The service providing the subtitles.
+     */
     @Expose
     public Service service;
+    
+    /**
+     * The type of subtitle service (e.g., closed captions, subtitles for the deaf and hard of hearing).
+     */
     @Expose
     public String type;
+    
+    /**
+     * The link to the subtitle service.
+     */
     @Expose
     public String link;
+    
+    /**
+     * List of subtitles provided by the service.
+     */
     @Expose
     public List<Subtitle> subtitles;
 

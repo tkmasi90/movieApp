@@ -15,37 +15,92 @@ import java.util.ArrayList;
  */
 public class Movie {
 
+    /**
+     * Indicates if the movie is for adults (true) or not (false).
+     */
     @Expose
     private boolean adult;
+
+    /**
+     * Path to the backdrop image of the movie.
+     */
     @Expose
     private String backdrop_path;
+
+    /**
+     * List of genre IDs associated with the movie.
+     */
     @Expose
     private List<Integer> genre_ids;
+
+    /**
+     * Unique identifier for the movie.
+     */
     @Expose
     private int id;
+
+    /**
+     * Original language of the movie.
+     */
     @Expose
     private String original_language;
+
+    /**
+     * Original title of the movie.
+     */
     @Expose
     private String original_title;
+
+    /**
+     * Overview or summary of the movie's plot.
+     */
     @Expose
     private String overview;
+
+    /**
+     * Popularity score of the movie.
+     */
     @Expose
     private double popularity;
+
+    /**
+     * Path to the poster image of the movie.
+     */
     @Expose
     private String poster_path;
+
+    /**
+     * Release date of the movie.
+     */
     @Expose
-     String release_date;
+    private String release_date;
+
+    /**
+     * Title of the movie.
+     */
     @Expose
     private String title;
+
+    /**
+     * Indicates if the movie is a video (true) or not (false).
+     */
     @Expose
     private boolean video;
+
+    /**
+     * Average vote score of the movie.
+     */
     @Expose
     private double vote_average;
+
+    /**
+     * Vote count of the movie.
+     */
     @Expose
     private int vote_count;
 
     private ArrayList<StreamingProvider> streamingProviders;
-    
+
     private MovieDetails movieDetails;
     private Credits credits;
 

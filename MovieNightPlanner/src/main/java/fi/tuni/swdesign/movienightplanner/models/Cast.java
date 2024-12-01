@@ -8,36 +8,85 @@ import com.google.gson.annotations.Expose;
  * @author kian, Copilot
  */
 public class Cast {
-    @Expose
-    private boolean adult;
-    @Expose
-    private int gender;
-    @Expose
-    private int id;
-    @Expose
-    private String known_for_department;
-    @Expose
-    private String name;
-    @Expose
-    private String original_name;
-    @Expose
-    private double popularity;
-    @Expose
-    private String profile_path;
-    @Expose
-    private int cast_id;
-    @Expose
-    private String character;
-    @Expose
-    private String credit_id;
-    @Expose
-    private int order;
 
     /**
-     * Returns whether the cast member is an adult.
-     *
-     * @return true if the cast member is an adult, false otherwise
-     */
+    * Indicates if the cast member is an adult (true) or not (false).
+    */
+    @Expose
+    private boolean adult; // Indicates if the cast member is an adult (true) or not (false).
+
+    /**
+    * Gender of the cast member. Typically, 0 for unknown, 1 for female, and 2
+    * for male.
+    */
+    @Expose
+    private int gender; // Gender of the cast member. Typically, 0 for unknown, 1 for female, and 2 for male.
+
+    /**
+    * Unique identifier for the cast member.
+    */
+    @Expose
+    private int id; // Unique identifier for the cast member.
+
+    /**
+    * The department the cast member is known for (e.g., Acting, Directing).
+    */
+    @Expose
+    private String known_for_department; // The department the cast member is known for (e.g., Acting, Directing).
+
+    /**
+    * The name of the cast member.
+    */
+    @Expose
+    private String name; // The name of the cast member.
+
+    /**
+    * The original name of the cast member, if different from the name.
+    */
+    @Expose
+    private String original_name; // The original name of the cast member, if different from the name.
+
+    /**
+    * Popularity score of the cast member.
+    */
+    @Expose
+    private double popularity; // Popularity score of the cast member.
+
+    /**
+    * Path to the profile image of the cast member.
+    */
+    @Expose
+    private String profile_path; // Path to the profile image of the cast member.
+
+    /**
+    * Unique identifier for the cast role in a specific production..
+    */
+    @Expose
+    private int cast_id; // Unique identifier for the cast role in a specific production.
+
+    /**
+    * The character name played by the cast member.
+    */
+    @Expose
+    private String character; // The character name played by the cast member.
+
+    /**
+    * Unique identifier for the credit entry.
+    */
+    @Expose
+    private String credit_id; // Unique identifier for the credit entry.
+
+    /**
+    * The order of appearance or billing for the cast member.
+    */
+    @Expose
+    private int order; // The order of appearance or billing for the cast member.
+
+    /**
+    * Returns whether the cast member is an adult.
+    *
+    * @return true if the cast member is an adult, false otherwise
+    */
     public boolean isAdult() {
         return adult;
     }

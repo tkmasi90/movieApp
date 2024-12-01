@@ -12,14 +12,23 @@ import com.google.gson.annotations.Expose;
  * @author janii, Copilot
  */
 public class ErrorModel {
-
+    /**
+     * Status code of the response.
+     */
     @Expose
     private int status_code;
+    
+    /**
+     * Indicates whether the response was successful (true) or not (false).
+     */
     @Expose
     private boolean success;
+    
+    /**
+     * Message providing additional information about the status of the response.
+     */
     @Expose
     private String status_message;
-
     /**
      * Constructs an ErrorModel with the specified status code, success flag,
      * and status message.

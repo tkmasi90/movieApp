@@ -8,18 +8,45 @@ import com.google.gson.annotations.Expose;
  * @author kian, Copilot
  */
 public class Crew {
+    /**
+     * Unique identifier for the credit entry.
+     */
     @Expose
     private String credit_id;
+    
+    /**
+     * The department the crew member is associated with (e.g., Directing, Editing).
+     */
     @Expose
     private String department;
+    
+    /**
+     * Gender of the crew member. Typically, 0 for unknown, 1 for female, and 2 for male.
+     */
     @Expose
     private int gender;
+    
+    /**
+     * Unique identifier for the crew member.
+     */
     @Expose
     private int id;
+    
+    /**
+     * The specific job or role of the crew member (e.g., Director, Editor).
+     */
     @Expose
     private String job;
+    
+    /**
+     * The name of the crew member.
+     */
     @Expose
     private String name;
+    
+    /**
+     * Path to the profile image of the crew member.
+     */
     @Expose
     private String profile_path;
 

@@ -17,7 +17,7 @@ Runtime: OpenJDK Runtime Environment 21.0.1+12-LTS
 
 System: Windows 11 version 10.0 running on amd64; UTF-8; en_US (nb)
 
-1. Clone the repository and checkout the tag v0.5 with the message "MID-TERM DELIVERABLE" or the commit with the same message.
+1. Clone the repository and checkout the tag v1.0 with the message "FINAL DELIVERABLE" or the commit with the same message.
 2. Open the project using NetBeans.
 3. Choose Build from the right mouse button menu.
 4. Choose Run from the right mouse button menu.
