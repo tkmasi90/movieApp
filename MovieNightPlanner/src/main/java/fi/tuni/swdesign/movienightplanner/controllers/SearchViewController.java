@@ -71,7 +71,6 @@ public class SearchViewController {
 
     @FXML
     TabPane movieViewSelect;
-
     @FXML
     GridView<Movie> filteredView;
     @FXML
@@ -148,7 +147,6 @@ public class SearchViewController {
      */
     @FXML
     public void initialize() {
-        //TODO: Background settings
         mainView.setBackground(
                 new Background(
                         Collections.singletonList(new BackgroundFill(
@@ -162,10 +160,6 @@ public class SearchViewController {
                                 BackgroundPosition.CENTER,
                                 BackgroundSize.DEFAULT))));
 
-        // Set placeholders and initialize movie lists
-        // TODO:
-        // This function doesn't need be called each time.
-        // We can fetch this data only on first time and save to a local json
         if (mdc.getStreamProviderMap() == null) {
             try {
                 mdc.fetchStreamingProviders();
@@ -181,13 +175,17 @@ public class SearchViewController {
         filterPage = 1;
 
         movieViewSelect.setFocusTraversable(false);
-        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, tmdbUtil.getPopularMoviesUrl(popPage++), false);
-        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, tmdbUtil.getTopRatedMoviesUrl(topPage++), false);
+        populateMovieListAsync(popularMoviesLoadingLabel, popularMoviesLView, determineUrlForNode(popularMoviesLView), false);
+        populateMovieListAsync(topRatedMoviesLoadingLabel, topRatedMoviesLview, determineUrlForNode(topRatedMoviesLview), false);
 
     }
 
+    /**
+    * Initializes filters for the search view, setting up filter options for
+    * genres, audio, subtitles, and streaming providers.
+    * Clears any previously cached movie labels.
+    */
     public void initializeFilters() {
-        // Set filter options and populate movie lists
         filterViewController.setFilterOptions(cbAudio, cbGenre, cbSubtitle);
         cbSubtitle.getItems().add(0, "All");
         cbSubtitle.getSelectionModel().selectFirst();
@@ -195,21 +193,28 @@ public class SearchViewController {
         movieLabelCacheList.clear();
         movieLabelCacheGrid.clear();
     }
-    
+
+    /**
+    * Populates the user's search history in the search view list.
+    * Retrieves the history from the application state.
+    */
     public void populateSearchHistory() {
         showHistoryLabel();
         setMovieListView(appState.getSearchHistory(), searchListView, null);
     }
 
+    /**
+    * Sets up the search bar to handle text changes and triggers search functionality
+    * when the Enter key is pressed.
+    */
     public void setSearch() {
         searchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
-                // If the search field is empty, show the search history
                 populateSearchHistory();
                 showHistoryLabel();
             }
         });
-        // Attach a KeyEvent handler to search when Enter is pressed
+
         searchBar.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 try {
@@ -221,7 +226,10 @@ public class SearchViewController {
         });
     }
 
-    // Method to set up GridView with a loading label
+    /**
+    * Sets up the loading labels for various movie lists in the UI.
+    * Configures style, placeholder text, and layout orientation.
+    */
     private void setupLoadingLabels() {
 
         popularMoviesLoadingLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black;");
@@ -241,18 +249,27 @@ public class SearchViewController {
         StackPane.setAlignment(filteredMoviesLoadingLabel, Pos.CENTER);
     }
 
-    // Show the loading label
+    /**
+     * Displays a loading label when filtering movies.
+     * The label informs the user that a filtering operation is in progress.
+     */
     private void showLoadingLabel() {
         filteredMoviesLoadingLabel.setVisible(true);
         filteredMoviesLoadingLabel.setManaged(true);
     }
 
-    // Hide the loading label
+    /**
+     * Hides the loading label after filtering movies.
+     */
     private void hideLoadingLabel() {
         filteredMoviesLoadingLabel.setVisible(false);
         filteredMoviesLoadingLabel.setManaged(false);
     }
-    
+
+    /**
+    * Displays the search history label and adjusts the layout of the search view.
+    * This is used when the search bar is empty, showing the user's recent searches.
+    */
     private void showHistoryLabel() {
         scLabel.setVisible(true);
         scLabel.setManaged(true);
@@ -260,8 +277,12 @@ public class SearchViewController {
         searchListView.setPrefHeight(190);
         searchListView.setMaxHeight(190);
     }
-    
-       private void hideHistoryLabel() {
+
+    /**
+    * Hides the search history label and clears the search list view.
+    * Adjusts the layout back to its default state.
+    */
+    private void hideHistoryLabel() {
         searchListView.getItems().clear();
         scLabel.setVisible(false);
         scLabel.setManaged(false);
@@ -325,6 +346,14 @@ public class SearchViewController {
         selectionModel.selectLast();
     }
 
+    /**
+    * Performs a search based on the query entered in the search bar. 
+    * Updates the search list view asynchronously with results from the TMDb API. 
+    * Displays a "searching" placeholder during the operation and shows an error 
+    * message if the search fails.
+    *
+    * @throws IOException if an error occurs during the search process.
+    */
     @FXML
     private void handleSearchClick() throws IOException {
         searchListView.setPlaceholder(searchingLabel);
@@ -522,6 +551,15 @@ public class SearchViewController {
         }
     }
 
+    /**
+    * Populates the list of movies for search results or specific categories asynchronously.
+    * Supports both ListView and GridView components.
+    *
+    * @param loadingLabel The label to display while movies are being loaded.
+    * @param lView The UI element (ListView or GridView) where the movies will be displayed.
+    * @param url The URL to fetch movies from.
+    * @param append Whether to append to the existing list or replace it.
+    */
     private void populateMovieListAsync(Label loadingLabel, Node lView, String url, boolean append) {
         if (lView instanceof ListView) {
             // Existing ListView population logic for popular movies
@@ -542,7 +580,7 @@ public class SearchViewController {
      * @param listView The ListView to populate with movie items.
      * @param url The URL to fetch movie data from.
      * @param append If true, new movies are appended to the existing list;
-     * otherwise, the list is replaced.
+     * otherwise, the list is being made for first time.
      */
     private void populateListViewAsync(Label loadingLabel, ListView<Movie> listView, String url, boolean append) {
         CompletableFuture.supplyAsync(() -> {

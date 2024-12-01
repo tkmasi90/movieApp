@@ -1,6 +1,5 @@
 package fi.tuni.swdesign.movienightplanner.controllers;
 
-import fi.tuni.swdesign.movienightplanner.App;
 import fi.tuni.swdesign.movienightplanner.AppState;
 import fi.tuni.swdesign.movienightplanner.models.Cast;
 import fi.tuni.swdesign.movienightplanner.models.Movie;
@@ -9,21 +8,15 @@ import fi.tuni.swdesign.movienightplanner.utilities.HTTPTools;
 
 import java.util.concurrent.CompletableFuture;
 import java.io.IOException;
-import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
@@ -37,7 +30,7 @@ import javafx.stage.Stage;
  */
 public class MovieDetailsController {
     private SceneController sceneController;
-    private ImageController imageController = new ImageController();
+    private final ImageController imageController = new ImageController();
     private AppState appState;
     private Movie movie;
 

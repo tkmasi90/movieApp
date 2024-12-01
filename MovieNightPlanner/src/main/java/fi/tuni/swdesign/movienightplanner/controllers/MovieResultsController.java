@@ -19,7 +19,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 
 /**
- * Controller for movie search results.
+ * Controller for managing movie search result displays. 
+ * Handles the title, image, and clipping of movie items in the search results.
  * 
  * @author Make
  */
@@ -31,25 +32,53 @@ public class MovieResultsController {
     
     ImageController imageController = new ImageController();
     
+    /**
+     * Initializes the controller. Ensures the search name label grows horizontally
+     * within its container.
+     */
     @FXML
     public void initialize() {
         HBox.setHgrow(searchName, Priority.ALWAYS);
     }
     
+    /**
+     * Sets the details for a search result item, including its image and title.
+     *
+     * @param movie The {@link Movie} object containing the details to display.
+     */
     public void setResult(Movie movie) {
         setImage(movie, 70);
         setTitle(movie);
     }
     
+    /**
+     * Sets the image for the search result item, applying a clipping effect.
+     *
+     * @param movie  The {@link Movie} object containing the image path.
+     * @param height The desired height of the image in pixels.
+     */
     private void setImage(Movie movie, int height) {
         imageController.loadPosterIntoMovieLabel(movie.getBackdropPath(), searchImg, height);
         searchImg.setClip(getClip(searchImg, 0.13,0.13));
     }
     
+    /**
+     * Sets the title text for the search result item.
+     *
+     * @param movie The {@link Movie} object containing the title.
+     */
     private void setTitle(Movie movie) {
         searchName.setText(movie.getTitle());
     }
     
+    /**
+     * Creates a clipping path for the search result image, giving it rounded corners.
+     *
+     * @param imageView The {@link ImageView} to apply the clipping effect to.
+     * @param radiusTop The ratio of the top corner radius relative to the height of the image.
+     * @param radiusBot The ratio of the bottom corner radius relative to the height of the image.
+     * @return A {@link Node} containing the clipping path for the image.
+     */
     private Node getClip(ImageView imageView, double radiusTop,double radiusBot) {
         Path clip;
 
