@@ -118,6 +118,7 @@ public class MovieDetailsController {
      * Navigates to the search view.
      *
      * @param event the ActionEvent that triggered this method
+     * @throws java.io.IOException
      */
     @FXML
     public void handleHomeButtonClick(ActionEvent event) throws IOException{
@@ -132,6 +133,7 @@ public class MovieDetailsController {
     * Navigates to the search view.
     *
     * @param event the ActionEvent that triggered this method
+     * @throws java.io.IOException
     */
     @FXML
     public void handleProfileButtonClick(ActionEvent event) throws IOException{
