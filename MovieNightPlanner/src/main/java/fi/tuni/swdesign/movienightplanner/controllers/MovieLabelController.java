@@ -35,6 +35,12 @@ public class MovieLabelController {
     @FXML
     private Rectangle clippingRectangle;
         
+    /**
+    * Sets the size of the clipping rectangle used for the movie label image.
+    *
+    * @param width  The desired width of the clipping rectangle.
+    * @param height The desired height of the clipping rectangle.
+    */
     public void setClipRectangleSize(double width, double height) {
         clippingRectangle.setWidth(width);
         clippingRectangle.setHeight(height);
@@ -59,6 +65,13 @@ public class MovieLabelController {
         }
     }
     
+    /**
+    * Updates the movie label to display a "Show More" message.
+    * Includes a placeholder image and a label prompting the user to double-click.
+    *
+    * @param width  The width of the movie label in pixels.
+    * @param height The height of the movie label in pixels.
+    */
     public void addShowMore(Integer width, Integer height) {
         Label doubleClickTextLabel = new Label("Please double click me!");
         doubleClickTextLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: white;");

@@ -102,15 +102,29 @@ public class App extends Application {
         writeAppStateToFile();
     }
     
+    /**
+    * Loads FXML data.
+    * 
+    * @param fxml fxml to be loaded
+    * @return fxmlLoader
+    * @throws IOException
+    */
     private static FXMLLoader loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader;
     }
 
+    /**
+    * Default starting method.
+    * @param args
+    */
     public static void main(String[] args) {
         launch();
     }
-
+    
+    /**
+    * Reads the current application state from file.
+    */
     private void readAppStateFromFile() {
         FileDataController fdc = new FileDataController();
         

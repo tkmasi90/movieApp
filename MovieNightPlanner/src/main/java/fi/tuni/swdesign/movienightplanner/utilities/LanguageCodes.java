@@ -74,7 +74,7 @@ public class LanguageCodes {
     /**
      * Gets the country name from a country code key.
      *
-     * @param name the key to lookup
+     * @param cc the key to lookup
      * @return the same country code key, or null if not found
      */
     public static String getNameFromCc(String cc) {

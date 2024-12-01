@@ -41,9 +41,9 @@ public class RateViewController {
     }
 
     /**
-     * Sets the movie ID and loads the existing rating if available.
+     * Sets the movie and loads the existing rating if available.
      *
-     * @param movieId the ID of the movie to set
+     * @param movie the ID of the movie to set
      */
     public void setMovie(Movie movie) {
         this.movie = movie;

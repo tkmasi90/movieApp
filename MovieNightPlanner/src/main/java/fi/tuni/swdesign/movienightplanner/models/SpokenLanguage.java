@@ -13,10 +13,21 @@ import com.google.gson.annotations.Expose;
 
 public class SpokenLanguage {
 
+    /**
+     * The English name of the spoken language.
+     */
     @Expose
     private String english_name;
+    
+    /**
+     * The ISO 639-1 code for the spoken language.
+     */
     @Expose
     private String iso_639_1;
+    
+    /**
+     * The name of the spoken language.
+     */
     @Expose
     private String name;
 
