@@ -128,7 +128,7 @@
                <font>
                   <Font size="12.0" />
                </font></Label>
-            <Label fx:id="star1NameLabel" alignment="TOP_CENTER" layoutX="28.0" layoutY="395.0" prefHeight="38.0" prefWidth="152.0" style="-fx-line-spacing: -2;" text="Name" textAlignment="CENTER" wrapText="true">
+            <Label fx:id="star1NameLabel" alignment="TOP_CENTER" layoutX="28.0" layoutY="398.0" prefHeight="35.0" prefWidth="152.0" style="-fx-line-spacing: -2;" text="Name" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
