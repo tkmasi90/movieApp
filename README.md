@@ -1,6 +1,8 @@
 # Software Design - Group assignment
 **GRADABLE VERSION TAG:** *v1.0 FINAL VERSION*
 
+# Original idea included a feature where the user could get suggestions from AI about what movie snacks would would be suitable to be enjoyed with the selected movie. Unfortunately we were not able to implement that due to scheduling reasons.
+
 # My contribution
 - Designed and implemented the entire main view, including UI design and frontend development.
 - Developed application logic and presentation logic.
