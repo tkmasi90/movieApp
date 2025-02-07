@@ -1,8 +1,10 @@
 # Software Design - Group assignment
+**GRADABLE VERSION TAG:** *v1.0 FINAL VERSION*
 
-**GRADABLE VERSION COMMIT MESSAGE:** *FINAL DELIVERABLE*
-
-**GRADABLE VERSION TAG:** *v1.0 FINAL DELIVERABLE*
+# My contribution
+- Designed and implemented the entire main view, including UI design and frontend development.
+- Developed application logic and presentation logic.
+- Backend: Implemented API requests and data filtering based on user selections.
 
 ## Environment
 Movie Night Planner is a basic NetBeans application. A relatively recent version (e.g., 20+) can be used to build and run the application.
@@ -25,10 +27,6 @@ System: Windows 11 version 10.0 running on amd64; UTF-8; en_US (nb)
 ## Git Branching Strategy
 - One permanent branch: main
 - Ephemeral feature branches area created from the main branch. Branches and merge requests should be created using GitLab Web UI via the issue board (link below). This ensures that the branch names contain automatically both, the issue number and the title.
-
-## Project management
-- GitLab issue board: https://course-gitlab.tuni.fi/compse110-fall2024/jmsk/-/boards
-- Merge requests: https://course-gitlab.tuni.fi/compse110-fall2024/jmsk/-/merge_requests
 
 ## Documentation
 - PDF - In the folder "Documentation"
